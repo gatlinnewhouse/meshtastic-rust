@@ -194,6 +194,7 @@ impl<State> ConnectedStreamApi<State> {
                     dest: 0,       // TODO change this
                     request_id: 0, // TODO change this
                     source: 0,     // TODO change this
+                    bitfield: None,
                 },
             )),
             rx_time: 0,   // * not transmitted
@@ -204,6 +205,11 @@ impl<State> ConnectedStreamApi<State> {
             delayed: 0,   // * not transmitted [deprecated since protobufs v2.2.19]
             hop_start: 0, // * set on device
             via_mqtt: false,
+            next_hop: 0,          // unsure
+            pki_encrypted: false, // unsure
+            public_key: vec![],   // unsure
+            relay_node: 0,        // unsure
+            tx_after: 0,          // unsure
             from: own_node_id.id(),
             to: packet_destination.id(),
             id: generate_rand_id(),
@@ -891,6 +897,7 @@ impl ConnectedStreamApi<state::Configured> {
     ) -> Result<(), Error> {
         let config_packet = protobufs::AdminMessage {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetConfig(config)),
+            session_passkey: vec![], // unsure
         };
 
         let byte_data: EncodedMeshPacketData = config_packet.encode_to_vec().into();
@@ -967,6 +974,7 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetModuleConfig(
                 module_config,
             )),
+            session_passkey: vec![], // unsure
         };
 
         let byte_data: EncodedMeshPacketData = module_config_packet.encode_to_vec().into();
@@ -1043,6 +1051,7 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetChannel(
                 channel_config,
             )),
+            session_passkey: vec![], // unsure
         };
 
         let byte_data: EncodedMeshPacketData = channel_packet.encode_to_vec().into();
@@ -1110,6 +1119,7 @@ impl ConnectedStreamApi<state::Configured> {
     ) -> Result<(), Error> {
         let user_packet = protobufs::AdminMessage {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetOwner(user)),
+            session_passkey: vec![], // unsure
         };
 
         let byte_data: EncodedMeshPacketData = user_packet.encode_to_vec().into();
@@ -1193,6 +1203,7 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::BeginEditSettings(
                 true,
             )),
+            session_passkey: vec![], // unsure
         };
 
         let mut packet_buf: Vec<u8> = vec![];
@@ -1252,6 +1263,7 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(
                 protobufs::admin_message::PayloadVariant::CommitEditSettings(true),
             ),
+            session_passkey: vec![], // unsure
         };
 
         let mut packet_buf: Vec<u8> = vec![];
