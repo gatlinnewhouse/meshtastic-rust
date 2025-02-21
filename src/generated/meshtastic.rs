@@ -234,7 +234,6 @@ pub struct DeviceUiConfig {
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[allow(clippy::doc_lazy_continuation)]
-#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeFilter {
     ///
@@ -269,7 +268,6 @@ pub struct NodeFilter {
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[allow(clippy::doc_lazy_continuation)]
-#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeHighlight {
     ///
@@ -316,9 +314,9 @@ impl Theme {
     /// (if the ProtoBuf definition does not change) and safe for programmatic use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
-            Theme::Dark => "DARK",
-            Theme::Light => "LIGHT",
-            Theme::Red => "RED",
+            Self::Dark => "DARK",
+            Self::Light => "LIGHT",
+            Self::Red => "RED",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -401,24 +399,24 @@ impl Language {
     /// (if the ProtoBuf definition does not change) and safe for programmatic use.
     pub fn as_str_name(&self) -> &'static str {
         match self {
-            Language::English => "ENGLISH",
-            Language::French => "FRENCH",
-            Language::German => "GERMAN",
-            Language::Italian => "ITALIAN",
-            Language::Portuguese => "PORTUGUESE",
-            Language::Spanish => "SPANISH",
-            Language::Swedish => "SWEDISH",
-            Language::Finnish => "FINNISH",
-            Language::Polish => "POLISH",
-            Language::Turkish => "TURKISH",
-            Language::Serbian => "SERBIAN",
-            Language::Russian => "RUSSIAN",
-            Language::Dutch => "DUTCH",
-            Language::Greek => "GREEK",
-            Language::Norwegian => "NORWEGIAN",
-            Language::Slovenian => "SLOVENIAN",
-            Language::SimplifiedChinese => "SIMPLIFIED_CHINESE",
-            Language::TraditionalChinese => "TRADITIONAL_CHINESE",
+            Self::English => "ENGLISH",
+            Self::French => "FRENCH",
+            Self::German => "GERMAN",
+            Self::Italian => "ITALIAN",
+            Self::Portuguese => "PORTUGUESE",
+            Self::Spanish => "SPANISH",
+            Self::Swedish => "SWEDISH",
+            Self::Finnish => "FINNISH",
+            Self::Polish => "POLISH",
+            Self::Turkish => "TURKISH",
+            Self::Serbian => "SERBIAN",
+            Self::Russian => "RUSSIAN",
+            Self::Dutch => "DUTCH",
+            Self::Greek => "GREEK",
+            Self::Norwegian => "NORWEGIAN",
+            Self::Slovenian => "SLOVENIAN",
+            Self::SimplifiedChinese => "SIMPLIFIED_CHINESE",
+            Self::TraditionalChinese => "TRADITIONAL_CHINESE",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -449,7 +447,6 @@ impl Language {
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[allow(clippy::doc_lazy_continuation)]
-#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Config {
     ///
@@ -621,6 +618,7 @@ pub mod config {
                     Self::ClientHidden => "CLIENT_HIDDEN",
                     Self::LostAndFound => "LOST_AND_FOUND",
                     Self::TakTracker => "TAK_TRACKER",
+                    Self::RouterLate => "ROUTER_LATE",
                 }
             }
             /// Creates an enum from field names used in the ProtoBuf definition.
@@ -695,6 +693,8 @@ pub mod config {
                     Self::AllSkipDecoding => "ALL_SKIP_DECODING",
                     Self::LocalOnly => "LOCAL_ONLY",
                     Self::KnownOnly => "KNOWN_ONLY",
+                    Self::None => "NONE",
+                    Self::CorePortnumsOnly => "CORE_PORTNUMS_ONLY",
                 }
             }
             /// Creates an enum from field names used in the ProtoBuf definition.
@@ -1130,8 +1130,8 @@ pub mod config {
             /// (if the ProtoBuf definition does not change) and safe for programmatic use.
             pub fn as_str_name(&self) -> &'static str {
                 match self {
-                    ProtocolFlags::NoBroadcast => "NO_BROADCAST",
-                    ProtocolFlags::UdpBroadcast => "UDP_BROADCAST",
+                    Self::NoBroadcast => "NO_BROADCAST",
+                    Self::UdpBroadcast => "UDP_BROADCAST",
                 }
             }
             /// Creates an enum from field names used in the ProtoBuf definition.
@@ -1722,6 +1722,9 @@ pub mod config {
                     Self::My433 => "MY_433",
                     Self::My919 => "MY_919",
                     Self::Sg923 => "SG_923",
+                    Self::Ph433 => "PH_433",
+                    Self::Ph868 => "PH_868",
+                    Self::Ph915 => "PH_915",
                 }
             }
             /// Creates an enum from field names used in the ProtoBuf definition.
@@ -1818,6 +1821,7 @@ pub mod config {
                     Self::ShortSlow => "SHORT_SLOW",
                     Self::ShortFast => "SHORT_FAST",
                     Self::LongModerate => "LONG_MODERATE",
+                    Self::ShortTurbo => "SHORT_TURBO",
                 }
             }
             /// Creates an enum from field names used in the ProtoBuf definition.
@@ -1854,10 +1858,6 @@ pub mod config {
         /// Specified PIN for PairingMode.FixedPin
         #[prost(uint32, tag = "3")]
         pub fixed_pin: u32,
-        ///
-        /// Enables device (serial style logs) over Bluetooth
-        #[prost(bool, tag = "4")]
-        pub device_logging_enabled: bool,
     }
     /// Nested message and enum types in `BluetoothConfig`.
     pub mod bluetooth_config {
@@ -1913,7 +1913,6 @@ pub mod config {
     #[derive(serde::Serialize, serde::Deserialize)]
     #[serde(rename_all = "camelCase")]
     #[allow(clippy::doc_lazy_continuation)]
-    #[allow(clippy::derive_partial_eq_without_eq)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct SecurityConfig {
         ///
@@ -1954,8 +1953,7 @@ pub mod config {
     #[derive(serde::Serialize, serde::Deserialize)]
     #[serde(rename_all = "camelCase")]
     #[allow(clippy::doc_lazy_continuation)]
-    #[allow(clippy::derive_partial_eq_without_eq)]
-    #[derive(Clone, PartialEq, ::prost::Message)]
+    #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct SessionkeyConfig {}
     ///
     /// Payload Variant
@@ -2325,12 +2323,12 @@ pub mod module_config {
             /// (if the ProtoBuf definition does not change) and safe for programmatic use.
             pub fn as_str_name(&self) -> &'static str {
                 match self {
-                    TriggerType::LogicLow => "LOGIC_LOW",
-                    TriggerType::LogicHigh => "LOGIC_HIGH",
-                    TriggerType::FallingEdge => "FALLING_EDGE",
-                    TriggerType::RisingEdge => "RISING_EDGE",
-                    TriggerType::EitherEdgeActiveLow => "EITHER_EDGE_ACTIVE_LOW",
-                    TriggerType::EitherEdgeActiveHigh => "EITHER_EDGE_ACTIVE_HIGH",
+                    Self::LogicLow => "LOGIC_LOW",
+                    Self::LogicHigh => "LOGIC_HIGH",
+                    Self::FallingEdge => "FALLING_EDGE",
+                    Self::RisingEdge => "RISING_EDGE",
+                    Self::EitherEdgeActiveLow => "EITHER_EDGE_ACTIVE_LOW",
+                    Self::EitherEdgeActiveHigh => "EITHER_EDGE_ACTIVE_HIGH",
                 }
             }
             /// Creates an enum from field names used in the ProtoBuf definition.
@@ -3314,6 +3312,7 @@ impl PortNum {
             Self::WaypointApp => "WAYPOINT_APP",
             Self::AudioApp => "AUDIO_APP",
             Self::DetectionSensorApp => "DETECTION_SENSOR_APP",
+            Self::AlertApp => "ALERT_APP",
             Self::ReplyApp => "REPLY_APP",
             Self::IpTunnelApp => "IP_TUNNEL_APP",
             Self::PaxcounterApp => "PAXCOUNTER_APP",
@@ -3431,49 +3430,61 @@ pub struct EnvironmentMetrics {
     ///
     /// relative scale IAQ value as measured by Bosch BME680 . value 0-500.
     /// Belongs to Air Quality but is not particle but VOC measurement. Other VOC values can also be put in here.
-    #[prost(uint32, tag = "7")]
-    pub iaq: u32,
+    #[prost(uint32, optional, tag = "7")]
+    pub iaq: ::core::option::Option<u32>,
     ///
     /// RCWL9620 Doppler Radar Distance Sensor, used for water level detection. Float value in mm.
-    #[prost(float, tag = "8")]
-    pub distance: f32,
+    #[prost(float, optional, tag = "8")]
+    pub distance: ::core::option::Option<f32>,
     ///
     /// VEML7700 high accuracy ambient light(Lux) digital 16-bit resolution sensor.
-    #[prost(float, tag = "9")]
-    pub lux: f32,
+    #[prost(float, optional, tag = "9")]
+    pub lux: ::core::option::Option<f32>,
     ///
     /// VEML7700 high accuracy white light(irradiance) not calibrated digital 16-bit resolution sensor.
-    #[prost(float, tag = "10")]
-    pub white_lux: f32,
+    #[prost(float, optional, tag = "10")]
+    pub white_lux: ::core::option::Option<f32>,
     ///
     /// Infrared lux
-    #[prost(float, tag = "11")]
-    pub ir_lux: f32,
+    #[prost(float, optional, tag = "11")]
+    pub ir_lux: ::core::option::Option<f32>,
     ///
     /// Ultraviolet lux
-    #[prost(float, tag = "12")]
-    pub uv_lux: f32,
+    #[prost(float, optional, tag = "12")]
+    pub uv_lux: ::core::option::Option<f32>,
     ///
     /// Wind direction in degrees
     /// 0 degrees = North, 90 = East, etc...
-    #[prost(uint32, tag = "13")]
-    pub wind_direction: u32,
+    #[prost(uint32, optional, tag = "13")]
+    pub wind_direction: ::core::option::Option<u32>,
     ///
     /// Wind speed in m/s
-    #[prost(float, tag = "14")]
-    pub wind_speed: f32,
+    #[prost(float, optional, tag = "14")]
+    pub wind_speed: ::core::option::Option<f32>,
     ///
     /// Weight in KG
-    #[prost(float, tag = "15")]
-    pub weight: f32,
+    #[prost(float, optional, tag = "15")]
+    pub weight: ::core::option::Option<f32>,
     ///
     /// Wind gust in m/s
-    #[prost(float, tag = "16")]
-    pub wind_gust: f32,
+    #[prost(float, optional, tag = "16")]
+    pub wind_gust: ::core::option::Option<f32>,
     ///
     /// Wind lull in m/s
-    #[prost(float, tag = "17")]
-    pub wind_lull: f32,
+    #[prost(float, optional, tag = "17")]
+    pub wind_lull: ::core::option::Option<f32>,
+    ///
+    /// Radiation in µR/h
+    #[prost(float, optional, tag = "18")]
+    pub radiation: ::core::option::Option<f32>,
+    ///
+    /// Rainfall in the last hour in mm
+    #[prost(float, optional, tag = "19")]
+    pub rainfall_1h: ::core::option::Option<f32>,
+    ///
+    /// Rainfall in the last 24 hours in mm
+    #[prost(float, optional, tag = "20")]
+    pub rainfall_24h: ::core::option::Option<f32>,
 }
 ///
 /// Power Metrics (voltage / current / etc)
@@ -3572,8 +3583,7 @@ pub struct AirQualityMetrics {
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[allow(clippy::doc_lazy_continuation)]
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct LocalStats {
     ///
     /// How long the device has been running since the last reboot (in seconds)
@@ -3627,8 +3637,7 @@ pub struct LocalStats {
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[allow(clippy::doc_lazy_continuation)]
-#[allow(clippy::derive_partial_eq_without_eq)]
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct HealthMetrics {
     ///
     /// Heart rate (beats per minute)
@@ -3801,6 +3810,27 @@ pub enum TelemetrySensorType {
     ///
     /// MAX17048 1S lipo battery sensor (voltage, state of charge, time to go)
     Max17048 = 28,
+    ///
+    /// Custom I2C sensor implementation based on <https://github.com/meshtastic/i2c-sensor>
+    CustomSensor = 29,
+    ///
+    /// MAX30102 Pulse Oximeter and Heart-Rate Sensor
+    Max30102 = 30,
+    ///
+    /// MLX90614 non-contact IR temperature sensor
+    Mlx90614 = 31,
+    ///
+    /// SCD40/SCD41 CO2, humidity, temperature sensor
+    Scd4x = 32,
+    ///
+    /// ClimateGuard RadSens, radiation, Geiger-Muller Tube
+    Radsens = 33,
+    ///
+    /// High accuracy current and voltage
+    Ina226 = 34,
+    ///
+    /// DFRobot Gravity tipping bucket rain gauge
+    DfrobotRain = 35,
 }
 impl TelemetrySensorType {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -3838,6 +3868,13 @@ impl TelemetrySensorType {
             Self::Bmp3xx => "BMP3XX",
             Self::Icm20948 => "ICM20948",
             Self::Max17048 => "MAX17048",
+            Self::CustomSensor => "CUSTOM_SENSOR",
+            Self::Max30102 => "MAX30102",
+            Self::Mlx90614 => "MLX90614",
+            Self::Scd4x => "SCD4X",
+            Self::Radsens => "RADSENS",
+            Self::Ina226 => "INA226",
+            Self::DfrobotRain => "DFROBOT_RAIN",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -3872,6 +3909,13 @@ impl TelemetrySensorType {
             "BMP3XX" => Some(Self::Bmp3xx),
             "ICM20948" => Some(Self::Icm20948),
             "MAX17048" => Some(Self::Max17048),
+            "CUSTOM_SENSOR" => Some(Self::CustomSensor),
+            "MAX30102" => Some(Self::Max30102),
+            "MLX90614" => Some(Self::Mlx90614),
+            "SCD4X" => Some(Self::Scd4x),
+            "RADSENS" => Some(Self::Radsens),
+            "INA226" => Some(Self::Ina226),
+            "DFROBOT_RAIN" => Some(Self::DfrobotRain),
             _ => None,
         }
     }
@@ -4385,6 +4429,10 @@ pub mod routing {
                 Self::DutyCycleLimit => "DUTY_CYCLE_LIMIT",
                 Self::BadRequest => "BAD_REQUEST",
                 Self::NotAuthorized => "NOT_AUTHORIZED",
+                Self::PkiFailed => "PKI_FAILED",
+                Self::PkiUnknownPubkey => "PKI_UNKNOWN_PUBKEY",
+                Self::AdminBadSessionKey => "ADMIN_BAD_SESSION_KEY",
+                Self::AdminPublicKeyUnauthorized => "ADMIN_PUBLIC_KEY_UNAUTHORIZED",
             }
         }
         /// Creates an enum from field names used in the ProtoBuf definition.
@@ -4774,6 +4822,9 @@ pub mod mesh_packet {
                 Self::Background => "BACKGROUND",
                 Self::Default => "DEFAULT",
                 Self::Reliable => "RELIABLE",
+                Self::Response => "RESPONSE",
+                Self::High => "HIGH",
+                Self::Alert => "ALERT",
                 Self::Ack => "ACK",
                 Self::Max => "MAX",
             }
@@ -4938,7 +4989,7 @@ pub struct NodeInfo {
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[allow(clippy::doc_lazy_continuation)]
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+#[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MyNodeInfo {
     ///
     /// Tells the phone what our node number is, default starting value is
@@ -5102,7 +5153,7 @@ pub struct FromRadio {
     /// Log levels, chosen to match python logging conventions.
     #[prost(
         oneof = "from_radio::PayloadVariant",
-        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15"
+        tags = "2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17"
     )]
     pub payload_variant: ::core::option::Option<from_radio::PayloadVariant>,
 }
@@ -5179,7 +5230,42 @@ pub mod from_radio {
         /// File system manifest messages
         #[prost(message, tag = "15")]
         FileInfo(super::FileInfo),
+        ///
+        /// Notification message to the client
+        #[prost(message, tag = "16")]
+        ClientNotification(super::ClientNotification),
+        ///
+        /// Persistent data for device-ui
+        #[prost(message, tag = "17")]
+        DeviceuiConfig(super::DeviceUiConfig),
     }
+}
+///
+/// A notification message from the device to the client
+/// To be used for important messages that should to be displayed to the user
+/// in the form of push notifications or validation messages when saving
+/// invalid configuration.
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ClientNotification {
+    ///
+    /// The id of the packet we're notifying in response to
+    #[prost(uint32, optional, tag = "1")]
+    pub reply_id: ::core::option::Option<u32>,
+    ///
+    /// Seconds since 1970 - or 0 for unknown/unset
+    #[prost(fixed32, tag = "2")]
+    pub time: u32,
+    ///
+    /// The level type of notification
+    #[prost(enumeration = "log_record::Level", tag = "3")]
+    pub level: i32,
+    ///
+    /// The message body of the notification
+    #[prost(string, tag = "4")]
+    pub message: ::prost::alloc::string::String,
 }
 ///
 /// Individual File info for the device
@@ -5554,6 +5640,9 @@ pub enum HardwareModel {
     /// Heltec HRU-3601: <https://heltec.org/project/hru-3601/>
     HeltecHru3601 = 23,
     ///
+    /// Heltec Wireless Bridge
+    HeltecWirelessBridge = 24,
+    ///
     /// B&Q Consulting Station Edition G1: <https://uniteng.com/wiki/doku.php?id=meshtastic:station>
     StationG1 = 25,
     ///
@@ -5720,6 +5809,51 @@ pub enum HardwareModel {
     /// SSD1306 OLED and No GPS
     Radiomaster900Bandit = 74,
     ///
+    /// Minewsemi ME25LS01 (ME25LE01_V1.0). NRF52840 w/ LR1110 radio, buttons and leds and pins.
+    Me25ls014y10td = 75,
+    ///
+    /// RP2040_FEATHER_RFM95
+    /// Adafruit Feather RP2040 with RFM95 LoRa Radio RFM95 with SX1272, SSD1306 OLED
+    /// <https://www.adafruit.com/product/5714>
+    /// <https://www.adafruit.com/product/326>
+    /// <https://www.adafruit.com/product/938>
+    ///   ^^^ short A0 to switch to I2C address 0x3C
+    ///
+    Rp2040FeatherRfm95 = 76,
+    /// M5 esp32 based MCU modules with enclosure, TFT and LORA Shields. All Variants (Basic, Core, Fire, Core2, CoreS3, Paper) <https://m5stack.com/>
+    M5stackCorebasic = 77,
+    M5stackCore2 = 78,
+    /// Pico2 with Waveshare Hat, same as Pico
+    RpiPico2 = 79,
+    /// M5 esp32 based MCU modules with enclosure, TFT and LORA Shields. All Variants (Basic, Core, Fire, Core2, CoreS3, Paper) <https://m5stack.com/>
+    M5stackCores3 = 80,
+    /// Seeed XIAO S3 DK
+    SeeedXiaoS3 = 81,
+    ///
+    /// Nordic nRF52840+Semtech SX1262 LoRa BLE Combo Module. nRF52840+SX1262 MS24SF1
+    Ms24sf1 = 82,
+    ///
+    /// Lilygo TLora-C6 with the new ESP32-C6 MCU
+    TloraC6 = 83,
+    ///
+    /// WisMesh Tap
+    /// RAK-4631 w/ TFT in injection modled case
+    WismeshTap = 84,
+    ///
+    /// Similar to PORTDUINO but used by Routastic devices, this is not any
+    /// particular device and does not run Meshtastic's code but supports
+    /// the same frame format.
+    /// Runs on linux, see <https://github.com/Jorropo/routastic>
+    Routastic = 85,
+    ///
+    /// Mesh-Tab, esp32 based
+    /// <https://github.com/valzzu/Mesh-Tab>
+    MeshTab = 86,
+    ///
+    /// MeshLink board developed by LoraItalia. NRF52840, eByte E22900M22S (Will also come with other frequencies), 25w MPPT solar charger (5v,12v,18v selectable), support for gps, buzzer, oled or e-ink display, 10 gpios, hardware watchdog
+    /// <https://www.loraitalia.it>
+    Meshlink = 87,
+    ///
     /// ------------------------------------------------------------------------------------------------------------------------------------------
     /// Reserved ID For developing private Ports. These will show up in live traffic sparsely, so we can use a high number. Keep it within 8 bits.
     /// ------------------------------------------------------------------------------------------------------------------------------------------
@@ -5756,6 +5890,7 @@ impl HardwareModel {
             Self::WioWm1110 => "WIO_WM1110",
             Self::Rak2560 => "RAK2560",
             Self::HeltecHru3601 => "HELTEC_HRU_3601",
+            Self::HeltecWirelessBridge => "HELTEC_WIRELESS_BRIDGE",
             Self::StationG1 => "STATION_G1",
             Self::Rak11310 => "RAK11310",
             Self::SenseloraRp2040 => "SENSELORA_RP2040",
@@ -5806,6 +5941,19 @@ impl HardwareModel {
             Self::Rak3172 => "RAK3172",
             Self::WioE5 => "WIO_E5",
             Self::Radiomaster900Bandit => "RADIOMASTER_900_BANDIT",
+            Self::Me25ls014y10td => "ME25LS01_4Y10TD",
+            Self::Rp2040FeatherRfm95 => "RP2040_FEATHER_RFM95",
+            Self::M5stackCorebasic => "M5STACK_COREBASIC",
+            Self::M5stackCore2 => "M5STACK_CORE2",
+            Self::RpiPico2 => "RPI_PICO2",
+            Self::M5stackCores3 => "M5STACK_CORES3",
+            Self::SeeedXiaoS3 => "SEEED_XIAO_S3",
+            Self::Ms24sf1 => "MS24SF1",
+            Self::TloraC6 => "TLORA_C6",
+            Self::WismeshTap => "WISMESH_TAP",
+            Self::Routastic => "ROUTASTIC",
+            Self::MeshTab => "MESH_TAB",
+            Self::Meshlink => "MESHLINK",
             Self::PrivateHw => "PRIVATE_HW",
         }
     }
@@ -5836,6 +5984,7 @@ impl HardwareModel {
             "WIO_WM1110" => Some(Self::WioWm1110),
             "RAK2560" => Some(Self::Rak2560),
             "HELTEC_HRU_3601" => Some(Self::HeltecHru3601),
+            "HELTEC_WIRELESS_BRIDGE" => Some(Self::HeltecWirelessBridge),
             "STATION_G1" => Some(Self::StationG1),
             "RAK11310" => Some(Self::Rak11310),
             "SENSELORA_RP2040" => Some(Self::SenseloraRp2040),
@@ -5886,6 +6035,19 @@ impl HardwareModel {
             "RAK3172" => Some(Self::Rak3172),
             "WIO_E5" => Some(Self::WioE5),
             "RADIOMASTER_900_BANDIT" => Some(Self::Radiomaster900Bandit),
+            "ME25LS01_4Y10TD" => Some(Self::Me25ls014y10td),
+            "RP2040_FEATHER_RFM95" => Some(Self::Rp2040FeatherRfm95),
+            "M5STACK_COREBASIC" => Some(Self::M5stackCorebasic),
+            "M5STACK_CORE2" => Some(Self::M5stackCore2),
+            "RPI_PICO2" => Some(Self::RpiPico2),
+            "M5STACK_CORES3" => Some(Self::M5stackCores3),
+            "SEEED_XIAO_S3" => Some(Self::SeeedXiaoS3),
+            "MS24SF1" => Some(Self::Ms24sf1),
+            "TLORA_C6" => Some(Self::TloraC6),
+            "WISMESH_TAP" => Some(Self::WismeshTap),
+            "ROUTASTIC" => Some(Self::Routastic),
+            "MESH_TAB" => Some(Self::MeshTab),
+            "MESHLINK" => Some(Self::Meshlink),
             "PRIVATE_HW" => Some(Self::PrivateHw),
             _ => None,
         }
@@ -6033,6 +6195,103 @@ impl CriticalErrorCode {
     }
 }
 ///
+/// Enum for modules excluded from a device's configuration.
+/// Each value represents a ModuleConfigType that can be toggled as excluded
+/// by setting its corresponding bit in the `excluded_modules` bitmask field.
+#[derive(serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+#[repr(i32)]
+pub enum ExcludedModules {
+    ///
+    /// Default value of 0 indicates no modules are excluded.
+    ExcludedNone = 0,
+    ///
+    /// MQTT module
+    MqttConfig = 1,
+    ///
+    /// Serial module
+    SerialConfig = 2,
+    ///
+    /// External Notification module
+    ExtnotifConfig = 4,
+    ///
+    /// Store and Forward module
+    StoreforwardConfig = 8,
+    ///
+    /// Range Test module
+    RangetestConfig = 16,
+    ///
+    /// Telemetry module
+    TelemetryConfig = 32,
+    ///
+    /// Canned Message module
+    CannedmsgConfig = 64,
+    ///
+    /// Audio module
+    AudioConfig = 128,
+    ///
+    /// Remote Hardware module
+    RemotehardwareConfig = 256,
+    ///
+    /// Neighbor Info module
+    NeighborinfoConfig = 512,
+    ///
+    /// Ambient Lighting module
+    AmbientlightingConfig = 1024,
+    ///
+    /// Detection Sensor module
+    DetectionsensorConfig = 2048,
+    ///
+    /// Paxcounter module
+    PaxcounterConfig = 4096,
+}
+impl ExcludedModules {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            Self::ExcludedNone => "EXCLUDED_NONE",
+            Self::MqttConfig => "MQTT_CONFIG",
+            Self::SerialConfig => "SERIAL_CONFIG",
+            Self::ExtnotifConfig => "EXTNOTIF_CONFIG",
+            Self::StoreforwardConfig => "STOREFORWARD_CONFIG",
+            Self::RangetestConfig => "RANGETEST_CONFIG",
+            Self::TelemetryConfig => "TELEMETRY_CONFIG",
+            Self::CannedmsgConfig => "CANNEDMSG_CONFIG",
+            Self::AudioConfig => "AUDIO_CONFIG",
+            Self::RemotehardwareConfig => "REMOTEHARDWARE_CONFIG",
+            Self::NeighborinfoConfig => "NEIGHBORINFO_CONFIG",
+            Self::AmbientlightingConfig => "AMBIENTLIGHTING_CONFIG",
+            Self::DetectionsensorConfig => "DETECTIONSENSOR_CONFIG",
+            Self::PaxcounterConfig => "PAXCOUNTER_CONFIG",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "EXCLUDED_NONE" => Some(Self::ExcludedNone),
+            "MQTT_CONFIG" => Some(Self::MqttConfig),
+            "SERIAL_CONFIG" => Some(Self::SerialConfig),
+            "EXTNOTIF_CONFIG" => Some(Self::ExtnotifConfig),
+            "STOREFORWARD_CONFIG" => Some(Self::StoreforwardConfig),
+            "RANGETEST_CONFIG" => Some(Self::RangetestConfig),
+            "TELEMETRY_CONFIG" => Some(Self::TelemetryConfig),
+            "CANNEDMSG_CONFIG" => Some(Self::CannedmsgConfig),
+            "AUDIO_CONFIG" => Some(Self::AudioConfig),
+            "REMOTEHARDWARE_CONFIG" => Some(Self::RemotehardwareConfig),
+            "NEIGHBORINFO_CONFIG" => Some(Self::NeighborinfoConfig),
+            "AMBIENTLIGHTING_CONFIG" => Some(Self::AmbientlightingConfig),
+            "DETECTIONSENSOR_CONFIG" => Some(Self::DetectionsensorConfig),
+            "PAXCOUNTER_CONFIG" => Some(Self::PaxcounterConfig),
+            _ => None,
+        }
+    }
+}
+///
 /// This message is handled by the Admin module and is responsible for all settings/channel read/write operations.
 /// This message is used to do settings operations to both remote AND local nodes.
 /// (Prior to 1.2 these operations were done via special ToRadio operations)
@@ -6051,7 +6310,7 @@ pub struct AdminMessage {
     /// TODO: REPLACE
     #[prost(
         oneof = "admin_message::PayloadVariant",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 64, 65, 94, 95, 96, 97, 98, 99, 100"
+        tags = "1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 64, 65, 94, 95, 96, 97, 98, 99, 100"
     )]
     pub payload_variant: ::core::option::Option<admin_message::PayloadVariant>,
 }
@@ -6120,6 +6379,9 @@ pub mod admin_message {
                 Self::DisplayConfig => "DISPLAY_CONFIG",
                 Self::LoraConfig => "LORA_CONFIG",
                 Self::BluetoothConfig => "BLUETOOTH_CONFIG",
+                Self::SecurityConfig => "SECURITY_CONFIG",
+                Self::SessionkeyConfig => "SESSIONKEY_CONFIG",
+                Self::DeviceuiConfig => "DEVICEUI_CONFIG",
             }
         }
         /// Creates an enum from field names used in the ProtoBuf definition.
@@ -7070,7 +7332,6 @@ pub struct UserLite {
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 #[allow(clippy::doc_lazy_continuation)]
-#[allow(clippy::derive_partial_eq_without_eq)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeInfoLite {
     ///
@@ -7204,87 +7465,6 @@ pub struct ChannelFile {
     /// NodeDB.cpp in the device code.
     #[prost(uint32, tag = "2")]
     pub version: u32,
-}
-///
-/// This can be used for customizing the firmware distribution. If populated,
-/// show a secondary bootup screen with custom logo and text for 2.5 seconds.
-#[derive(serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "camelCase")]
-#[allow(clippy::doc_lazy_continuation)]
-#[derive(Clone, PartialEq, ::prost::Message)]
-pub struct OemStore {
-    ///
-    /// The Logo width in Px
-    #[prost(uint32, tag = "1")]
-    pub oem_icon_width: u32,
-    ///
-    /// The Logo height in Px
-    #[prost(uint32, tag = "2")]
-    pub oem_icon_height: u32,
-    ///
-    /// The Logo in XBM bytechar format
-    #[prost(bytes = "vec", tag = "3")]
-    pub oem_icon_bits: ::prost::alloc::vec::Vec<u8>,
-    ///
-    /// Use this font for the OEM text.
-    #[prost(enumeration = "ScreenFonts", tag = "4")]
-    pub oem_font: i32,
-    ///
-    /// Use this font for the OEM text.
-    #[prost(string, tag = "5")]
-    pub oem_text: ::prost::alloc::string::String,
-    ///
-    /// The default device encryption key, 16 or 32 byte
-    #[prost(bytes = "vec", tag = "6")]
-    pub oem_aes_key: ::prost::alloc::vec::Vec<u8>,
-    ///
-    /// A Preset LocalConfig to apply during factory reset
-    #[prost(message, optional, tag = "7")]
-    pub oem_local_config: ::core::option::Option<LocalConfig>,
-    ///
-    /// A Preset LocalModuleConfig to apply during factory reset
-    #[prost(message, optional, tag = "8")]
-    pub oem_local_module_config: ::core::option::Option<LocalModuleConfig>,
-}
-///
-/// Font sizes for the device screen
-#[derive(serde::Serialize, serde::Deserialize)]
-#[serde(rename_all = "camelCase")]
-#[allow(clippy::doc_lazy_continuation)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
-#[repr(i32)]
-pub enum ScreenFonts {
-    ///
-    /// TODO: REPLACE
-    FontSmall = 0,
-    ///
-    /// TODO: REPLACE
-    FontMedium = 1,
-    ///
-    /// TODO: REPLACE
-    FontLarge = 2,
-}
-impl ScreenFonts {
-    /// String value of the enum field names used in the ProtoBuf definition.
-    ///
-    /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-    pub fn as_str_name(&self) -> &'static str {
-        match self {
-            Self::FontSmall => "FONT_SMALL",
-            Self::FontMedium => "FONT_MEDIUM",
-            Self::FontLarge => "FONT_LARGE",
-        }
-    }
-    /// Creates an enum from field names used in the ProtoBuf definition.
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-        match value {
-            "FONT_SMALL" => Some(Self::FontSmall),
-            "FONT_MEDIUM" => Some(Self::FontMedium),
-            "FONT_LARGE" => Some(Self::FontLarge),
-            _ => None,
-        }
-    }
 }
 ///
 /// This message wraps a MeshPacket with extra metadata about the sender and how it arrived.
