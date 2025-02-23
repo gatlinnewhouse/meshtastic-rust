@@ -1,7 +1,41 @@
 #[cfg(not(feature = "gen"))]
 fn main() {}
 
-#[cfg(feature = "gen")]
+#[cfg(all(feature = "gen", feature = "no-std"))]
+fn main() -> anyhow::Result<()> {
+    use std::fs;
+    let protobufs_dir = "src/protobufs";
+    let target = "src/generated-no-std";
+    fs::create_dir_all(target)?;
+
+    let mut protos_vec = vec![];
+    for entry in walkdir::WalkDir::new(protobufs_dir)
+        .into_iter()
+        .map(|e| e.unwrap())
+        .filter(|e| {
+            e.path()
+                .extension()
+                .is_some_and(|ext| ext.to_str().unwrap() == "proto")
+        })
+    {
+        let path = entry.path();
+        protos_vec.push(path.to_owned().to_string_lossy().into_owned());
+    }
+    protos_vec.sort();
+    println!("{protos_vec:#?}");
+    let vec_str: Vec<&str> = protos_vec.iter().map(|s| s.as_str()).collect();
+    let protos = vec_str.as_slice();
+
+    let mut config = femtopb_build::Config::new();
+    config
+        //.derive_defmt(true)
+        .protos(protos)
+        .target(target)
+        .includes(&["src/protobufs"]);
+    config.compile()
+}
+
+#[cfg(all(feature = "gen", not(feature = "no-std")))]
 fn main() -> std::io::Result<()> {
     let protobufs_dir = "src/protobufs/";
     let gen_dir = "src/generated/";
