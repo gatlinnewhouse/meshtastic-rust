@@ -43,26 +43,29 @@ fn main() -> std::io::Result<()> {
 
     let mut config = prost_build::Config::new();
 
-    let mut derive_string = String::from("#[derive(");
-
-    #[cfg(feature = "serde")]
+    #[cfg(any(feature = "serde", feature = "ts-gen"))]
     {
-        derive_string.push_str("serde::Serialize, serde::Deserialize, ");
-    }
+        let mut derive_string = String::from("#[derive(");
 
-    #[cfg(feature = "ts-gen")]
-    {
-        derive_string.push_str("specta::Type, ");
-    }
+        #[cfg(feature = "serde")]
+        {
+            derive_string.push_str("serde::Serialize, serde::Deserialize, ");
+        }
 
-    derive_string.push_str(")]");
+        #[cfg(feature = "ts-gen")]
+        {
+            derive_string.push_str("specta::Type, ");
+        }
 
-    config.type_attribute(".", derive_string.as_str());
+        derive_string.push_str(")]");
 
-    #[cfg(feature = "serde")]
-    {
-        config.type_attribute(".", "#[serde(rename_all = \"camelCase\")]");
-        config.type_attribute(".", "#[allow(clippy::doc_lazy_continuation)]");
+        config.type_attribute(".", derive_string.as_str());
+
+        #[cfg(feature = "serde")]
+        {
+            config.type_attribute(".", "#[serde(rename_all = \"camelCase\")]");
+            config.type_attribute(".", "#[allow(clippy::doc_lazy_continuation)]");
+        }
     }
 
     config.out_dir(gen_dir);
