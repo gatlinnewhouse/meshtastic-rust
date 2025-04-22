@@ -59,7 +59,10 @@ fn main() -> std::io::Result<()> {
             ".",
             "#[cfg_attr(feature = \"serde\", derive(serde::Serialize, serde::Deserialize))]",
         );
-        config.type_attribute(".", "#[serde(rename_all = \"camelCase\")]");
+        config.type_attribute(
+            ".",
+            "#[cfg_attr(feature = \"serde\", serde(rename_all = \"camelCase\"))]",
+        );
         config.type_attribute(".", "#[allow(clippy::doc_lazy_continuation)]");
     }
 
