@@ -15,6 +15,10 @@
 /// FIXME: Add description of multi-channel support and how primary vs secondary channels are used.
 /// FIXME: explain how apps use channels for security.
 /// explain how remote settings and remote gpio are managed as an example
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ChannelSettings {
     ///
@@ -75,6 +79,10 @@ pub struct ChannelSettings {
 }
 ///
 /// This message is specifically for modules to store per-channel configuration data.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct ModuleSettings {
     ///
@@ -89,6 +97,10 @@ pub struct ModuleSettings {
 }
 ///
 /// A pair of a channel number, mode and the (sharable) settings for that channel
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Channel {
     ///
@@ -118,6 +130,10 @@ pub mod channel {
     /// cross band routing as needed.
     /// If a device has only a single radio (the common case) only one channel can be PRIMARY at a time
     /// (but any number of SECONDARY channels can't be sent received on that common frequency)
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -165,6 +181,10 @@ pub mod channel {
         }
     }
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeviceUiConfig {
     ///
@@ -216,6 +236,10 @@ pub struct DeviceUiConfig {
     #[prost(bytes = "vec", tag = "14")]
     pub calibration_data: ::prost::alloc::vec::Vec<u8>,
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeFilter {
     ///
@@ -247,6 +271,10 @@ pub struct NodeFilter {
     #[prost(int32, tag = "7")]
     pub channel: i32,
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeHighlight {
     ///
@@ -270,6 +298,10 @@ pub struct NodeHighlight {
     #[prost(string, tag = "5")]
     pub node_name: ::prost::alloc::string::String,
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum Theme {
@@ -307,6 +339,10 @@ impl Theme {
 }
 ///
 /// Localization
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum Language {
@@ -417,6 +453,10 @@ impl Language {
         }
     }
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Config {
     ///
@@ -428,6 +468,10 @@ pub struct Config {
 pub mod config {
     ///
     /// Configuration
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct DeviceConfig {
         ///
@@ -487,6 +531,10 @@ pub mod config {
     pub mod device_config {
         ///
         /// Defines the device's role on the Mesh network
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -606,6 +654,10 @@ pub mod config {
         }
         ///
         /// Defines the device's behavior for how messages are rebroadcast
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -674,6 +726,10 @@ pub mod config {
     }
     ///
     /// Position Config
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct PositionConfig {
         ///
@@ -746,6 +802,10 @@ pub mod config {
         /// are always included (also time if GPS-synced)
         /// NOTE: the more fields are included, the larger the message will be -
         ///    leading to longer airtime and a higher risk of packet loss
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -835,6 +895,10 @@ pub mod config {
                 }
             }
         }
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -884,6 +948,10 @@ pub mod config {
     ///
     /// Power Config\
     /// See [Power Config](/docs/settings/config/power) for additional power config details.
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct PowerConfig {
         ///
@@ -937,6 +1005,10 @@ pub mod config {
     }
     ///
     /// Network Config
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct NetworkConfig {
         ///
@@ -979,6 +1051,10 @@ pub mod config {
     }
     /// Nested message and enum types in `NetworkConfig`.
     pub mod network_config {
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(Clone, Copy, PartialEq, ::prost::Message)]
         pub struct IpV4Config {
             ///
@@ -998,6 +1074,10 @@ pub mod config {
             #[prost(fixed32, tag = "4")]
             pub dns: u32,
         }
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -1040,6 +1120,10 @@ pub mod config {
         }
         ///
         /// Available flags auxiliary network protocols
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -1083,6 +1167,10 @@ pub mod config {
     }
     ///
     /// Display Config
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct DisplayConfig {
         ///
@@ -1137,6 +1225,10 @@ pub mod config {
     pub mod display_config {
         ///
         /// How the GPS coordinates are displayed on the OLED screen.
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -1206,6 +1298,10 @@ pub mod config {
         }
         ///
         /// Unit display preference
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -1248,6 +1344,10 @@ pub mod config {
         }
         ///
         /// Override OLED outo detect with this if it fails.
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -1298,6 +1398,10 @@ pub mod config {
                 }
             }
         }
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -1348,6 +1452,10 @@ pub mod config {
                 }
             }
         }
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -1421,6 +1529,10 @@ pub mod config {
     }
     ///
     /// Lora Config
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct LoRaConfig {
         ///
@@ -1529,6 +1641,10 @@ pub mod config {
     }
     /// Nested message and enum types in `LoRaConfig`.
     pub mod lo_ra_config {
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -1672,6 +1788,10 @@ pub mod config {
         ///
         /// Standard predefined channel settings
         /// Note: these mappings must match ModemPreset Choice in the device code.
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -1751,6 +1871,10 @@ pub mod config {
             }
         }
     }
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct BluetoothConfig {
         ///
@@ -1768,6 +1892,10 @@ pub mod config {
     }
     /// Nested message and enum types in `BluetoothConfig`.
     pub mod bluetooth_config {
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -1814,6 +1942,10 @@ pub mod config {
             }
         }
     }
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct SecurityConfig {
         ///
@@ -1851,10 +1983,18 @@ pub mod config {
     }
     ///
     /// Blank config request, strictly for getting the session key
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct SessionkeyConfig {}
     ///
     /// Payload Variant
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum PayloadVariant {
         #[prost(message, tag = "1")]
@@ -1879,6 +2019,10 @@ pub mod config {
         DeviceUi(super::DeviceUiConfig),
     }
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeviceConnectionStatus {
     ///
@@ -1900,6 +2044,10 @@ pub struct DeviceConnectionStatus {
 }
 ///
 /// WiFi connection status
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct WifiConnectionStatus {
     ///
@@ -1917,6 +2065,10 @@ pub struct WifiConnectionStatus {
 }
 ///
 /// Ethernet connection status
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct EthernetConnectionStatus {
     ///
@@ -1926,6 +2078,10 @@ pub struct EthernetConnectionStatus {
 }
 ///
 /// Ethernet or WiFi connection status
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct NetworkConnectionStatus {
     ///
@@ -1947,6 +2103,10 @@ pub struct NetworkConnectionStatus {
 }
 ///
 /// Bluetooth connection status
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct BluetoothConnectionStatus {
     ///
@@ -1964,6 +2124,10 @@ pub struct BluetoothConnectionStatus {
 }
 ///
 /// Serial connection status
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct SerialConnectionStatus {
     ///
@@ -1977,6 +2141,10 @@ pub struct SerialConnectionStatus {
 }
 ///
 /// Module Config
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ModuleConfig {
     ///
@@ -1991,11 +2159,16 @@ pub struct ModuleConfig {
 pub mod module_config {
     ///
     /// MQTT Client Config
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct MqttConfig {
         ///
-        /// If a meshtastic node is able to reach the internet it will normally attempt to gateway any channels that are marked as
-        /// is_uplink_enabled or is_downlink_enabled.
+        /// If a meshtastic node is able to reach the internet it will normally
+        /// attempt to gateway any channels that are marked as is_uplink_enabled or
+        /// is_downlink_enabled.
         #[prost(bool, tag = "1")]
         pub enabled: bool,
         ///
@@ -2006,20 +2179,23 @@ pub mod module_config {
         ///
         /// MQTT username to use (most useful for a custom MQTT server).
         /// If using a custom server, this will be honoured even if empty.
-        /// If using the default server, this will only be honoured if set, otherwise the device will use the default username
+        /// If using the default server, this will only be honoured if set, otherwise
+        /// the device will use the default username
         #[prost(string, tag = "3")]
         pub username: ::prost::alloc::string::String,
         ///
         /// MQTT password to use (most useful for a custom MQTT server).
         /// If using a custom server, this will be honoured even if empty.
-        /// If using the default server, this will only be honoured if set, otherwise the device will use the default password
+        /// If using the default server, this will only be honoured if set, otherwise
+        /// the device will use the default password
         #[prost(string, tag = "4")]
         pub password: ::prost::alloc::string::String,
         ///
         /// Whether to send encrypted or decrypted packets to MQTT.
         /// This parameter is only honoured if you also set server
-        /// (the default official mqtt.meshtastic.org server can handle encrypted packets)
-        /// Decrypted packets may be useful for external systems that want to consume meshtastic packets
+        /// (the default official mqtt.meshtastic.org server can handle encrypted
+        /// packets) Decrypted packets may be useful for external systems that want
+        /// to consume meshtastic packets
         #[prost(bool, tag = "5")]
         pub encryption_enabled: bool,
         ///
@@ -2032,15 +2208,18 @@ pub mod module_config {
         pub tls_enabled: bool,
         ///
         /// The root topic to use for MQTT messages. Default is "msh".
-        /// This is useful if you want to use a single MQTT server for multiple meshtastic networks and separate them via ACLs
+        /// This is useful if you want to use a single MQTT server for multiple
+        /// meshtastic networks and separate them via ACLs
         #[prost(string, tag = "8")]
         pub root: ::prost::alloc::string::String,
         ///
-        /// If true, we can use the connected phone / client to proxy messages to MQTT instead of a direct connection
+        /// If true, we can use the connected phone / client to proxy messages to
+        /// MQTT instead of a direct connection
         #[prost(bool, tag = "9")]
         pub proxy_to_client_enabled: bool,
         ///
-        /// If true, we will periodically report unencrypted information about our node to a map via MQTT
+        /// If true, we will periodically report unencrypted information about our
+        /// node to a map via MQTT
         #[prost(bool, tag = "10")]
         pub map_reporting_enabled: bool,
         ///
@@ -2049,7 +2228,12 @@ pub mod module_config {
         pub map_report_settings: ::core::option::Option<MapReportSettings>,
     }
     ///
-    /// Settings for reporting unencrypted information about our node to a map via MQTT
+    /// Settings for reporting unencrypted information about our node to a map via
+    /// MQTT
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct MapReportSettings {
         ///
@@ -2057,12 +2241,17 @@ pub mod module_config {
         #[prost(uint32, tag = "1")]
         pub publish_interval_secs: u32,
         ///
-        /// Bits of precision for the location sent (default of 32 is full precision).
+        /// Bits of precision for the location sent (default of 32 is full
+        /// precision).
         #[prost(uint32, tag = "2")]
         pub position_precision: u32,
     }
     ///
     /// RemoteHardwareModule Config
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct RemoteHardwareConfig {
         ///
@@ -2070,7 +2259,8 @@ pub mod module_config {
         #[prost(bool, tag = "1")]
         pub enabled: bool,
         ///
-        /// Whether the Module allows consumers to read / write to pins not defined in available_pins
+        /// Whether the Module allows consumers to read / write to pins not defined
+        /// in available_pins
         #[prost(bool, tag = "2")]
         pub allow_undefined_pin_access: bool,
         ///
@@ -2080,6 +2270,10 @@ pub mod module_config {
     }
     ///
     /// NeighborInfoModule Config
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct NeighborInfoConfig {
         ///
@@ -2092,13 +2286,18 @@ pub mod module_config {
         #[prost(uint32, tag = "2")]
         pub update_interval: u32,
         ///
-        /// Whether in addition to sending it to MQTT and the PhoneAPI, our NeighborInfo should be transmitted over LoRa.
-        /// Note that this is not available on a channel with default key and name.
+        /// Whether in addition to sending it to MQTT and the PhoneAPI, our
+        /// NeighborInfo should be transmitted over LoRa. Note that this is not
+        /// available on a channel with default key and name.
         #[prost(bool, tag = "3")]
         pub transmit_over_lora: bool,
     }
     ///
     /// Detection Sensor Module Config
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct DetectionSensorConfig {
         ///
@@ -2144,6 +2343,10 @@ pub mod module_config {
     }
     /// Nested message and enum types in `DetectionSensorConfig`.
     pub mod detection_sensor_config {
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -2203,6 +2406,10 @@ pub mod module_config {
     }
     ///
     /// Audio Config for codec2 voice
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct AudioConfig {
         ///
@@ -2238,6 +2445,10 @@ pub mod module_config {
     pub mod audio_config {
         ///
         /// Baudrate for codec2 voice
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -2298,6 +2509,10 @@ pub mod module_config {
     }
     ///
     /// Config for the Paxcounter Module
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct PaxcounterConfig {
         ///
@@ -2317,6 +2532,10 @@ pub mod module_config {
     }
     ///
     /// Serial Config
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct SerialConfig {
         ///
@@ -2348,8 +2567,9 @@ pub mod module_config {
         #[prost(enumeration = "serial_config::SerialMode", tag = "7")]
         pub mode: i32,
         ///
-        /// Overrides the platform's defacto Serial port instance to use with Serial module config settings
-        /// This is currently only usable in output modes like NMEA / CalTopo and may behave strangely or not work at all in other modes
+        /// Overrides the platform's defacto Serial port instance to use with Serial
+        /// module config settings This is currently only usable in output modes like
+        /// NMEA / CalTopo and may behave strangely or not work at all in other modes
         /// Existing logging over the Serial Console will still be present
         #[prost(bool, tag = "8")]
         pub override_console_serial_port: bool,
@@ -2358,6 +2578,10 @@ pub mod module_config {
     pub mod serial_config {
         ///
         /// TODO: REPLACE
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -2438,6 +2662,10 @@ pub mod module_config {
         }
         ///
         /// TODO: REPLACE
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -2494,6 +2722,10 @@ pub mod module_config {
     }
     ///
     /// External Notifications Config
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct ExternalNotificationConfig {
         ///
@@ -2563,13 +2795,18 @@ pub mod module_config {
         #[prost(uint32, tag = "14")]
         pub nag_timeout: u32,
         ///
-        /// When true, enables devices with native I2S audio output to use the RTTTL over speaker like a buzzer
-        /// T-Watch S3 and T-Deck for example have this capability
+        /// When true, enables devices with native I2S audio output to use the RTTTL
+        /// over speaker like a buzzer T-Watch S3 and T-Deck for example have this
+        /// capability
         #[prost(bool, tag = "15")]
         pub use_i2s_as_buzzer: bool,
     }
     ///
     /// Store and Forward Module Config
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct StoreForwardConfig {
         ///
@@ -2593,12 +2830,17 @@ pub mod module_config {
         #[prost(uint32, tag = "5")]
         pub history_return_window: u32,
         ///
-        /// Set to true to let this node act as a server that stores received messages and resends them upon request.
+        /// Set to true to let this node act as a server that stores received
+        /// messages and resends them upon request.
         #[prost(bool, tag = "6")]
         pub is_server: bool,
     }
     ///
     /// Preferences for the RangeTestModule
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct RangeTestConfig {
         ///
@@ -2617,6 +2859,10 @@ pub mod module_config {
     }
     ///
     /// Configuration for both device and environment metrics
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct TelemetryConfig {
         ///
@@ -2676,13 +2922,28 @@ pub mod module_config {
         /// Enable/Disable the health telemetry module on-device display
         #[prost(bool, tag = "13")]
         pub health_screen_enabled: bool,
+        ///
+        /// Preferences for the Error Telemetry Module
+        /// Enable/Disable this telemetry
+        #[prost(bool, tag = "14")]
+        pub error_measurement_enabled: bool,
+        ///
+        /// Error metric interval in seconds of how often we should try ot send our
+        /// metrics to the mesh
+        #[prost(uint32, tag = "15")]
+        pub error_update_interval: u32,
     }
     ///
     /// TODO: REPLACE
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Message)]
     pub struct CannedMessageConfig {
         ///
-        /// Enable the rotary encoder #1. This is a 'dumb' encoder sending pulses on both A and B pins while rotating.
+        /// Enable the rotary encoder #1. This is a 'dumb' encoder sending pulses on
+        /// both A and B pins while rotating.
         #[prost(bool, tag = "1")]
         pub rotary1_enabled: bool,
         ///
@@ -2710,7 +2971,8 @@ pub mod module_config {
         #[prost(enumeration = "canned_message_config::InputEventChar", tag = "7")]
         pub inputbroker_event_press: i32,
         ///
-        /// Enable the Up/Down/Select input device. Can be RAK rotary encoder or 3 buttons. Uses the a/b/press definitions from inputbroker.
+        /// Enable the Up/Down/Select input device. Can be RAK rotary encoder or 3
+        /// buttons. Uses the a/b/press definitions from inputbroker.
         #[prost(bool, tag = "8")]
         pub updown1_enabled: bool,
         ///
@@ -2719,7 +2981,8 @@ pub mod module_config {
         pub enabled: bool,
         ///
         /// Input event origin accepted by the canned message module.
-        /// Can be e.g. "rotEnc1", "upDownEnc1", "scanAndSelect", "cardkb", "serialkb", or keyword "_any"
+        /// Can be e.g. "rotEnc1", "upDownEnc1", "scanAndSelect", "cardkb",
+        /// "serialkb", or keyword "_any"
         #[prost(string, tag = "10")]
         pub allow_input_source: ::prost::alloc::string::String,
         ///
@@ -2732,6 +2995,10 @@ pub mod module_config {
     pub mod canned_message_config {
         ///
         /// TODO: REPLACE
+        #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+        #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+        #[serde(rename_all = "camelCase")]
+        #[allow(clippy::doc_lazy_continuation)]
         #[derive(
             Clone,
             Copy,
@@ -2804,8 +3071,13 @@ pub mod module_config {
         }
     }
     ///
-    /// Ambient Lighting Module - Settings for control of onboard LEDs to allow users to adjust the brightness levels and respective color levels.
+    /// Ambient Lighting Module - Settings for control of onboard LEDs to allow
+    /// users to adjust the brightness levels and respective color levels.
     /// Initially created for the RAK14001 RGB LED module.
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct AmbientLightingConfig {
         ///
@@ -2831,6 +3103,10 @@ pub mod module_config {
     }
     ///
     /// TODO: REPLACE
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum PayloadVariant {
         ///
@@ -2889,6 +3165,10 @@ pub mod module_config {
 }
 ///
 /// A GPIO pin definition for remote hardware module
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RemoteHardwarePin {
     ///
@@ -2904,6 +3184,10 @@ pub struct RemoteHardwarePin {
     #[prost(enumeration = "RemoteHardwarePinType", tag = "3")]
     pub r#type: i32,
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum RemoteHardwarePinType {
@@ -2952,6 +3236,10 @@ impl RemoteHardwarePinType {
 /// Note: This was formerly a Type enum named 'typ' with the same id #
 /// We have change to this 'portnum' based scheme for specifying app handlers for particular payloads.
 /// This change is backwards compatible by treating the legacy OPAQUE/CLEAR_TEXT values identically.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum PortNum {
@@ -3175,6 +3463,10 @@ impl PortNum {
 }
 ///
 /// Key native device metrics such as battery level
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct DeviceMetrics {
     ///
@@ -3186,7 +3478,8 @@ pub struct DeviceMetrics {
     #[prost(float, optional, tag = "2")]
     pub voltage: ::core::option::Option<f32>,
     ///
-    /// Utilization for the current channel, including well formed TX, RX and malformed RX (aka noise).
+    /// Utilization for the current channel, including well formed TX, RX and
+    /// malformed RX (aka noise).
     #[prost(float, optional, tag = "3")]
     pub channel_utilization: ::core::option::Option<f32>,
     ///
@@ -3200,6 +3493,10 @@ pub struct DeviceMetrics {
 }
 ///
 /// Weather station or other environmental metrics
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct EnvironmentMetrics {
     ///
@@ -3219,20 +3516,24 @@ pub struct EnvironmentMetrics {
     #[prost(float, optional, tag = "4")]
     pub gas_resistance: ::core::option::Option<f32>,
     ///
-    /// Voltage measured (To be depreciated in favor of PowerMetrics in Meshtastic 3.x)
+    /// Voltage measured (To be depreciated in favor of PowerMetrics in
+    /// Meshtastic 3.x)
     #[prost(float, optional, tag = "5")]
     pub voltage: ::core::option::Option<f32>,
     ///
-    /// Current measured (To be depreciated in favor of PowerMetrics in Meshtastic 3.x)
+    /// Current measured (To be depreciated in favor of PowerMetrics in
+    /// Meshtastic 3.x)
     #[prost(float, optional, tag = "6")]
     pub current: ::core::option::Option<f32>,
     ///
     /// relative scale IAQ value as measured by Bosch BME680 . value 0-500.
-    /// Belongs to Air Quality but is not particle but VOC measurement. Other VOC values can also be put in here.
+    /// Belongs to Air Quality but is not particle but VOC measurement. Other VOC
+    /// values can also be put in here.
     #[prost(uint32, optional, tag = "7")]
     pub iaq: ::core::option::Option<u32>,
     ///
-    /// RCWL9620 Doppler Radar Distance Sensor, used for water level detection. Float value in mm.
+    /// RCWL9620 Doppler Radar Distance Sensor, used for water level detection.
+    /// Float value in mm.
     #[prost(float, optional, tag = "8")]
     pub distance: ::core::option::Option<f32>,
     ///
@@ -3240,7 +3541,8 @@ pub struct EnvironmentMetrics {
     #[prost(float, optional, tag = "9")]
     pub lux: ::core::option::Option<f32>,
     ///
-    /// VEML7700 high accuracy white light(irradiance) not calibrated digital 16-bit resolution sensor.
+    /// VEML7700 high accuracy white light(irradiance) not calibrated digital
+    /// 16-bit resolution sensor.
     #[prost(float, optional, tag = "10")]
     pub white_lux: ::core::option::Option<f32>,
     ///
@@ -3284,9 +3586,17 @@ pub struct EnvironmentMetrics {
     /// Rainfall in the last 24 hours in mm
     #[prost(float, optional, tag = "20")]
     pub rainfall_24h: ::core::option::Option<f32>,
+    ///
+    /// Sensor type
+    #[prost(enumeration = "TelemetrySensorType", optional, tag = "21")]
+    pub sensor: ::core::option::Option<i32>,
 }
 ///
 /// Power Metrics (voltage / current / etc)
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct PowerMetrics {
     ///
@@ -3316,6 +3626,10 @@ pub struct PowerMetrics {
 }
 ///
 /// Air quality metrics
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct AirQualityMetrics {
     ///
@@ -3370,9 +3684,17 @@ pub struct AirQualityMetrics {
     /// 10.0um Particle Count
     #[prost(uint32, optional, tag = "13")]
     pub co2: ::core::option::Option<u32>,
+    ///
+    /// Sensor type
+    #[prost(enumeration = "TelemetrySensorType", optional, tag = "14")]
+    pub sensor: ::core::option::Option<i32>,
 }
 ///
 /// Local device mesh statistics
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct LocalStats {
     ///
@@ -3380,7 +3702,8 @@ pub struct LocalStats {
     #[prost(uint32, tag = "1")]
     pub uptime_seconds: u32,
     ///
-    /// Utilization for the current channel, including well formed TX, RX and malformed RX (aka noise).
+    /// Utilization for the current channel, including well formed TX, RX and
+    /// malformed RX (aka noise).
     #[prost(float, tag = "2")]
     pub channel_utilization: f32,
     ///
@@ -3408,22 +3731,29 @@ pub struct LocalStats {
     #[prost(uint32, tag = "8")]
     pub num_total_nodes: u32,
     ///
-    /// Number of received packets that were duplicates (due to multiple nodes relaying).
-    /// If this number is high, there are nodes in the mesh relaying packets when it's unnecessary, for example due to the ROUTER/REPEATER role.
+    /// Number of received packets that were duplicates (due to multiple nodes
+    /// relaying). If this number is high, there are nodes in the mesh relaying
+    /// packets when it's unnecessary, for example due to the ROUTER/REPEATER role.
     #[prost(uint32, tag = "9")]
     pub num_rx_dupe: u32,
     ///
-    /// Number of packets we transmitted that were a relay for others (not originating from ourselves).
+    /// Number of packets we transmitted that were a relay for others (not
+    /// originating from ourselves).
     #[prost(uint32, tag = "10")]
     pub num_tx_relay: u32,
     ///
-    /// Number of times we canceled a packet to be relayed, because someone else did it before us.
-    /// This will always be zero for ROUTERs/REPEATERs. If this number is high, some other node(s) is/are relaying faster than you.
+    /// Number of times we canceled a packet to be relayed, because someone else
+    /// did it before us. This will always be zero for ROUTERs/REPEATERs. If this
+    /// number is high, some other node(s) is/are relaying faster than you.
     #[prost(uint32, tag = "11")]
     pub num_tx_relay_canceled: u32,
 }
 ///
 /// Health telemetry metrics
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct HealthMetrics {
     ///
@@ -3440,18 +3770,87 @@ pub struct HealthMetrics {
     pub temperature: ::core::option::Option<f32>,
 }
 ///
+/// Error rate reporting from a device over the mesh
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
+pub struct ErrorMetrics {
+    ///
+    /// How often packets collided (percent) over the module's time period
+    #[prost(float, optional, tag = "1")]
+    pub collision_rate: ::core::option::Option<f32>,
+    ///
+    /// How many nodes are online out of total nodes (percent) for the modules time
+    /// period
+    #[prost(float, optional, tag = "2")]
+    pub node_reach: ::core::option::Option<f32>,
+    ///
+    /// How many nodes are there total?
+    #[prost(uint32, optional, tag = "3")]
+    pub num_nodes: ::core::option::Option<u32>,
+    ///
+    /// How many packets contain new data in all packets seen (percent) over the
+    /// module's time period
+    #[prost(float, optional, tag = "4")]
+    pub usefulness: ::core::option::Option<f32>,
+    ///
+    /// How long did a packet have to delay on average (ms) over the module's time
+    /// period
+    #[prost(uint32, optional, tag = "5")]
+    pub avg_delay: ::core::option::Option<u32>,
+    ///
+    /// Time period (seconds) for measurements which occur, also the timeout for
+    /// how often the module collects and sends data
+    #[prost(uint32, optional, tag = "6")]
+    pub period: ::core::option::Option<u32>,
+    ///
+    /// Count of no route errors
+    #[prost(uint32, optional, tag = "7")]
+    pub noroute: ::core::option::Option<u32>,
+    ///
+    /// Count of NAK errors
+    #[prost(uint32, optional, tag = "8")]
+    pub naks: ::core::option::Option<u32>,
+    ///
+    /// Count of timeout errors
+    #[prost(uint32, optional, tag = "9")]
+    pub timeouts: ::core::option::Option<u32>,
+    ///
+    /// Count of max retransmit errors
+    #[prost(uint32, optional, tag = "10")]
+    pub max_retransmit: ::core::option::Option<u32>,
+    ///
+    /// Count of no channel errors
+    #[prost(uint32, optional, tag = "11")]
+    pub no_channel: ::core::option::Option<u32>,
+    ///
+    /// Count of too large errors
+    #[prost(uint32, optional, tag = "12")]
+    pub too_large: ::core::option::Option<u32>,
+}
+///
 /// Types of Measurements the telemetry module is equipped to handle
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct Telemetry {
     ///
     /// Seconds since 1970 - or 0 for unknown/unset
     #[prost(fixed32, tag = "1")]
     pub time: u32,
-    #[prost(oneof = "telemetry::Variant", tags = "2, 3, 4, 5, 6, 7")]
+    #[prost(oneof = "telemetry::Variant", tags = "2, 3, 4, 5, 6, 7, 8")]
     pub variant: ::core::option::Option<telemetry::Variant>,
 }
 /// Nested message and enum types in `Telemetry`.
 pub mod telemetry {
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Oneof)]
     pub enum Variant {
         ///
@@ -3478,10 +3877,18 @@ pub mod telemetry {
         /// Health telemetry metrics
         #[prost(message, tag = "7")]
         HealthMetrics(super::HealthMetrics),
+        ///
+        /// Error telemetry metrics
+        #[prost(message, tag = "8")]
+        ErrorMetrics(super::ErrorMetrics),
     }
 }
 ///
 /// NAU7802 Telemetry configuration, for saving to flash
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct Nau7802Config {
     ///
@@ -3495,6 +3902,10 @@ pub struct Nau7802Config {
 }
 ///
 /// Supported I2C Sensors for telemetry in Meshtastic
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum TelemetrySensorType {
@@ -3544,7 +3955,8 @@ pub enum TelemetrySensorType {
     /// INA3221 3 Channel Voltage / Current Sensor
     Ina3221 = 14,
     ///
-    /// BMP085/BMP180 High accuracy temperature and pressure (older Version of BMP280)
+    /// BMP085/BMP180 High accuracy temperature and pressure (older Version of
+    /// BMP280)
     Bmp085 = 15,
     ///
     /// RCWL-9620 Doppler Radar Distance Sensor, used for water level detection
@@ -3571,7 +3983,8 @@ pub enum TelemetrySensorType {
     /// AHT10 Integrated temperature and humidity sensor
     Aht10 = 23,
     ///
-    /// DFRobot Lark Weather station (temperature, humidity, pressure, wind speed and direction)
+    /// DFRobot Lark Weather station (temperature, humidity, pressure, wind speed
+    /// and direction)
     DfrobotLark = 24,
     ///
     /// NAU7802 Scale Chip or compatible
@@ -3586,7 +3999,8 @@ pub enum TelemetrySensorType {
     /// MAX17048 1S lipo battery sensor (voltage, state of charge, time to go)
     Max17048 = 28,
     ///
-    /// Custom I2C sensor implementation based on <https://github.com/meshtastic/i2c-sensor>
+    /// Custom I2C sensor implementation based on
+    /// <https://github.com/meshtastic/i2c-sensor>
     CustomSensor = 29,
     ///
     /// MAX30102 Pulse Oximeter and Heart-Rate Sensor
@@ -3606,6 +4020,12 @@ pub enum TelemetrySensorType {
     ///
     /// DFRobot Gravity tipping bucket rain gauge
     DfrobotRain = 35,
+    ///
+    /// SCD30 Temperature, Humidity, and CO2
+    Scd30 = 36,
+    ///
+    /// AS7265X Spectral Triad spectroscopy sensor
+    As7265x = 37,
 }
 impl TelemetrySensorType {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -3650,6 +4070,8 @@ impl TelemetrySensorType {
             Self::Radsens => "RADSENS",
             Self::Ina226 => "INA226",
             Self::DfrobotRain => "DFROBOT_RAIN",
+            Self::Scd30 => "SCD30",
+            Self::As7265x => "AS7265X",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -3691,10 +4113,16 @@ impl TelemetrySensorType {
             "RADSENS" => Some(Self::Radsens),
             "INA226" => Some(Self::Ina226),
             "DFROBOT_RAIN" => Some(Self::DfrobotRain),
+            "SCD30" => Some(Self::Scd30),
+            "AS7265X" => Some(Self::As7265x),
             _ => None,
         }
     }
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct XModem {
     #[prost(enumeration = "x_modem::Control", tag = "1")]
@@ -3708,6 +4136,10 @@ pub struct XModem {
 }
 /// Nested message and enum types in `XModem`.
 pub mod x_modem {
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -3765,6 +4197,10 @@ pub mod x_modem {
 }
 ///
 /// A GPS Position
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct Position {
     ///
@@ -3883,6 +4319,10 @@ pub struct Position {
 pub mod position {
     ///
     /// How the location was acquired: manual, onboard GPS, external (EUD) GPS
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -3936,6 +4376,10 @@ pub mod position {
     ///
     /// How the altitude was acquired: manual, GPS int/ext, etc
     /// Default: same as location_source if present
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -4013,6 +4457,10 @@ pub mod position {
 /// A few nodenums are reserved and will never be requested:
 /// 0xff - broadcast
 /// 0 through 3 - for future use
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct User {
     ///
@@ -4063,6 +4511,10 @@ pub struct User {
 }
 ///
 /// A message used in a traceroute
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RouteDiscovery {
     ///
@@ -4084,6 +4536,10 @@ pub struct RouteDiscovery {
 }
 ///
 /// A Routing control Data packet handled by the routing module
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Routing {
     #[prost(oneof = "routing::Variant", tags = "1, 2, 3")]
@@ -4094,6 +4550,10 @@ pub mod routing {
     ///
     /// A failure in delivering a message (usually used for routing control messages, but might be provided in addition to ack.fail_id to provide
     /// details on the type of failure).
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -4206,6 +4666,10 @@ pub mod routing {
             }
         }
     }
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Variant {
         ///
@@ -4227,6 +4691,10 @@ pub mod routing {
 /// (Formerly called SubPacket)
 /// The payload portion fo a packet, this is the actual bytes that are sent
 /// inside a radio packet (because from/to are broken out by the comms library)
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Data {
     ///
@@ -4278,6 +4746,10 @@ pub struct Data {
 }
 ///
 /// Waypoint message, used to share arbitrary locations across the mesh
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Waypoint {
     ///
@@ -4316,6 +4788,10 @@ pub struct Waypoint {
 }
 ///
 /// This message will be proxied over the PhoneAPI for the client to deliver to the MQTT server
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MqttClientProxyMessage {
     ///
@@ -4337,6 +4813,10 @@ pub struct MqttClientProxyMessage {
 pub mod mqtt_client_proxy_message {
     ///
     /// The actual service envelope payload or text for mqtt pub / sub
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum PayloadVariant {
         ///
@@ -4353,6 +4833,10 @@ pub mod mqtt_client_proxy_message {
 /// A packet envelope sent/received over the mesh
 /// only payload_variant is sent in the payload portion of the LORA packet.
 /// The other fields are either not sent at all, or sent in the special 16 byte LORA header.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MeshPacket {
     ///
@@ -4489,6 +4973,10 @@ pub mod mesh_packet {
     /// So I bit the bullet and implemented a new (internal - not sent over the air)
     /// field in MeshPacket called 'priority'.
     /// And the transmission queue in the router object is now a priority queue.
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -4575,6 +5063,10 @@ pub mod mesh_packet {
     }
     ///
     /// Identify if this is a delayed packet
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -4620,6 +5112,10 @@ pub mod mesh_packet {
             }
         }
     }
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum PayloadVariant {
         ///
@@ -4649,6 +5145,10 @@ pub mod mesh_packet {
 /// level etc) SET_CONFIG (switches device to a new set of radio params and
 /// preshared key, drops all existing nodes, force our node to rejoin this new group)
 /// Full information about a node on the mesh
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeInfo {
     ///
@@ -4704,6 +5204,10 @@ pub struct NodeInfo {
 /// Unique local debugging info for this node
 /// Note: we don't include position or the user info, because that will come in the
 /// Sent to the phone in response to WantNodes.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MyNodeInfo {
     ///
@@ -4736,6 +5240,10 @@ pub struct MyNodeInfo {
 /// on the message it is assumed to be a continuation of the previously sent message.
 /// This allows the device code to use fixed maxlen 64 byte strings for messages,
 /// and then extend as needed by emitting multiple records.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LogRecord {
     ///
@@ -4759,6 +5267,10 @@ pub struct LogRecord {
 pub mod log_record {
     ///
     /// Log levels, chosen to match python logging conventions.
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -4825,6 +5337,10 @@ pub mod log_record {
         }
     }
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct QueueStatus {
     /// Last attempt to queue status, ErrorCode
@@ -4845,6 +5361,10 @@ pub struct QueueStatus {
 /// It will support READ and NOTIFY. When a new packet arrives the device will BLE notify?
 /// It will sit in that descriptor until consumed by the phone,
 /// at which point the next item in the FIFO will be populated.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FromRadio {
     ///
@@ -4864,6 +5384,10 @@ pub struct FromRadio {
 pub mod from_radio {
     ///
     /// Log levels, chosen to match python logging conventions.
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum PayloadVariant {
         ///
@@ -4945,6 +5469,10 @@ pub mod from_radio {
 /// To be used for important messages that should to be displayed to the user
 /// in the form of push notifications or validation messages when saving
 /// invalid configuration.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ClientNotification {
     ///
@@ -4966,6 +5494,10 @@ pub struct ClientNotification {
 }
 ///
 /// Individual File info for the device
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct FileInfo {
     ///
@@ -4980,6 +5512,10 @@ pub struct FileInfo {
 ///
 /// Packets/commands to the radio will be written (reliably) to the toRadio characteristic.
 /// Once the write completes the phone can assume it is handled.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ToRadio {
     ///
@@ -4991,6 +5527,10 @@ pub struct ToRadio {
 pub mod to_radio {
     ///
     /// Log levels, chosen to match python logging conventions.
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum PayloadVariant {
         ///
@@ -5028,6 +5568,10 @@ pub mod to_radio {
 }
 ///
 /// Compressed message payload
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Compressed {
     ///
@@ -5041,6 +5585,10 @@ pub struct Compressed {
 }
 ///
 /// Full info on edges for a single node
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NeighborInfo {
     ///
@@ -5062,6 +5610,10 @@ pub struct NeighborInfo {
 }
 ///
 /// A single edge in the mesh
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct Neighbor {
     ///
@@ -5085,6 +5637,10 @@ pub struct Neighbor {
 }
 ///
 /// Device metadata response
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeviceMetadata {
     ///
@@ -5140,10 +5696,18 @@ pub struct DeviceMetadata {
 ///
 /// A heartbeat message is sent to the node from the client to keep the connection alive.
 /// This is currently only needed to keep serial connections alive, but can be used by any PhoneAPI.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct Heartbeat {}
 ///
 /// RemoteHardwarePins associated with a node
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeRemoteHardwarePin {
     ///
@@ -5155,6 +5719,10 @@ pub struct NodeRemoteHardwarePin {
     #[prost(message, optional, tag = "2")]
     pub pin: ::core::option::Option<RemoteHardwarePin>,
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ChunkedPayload {
     ///
@@ -5176,6 +5744,10 @@ pub struct ChunkedPayload {
 }
 ///
 /// Wrapper message for broken repeated oneof support
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ResendChunks {
     #[prost(uint32, repeated, tag = "1")]
@@ -5183,6 +5755,10 @@ pub struct ResendChunks {
 }
 ///
 /// Responses to a ChunkedPayload request
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ChunkedPayloadResponse {
     ///
@@ -5196,6 +5772,10 @@ pub struct ChunkedPayloadResponse {
 }
 /// Nested message and enum types in `ChunkedPayloadResponse`.
 pub mod chunked_payload_response {
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum PayloadVariant {
         ///
@@ -5217,6 +5797,10 @@ pub mod chunked_payload_response {
 /// bin/build-all.sh script.
 /// Because they will be used to find firmware filenames in the android app for OTA updates.
 /// To match the old style filenames, _ is converted to -, p is converted to .
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum HardwareModel {
@@ -5710,6 +6294,10 @@ impl HardwareModel {
 }
 ///
 /// Shared constants between device and phone
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum Constants {
@@ -5748,6 +6336,10 @@ impl Constants {
 /// The device might report these fault codes on the screen.
 /// If you encounter a fault code, please post on the meshtastic.discourse.group
 /// and we'll try to help.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum CriticalErrorCode {
@@ -5847,6 +6439,10 @@ impl CriticalErrorCode {
 /// Enum for modules excluded from a device's configuration.
 /// Each value represents a ModuleConfigType that can be toggled as excluded
 /// by setting its corresponding bit in the `excluded_modules` bitmask field.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum ExcludedModules {
@@ -5941,6 +6537,10 @@ impl ExcludedModules {
 /// This message is handled by the Admin module and is responsible for all settings/channel read/write operations.
 /// This message is used to do settings operations to both remote AND local nodes.
 /// (Prior to 1.2 these operations were done via special ToRadio operations)
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct AdminMessage {
     ///
@@ -5961,6 +6561,10 @@ pub struct AdminMessage {
 pub mod admin_message {
     ///
     /// TODO: REPLACE
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -6043,6 +6647,10 @@ pub mod admin_message {
     }
     ///
     /// TODO: REPLACE
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -6140,6 +6748,10 @@ pub mod admin_message {
     }
     ///
     /// TODO: REPLACE
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum PayloadVariant {
         ///
@@ -6348,6 +6960,10 @@ pub mod admin_message {
 }
 ///
 /// Parameters for setting up Meshtastic for ameteur radio usage
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct HamParameters {
     ///
@@ -6371,6 +6987,10 @@ pub struct HamParameters {
 }
 ///
 /// Response envelope for node_remote_hardware_pins
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeRemoteHardwarePinsResponse {
     ///
@@ -6384,6 +7004,10 @@ pub struct NodeRemoteHardwarePinsResponse {
 /// any SECONDARY channels.
 /// No DISABLED channels are included.
 /// This abstraction is used only on the the 'app side' of the world (ie python, javascript and android etc) to show a group of Channels as a (long) URL
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ChannelSet {
     ///
@@ -6397,6 +7021,10 @@ pub struct ChannelSet {
 }
 ///
 /// Packets for the official ATAK Plugin
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct TakPacket {
     ///
@@ -6424,6 +7052,10 @@ pub struct TakPacket {
 pub mod tak_packet {
     ///
     /// The payload of the packet
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum PayloadVariant {
         ///
@@ -6443,6 +7075,10 @@ pub mod tak_packet {
 }
 ///
 /// ATAK GeoChat message
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct GeoChat {
     ///
@@ -6461,6 +7097,10 @@ pub struct GeoChat {
 ///
 /// ATAK Group
 /// <__group role='Team Member' name='Cyan'/>
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct Group {
     ///
@@ -6476,6 +7116,10 @@ pub struct Group {
 ///
 /// ATAK EUD Status
 /// <status battery='100' />
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct Status {
     ///
@@ -6486,6 +7130,10 @@ pub struct Status {
 ///
 /// ATAK Contact
 /// <contact endpoint='0.0.0.0:4242:tcp' phone='+12345678' callsign='FALKE'/>
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct Contact {
     ///
@@ -6502,6 +7150,10 @@ pub struct Contact {
 }
 ///
 /// Position Location Information from ATAK
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct Pli {
     ///
@@ -6527,6 +7179,10 @@ pub struct Pli {
     #[prost(uint32, tag = "5")]
     pub course: u32,
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum Team {
@@ -6624,6 +7280,10 @@ impl Team {
 }
 ///
 /// Role of the group member
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
 #[repr(i32)]
 pub enum MemberRole {
@@ -6691,6 +7351,10 @@ impl MemberRole {
 }
 ///
 /// Canned message module configuration.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct CannedMessageModuleConfig {
     ///
@@ -6698,6 +7362,10 @@ pub struct CannedMessageModuleConfig {
     #[prost(string, tag = "1")]
     pub messages: ::prost::alloc::string::String,
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LocalConfig {
     ///
@@ -6739,6 +7407,10 @@ pub struct LocalConfig {
     #[prost(message, optional, tag = "9")]
     pub security: ::core::option::Option<config::SecurityConfig>,
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct LocalModuleConfig {
     ///
@@ -6805,6 +7477,10 @@ pub struct LocalModuleConfig {
 ///
 /// This abstraction is used to contain any configuration for provisioning a node on any client.
 /// It is useful for importing and exporting configurations.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeviceProfile {
     ///
@@ -6842,6 +7518,10 @@ pub struct DeviceProfile {
 }
 ///
 /// Position with static location information only for NodeDBLite
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct PositionLite {
     ///
@@ -6870,6 +7550,10 @@ pub struct PositionLite {
     #[prost(enumeration = "position::LocSource", tag = "5")]
     pub location_source: i32,
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct UserLite {
     ///
@@ -6909,6 +7593,10 @@ pub struct UserLite {
     #[prost(bytes = "vec", tag = "7")]
     pub public_key: ::prost::alloc::vec::Vec<u8>,
 }
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct NodeInfoLite {
     ///
@@ -6970,6 +7658,10 @@ pub struct NodeInfoLite {
 /// FIXME, since we write this each time we enter deep sleep (and have infinite
 /// flash) it would be better to use some sort of append only data structure for
 /// the receive queue and use the preferences store for the other stuff
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct DeviceState {
     ///
@@ -7024,6 +7716,10 @@ pub struct DeviceState {
 }
 ///
 /// The on-disk saved channels
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ChannelFile {
     ///
@@ -7039,6 +7735,10 @@ pub struct ChannelFile {
 }
 ///
 /// This message wraps a MeshPacket with extra metadata about the sender and how it arrived.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct ServiceEnvelope {
     ///
@@ -7058,6 +7758,10 @@ pub struct ServiceEnvelope {
 }
 ///
 /// Information about a node intended to be reported unencrypted to a map using MQTT.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct MapReport {
     ///
@@ -7117,6 +7821,10 @@ pub struct MapReport {
 }
 ///
 /// TODO: REPLACE
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct Paxcount {
     ///
@@ -7134,12 +7842,20 @@ pub struct Paxcount {
 }
 /// Note: There are no 'PowerMon' messages normally in use (PowerMons are sent only as structured logs - slogs).
 /// But we wrap our State enum in this message to effectively nest a namespace (without our linter yelling at us)
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct PowerMon {}
 /// Nested message and enum types in `PowerMon`.
 pub mod power_mon {
     /// Any significant power changing event in meshtastic should be tagged with a powermon state transition.
     /// If you are making new meshtastic features feel free to add new entries at the end of this definition.
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -7224,6 +7940,10 @@ pub mod power_mon {
 }
 ///
 /// PowerStress testing support via the C++ PowerStress module
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct PowerStressMessage {
     ///
@@ -7239,6 +7959,10 @@ pub mod power_stress_message {
     /// What operation would we like the UUT to perform.
     /// note: senders should probably set want_response in their request packets, so that they can know when the state
     /// machine has started processing their request
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -7361,6 +8085,10 @@ pub mod power_stress_message {
 /// because no security yet (beyond the channel mechanism).
 /// It should be off by default and then protected based on some TBD mechanism
 /// (a special channel once multichannel support is included?)
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct HardwareMessage {
     ///
@@ -7381,6 +8109,10 @@ pub struct HardwareMessage {
 pub mod hardware_message {
     ///
     /// TODO: REPLACE
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -7446,6 +8178,10 @@ pub mod hardware_message {
 }
 ///
 /// Canned message module configuration.
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct RtttlConfig {
     ///
@@ -7455,6 +8191,10 @@ pub struct RtttlConfig {
 }
 ///
 /// TODO: REPLACE
+#[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+#[serde(rename_all = "camelCase")]
+#[allow(clippy::doc_lazy_continuation)]
 #[derive(Clone, PartialEq, ::prost::Message)]
 pub struct StoreAndForward {
     ///
@@ -7470,6 +8210,10 @@ pub struct StoreAndForward {
 pub mod store_and_forward {
     ///
     /// TODO: REPLACE
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct Statistics {
         ///
@@ -7511,6 +8255,10 @@ pub mod store_and_forward {
     }
     ///
     /// TODO: REPLACE
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct History {
         ///
@@ -7529,6 +8277,10 @@ pub mod store_and_forward {
     }
     ///
     /// TODO: REPLACE
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, Copy, PartialEq, ::prost::Message)]
     pub struct Heartbeat {
         ///
@@ -7543,6 +8295,10 @@ pub mod store_and_forward {
     ///
     /// 001 - 063 = From Router
     /// 064 - 127 = From Client
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(
         Clone,
         Copy,
@@ -7657,6 +8413,10 @@ pub mod store_and_forward {
     }
     ///
     /// TODO: REPLACE
+    #[cfg_attr(feature = "ts-gen", derive(specta::Type))]
+    #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+    #[serde(rename_all = "camelCase")]
+    #[allow(clippy::doc_lazy_continuation)]
     #[derive(Clone, PartialEq, ::prost::Oneof)]
     pub enum Variant {
         ///
