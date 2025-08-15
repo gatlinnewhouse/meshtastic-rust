@@ -1,6 +1,6 @@
-/// This example connects to a TCP port on the radio, and prints out all received packets.
-/// This can be used with a simulated radio via the Meshtastic Docker firmware image.
-/// https://meshtastic.org/docs/software/linux-native#usage-with-docker
+//! This example connects to a TCP port on the radio, and prints out all received packets.
+//! This can be used with a simulated radio via the Meshtastic Docker firmware image.
+//! https://meshtastic.org/docs/software/linux-native#usage-with-docker
 extern crate meshtastic;
 
 use std::io::{self, BufRead};
@@ -10,7 +10,8 @@ use meshtastic::api::StreamApi;
 use meshtastic::utils;
 
 /// Set up the logger to output to stdout  
-/// **Note:** the invokation of this function is commented out in main by default.
+/// **Note:** the invocation of this function is commented out in main by default.
+#[allow(dead_code)]
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
         .format(|out, message, record| {

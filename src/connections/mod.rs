@@ -20,16 +20,20 @@ pub mod wrappers;
 /// * `Local` - A packet that should be handled by the connected node.
 /// * `Broadcast` - A packet that should be broadcast to all nodes in the mesh.
 /// * `Node(u32)` - A packet that should be sent to a specific node in the mesh,
-///     specified by the passed `u32` id.
+///   specified by the passed `u32` id.
 ///
 /// # Default
 ///
 /// The default value for this enum is `Broadcast`.
 #[derive(Clone, Copy, Debug, Default)]
 pub enum PacketDestination {
+    /// A packet that should be handled by the connected node.
     Local,
+    /// A packet that should be broadcast to all nodes in the mesh.
     #[default]
     Broadcast,
+    /// A packet that should be sent to a specific node in the mesh,
+    /// specified by the passed `u32` id.
     Node(NodeId),
 }
 

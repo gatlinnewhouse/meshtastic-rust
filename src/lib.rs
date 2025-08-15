@@ -1,5 +1,9 @@
+//! A Rust library for communicating with and configuring Meshtastic devices.
+#[cfg(feature = "tokio")]
 pub(crate) mod connections;
+#[cfg(feature = "tokio")]
 pub(crate) mod errors_internal;
+#[cfg(feature = "tokio")]
 pub(crate) mod utils_internal;
 
 /// A re-export of the `prost::Message` trait, which is required to call the `encode`
@@ -26,6 +30,7 @@ pub use prost::Message;
 /// to the full set of API sender methods.
 ///
 /// To disconnect from the radio, the user can call the `disconnect` method at any time.
+#[cfg(feature = "tokio")]
 pub mod api {
     pub use crate::connections::stream_api::state;
     pub use crate::connections::stream_api::ConnectedStreamApi;
@@ -36,6 +41,7 @@ pub mod api {
 /// This module contains the global `Error` type of the library. This enum implements
 /// `std::error::Error`, `std::fmt::Display`, and `std::fmt::Debug`. This enum is used to
 /// represent all errors that can occur within the library.
+#[cfg(feature = "tokio")]
 pub mod errors {
     pub use crate::errors_internal::Error;
 }
@@ -48,18 +54,19 @@ pub mod errors {
 /// destinations for packets sent to the radio by the library:
 ///
 /// * `PacketDestination::Local` - This destination is used for packets that are intended to be processed locally
-///     by the radio and not to be forwarded to other nodes. An example of this would be local configuration packets.
+///   by the radio and not to be forwarded to other nodes. An example of this would be local configuration packets.
 /// * `PacketDestination::Broadcast` - This destination is used for packets that are intended to be broadcast to all
-///     nodes in the mesh. This is the default enum variant. Text messages are commonly broadcasted to the entire mesh.
+///   nodes in the mesh. This is the default enum variant. Text messages are commonly broadcasted to the entire mesh.
 /// * `PacketDestination::Node(u32)` - This destination is used for packets that are intended to be sent to a specific
-///     node in the mesh. The `u32` value is the node id of the node that the packet should be sent to. This is commonly
-///     used for direct text messages.
+///   node in the mesh. The `u32` value is the node id of the node that the packet should be sent to. This is commonly
+///   used for direct text messages.
 ///
 /// The `PacketRouter` trait defines the behavior of a struct that is able to route mesh packets. This trait is used
 /// to allow for the echoing of mesh packets within the `send_mesh_packet` method of the `ConnectedStreamApi` struct.
 ///
 /// The `PacketReceiver` type defines the type of the tokio channel that is used to receive decoded packets from the radio.
 /// This is intended to simplify the complexity of the underlying channel type.
+#[cfg(feature = "tokio")]
 pub mod packet {
     pub use crate::connections::handlers::CLIENT_HEARTBEAT_INTERVAL;
     pub use crate::connections::PacketDestination;
@@ -73,7 +80,12 @@ pub mod packet {
 /// definitions of the `meshtastic/protobufs` Git submodule. These structs and enums
 /// are not edited directly, but are instead generated at build time.
 pub mod protobufs {
+    #![allow(missing_docs)]
     #![allow(non_snake_case)]
+    #![allow(unknown_lints)]
+    #![allow(clippy::empty_docs)]
+    #![allow(clippy::doc_lazy_continuation)]
+    #![allow(clippy::doc_overindented_list_items)]
     include!("generated/meshtastic.rs");
 }
 
@@ -106,6 +118,7 @@ pub mod ts {
 /// These methods are intended for use by more advanced users.
 ///
 /// The `stream` module contains helper methods that are used to build connection stream instances.
+#[cfg(feature = "tokio")]
 pub mod utils {
     pub use crate::utils_internal::DEFAULT_DTR_PIN_STATE;
     pub use crate::utils_internal::DEFAULT_RTS_PIN_STATE;
@@ -126,7 +139,11 @@ pub mod utils {
     /// only need to use these two methods to connect to a radio. The `available_serial_ports` method
     /// can also be used to list all available serial ports on the host machine.
     pub mod stream {
+        #[cfg(feature = "bluetooth-le")]
+        pub use crate::connections::ble_handler::BleId;
         pub use crate::utils_internal::available_serial_ports;
+        #[cfg(feature = "bluetooth-le")]
+        pub use crate::utils_internal::build_ble_stream;
         pub use crate::utils_internal::build_serial_stream;
         pub use crate::utils_internal::build_tcp_stream;
     }
@@ -155,13 +172,12 @@ pub mod utils {
 /// The `EncodedToRadioPacketWithHeader` struct is a wrapper around a `Vec<u8>` value that
 /// represents the payload data of a packet that is intended to be sent to the radio. This
 /// struct includes the required packet header, and can be sent to the radio.
+#[cfg(feature = "tokio")]
 pub mod types {
-    pub use crate::connections::wrappers::NodeId;
-
-    pub use crate::connections::wrappers::mesh_channel::MeshChannel;
-
     pub use crate::connections::wrappers::encoded_data::EncodedMeshPacketData;
     pub use crate::connections::wrappers::encoded_data::EncodedToRadioPacket;
     pub use crate::connections::wrappers::encoded_data::EncodedToRadioPacketWithHeader;
     pub use crate::connections::wrappers::encoded_data::IncomingStreamData;
+    pub use crate::connections::wrappers::mesh_channel::MeshChannel;
+    pub use crate::connections::wrappers::NodeId;
 }

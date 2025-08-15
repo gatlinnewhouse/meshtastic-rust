@@ -2,7 +2,7 @@ use crate::errors_internal::{Error, InternalChannelError, InternalStreamError};
 use crate::protobufs;
 use crate::types::EncodedToRadioPacketWithHeader;
 use crate::utils::format_data_packet;
-use log::{debug, error, trace, warn};
+use log::{debug, error, trace};
 use prost::Message;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::spawn;
@@ -36,7 +36,7 @@ where
                 Ok(())
             }
             e = handle => {
-                error!("Read handler unexpectedly terminated: {:#?}", e);
+                debug!("Read handler unexpectedly terminated: {e:#?}");
                 e
             }
         }
@@ -58,23 +58,23 @@ where
         let mut buffer = [0u8; 1024];
         match read_stream.read(&mut buffer).await {
             Ok(0) => {
-                warn!("read_stream has reached EOF");
+                trace!("read_stream has reached EOF");
                 return Err(Error::InternalStreamError(InternalStreamError::Eof));
             }
             Ok(n) => {
-                trace!("Read {} bytes from stream", n);
+                trace!("Read {n} bytes from stream");
                 let data: IncomingStreamData = buffer[..n].to_vec().into();
-                trace!("Read data: {:?}", data);
+                trace!("Read data: {data:?}");
 
-                if let Err(e) = read_output_tx.send(data) {
-                    error!("Failed to send data through channel");
-                    return Err(Error::InternalChannelError(e.into()));
-                }
+                read_output_tx
+                    .send(data)
+                    .inspect_err(|_| error!("Failed to send data through channel"))
+                    .map_err(InternalChannelError::from)?
             }
 
             // TODO check if port has fatally errored, and if so, tell UI
             Err(e) => {
-                error!("Error reading from stream: {:?}", e);
+                error!("Error reading from stream: {e:?}");
                 return Err(Error::InternalStreamError(
                     InternalStreamError::StreamReadError {
                         source: Box::new(e),
@@ -106,10 +106,7 @@ where
                 Ok(())
             }
             write_result = handle => {
-                if let Err(e) = &write_result {
-                    error!("Write handler unexpectedly terminated {e:?}");
-                }
-                write_result
+                write_result.inspect_err(|e| error!("Write handler unexpectedly terminated {e:?}"))
             }
         }
     })
@@ -126,16 +123,13 @@ where
     debug!("Started write handler");
 
     while let Some(message) = write_input_rx.recv().await {
-        trace!("Writing packet data: {:?}", message);
+        trace!("Writing packet data: {message:?}");
 
-        if let Err(e) = write_stream.write(message.data()).await {
-            error!("Error writing to stream: {:?}", e);
-            return Err(Error::InternalStreamError(
-                InternalStreamError::StreamWriteError {
-                    source: Box::new(e),
-                },
-            ));
-        }
+        write_stream
+            .write(message.data())
+            .await
+            .inspect_err(|e| error!("Error writing to stream: {e:?}"))
+            .map_err(InternalStreamError::write_error)?;
     }
 
     debug!("Write handler finished");
@@ -192,10 +186,9 @@ pub fn spawn_heartbeat_handler(
                 Ok(())
             }
             write_result = handle => {
-                if let Err(e) = &write_result {
-                    error!("Heartbeat handler unexpectedly terminated {e:?}");
-                }
-                write_result
+                write_result.inspect_err(|e|
+                    error!("Heartbeat handler unexpectedly terminated {e:?}")
+                )
             }
         }
     })
@@ -220,7 +213,7 @@ async fn start_heartbeat_handler(
         match heartbeat_packet.encode(&mut buffer) {
             Ok(_) => (),
             Err(e) => {
-                error!("Error encoding heartbeat packet: {:?}", e);
+                error!("Error encoding heartbeat packet: {e:?}");
                 continue;
             }
         };
@@ -228,21 +221,17 @@ async fn start_heartbeat_handler(
         let packet_with_header = match format_data_packet(buffer.into()) {
             Ok(p) => p,
             Err(e) => {
-                error!("Error formatting heartbeat packet: {:?}", e);
+                error!("Error formatting heartbeat packet: {e:?}");
                 continue;
             }
         };
 
         trace!("Sending heartbeat packet");
 
-        if let Err(e) = write_input_tx.send(packet_with_header) {
-            error!("Error writing heartbeat packet to stream: {:?}", e);
-            return Err(Error::InternalStreamError(
-                InternalStreamError::StreamWriteError {
-                    source: Box::new(e),
-                },
-            ));
-        }
+        write_input_tx
+            .send(packet_with_header)
+            .inspect_err(|e| error!("Error writing heartbeat packet to stream: {e:?}"))
+            .map_err(InternalStreamError::write_error)?;
 
         log::info!("Sent heartbeat packet");
     }

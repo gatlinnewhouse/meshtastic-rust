@@ -1,13 +1,20 @@
 use btleplug::api::{
-    Central, CentralEvent, Characteristic, Manager as _, Peripheral as _, ScanFilter,
+    BDAddr, Central, CentralEvent, Characteristic, Manager as _, Peripheral as _, ScanFilter,
     ValueNotification, WriteType,
 };
 use btleplug::platform::{Adapter, Manager, Peripheral};
+use futures::stream::StreamExt;
 use futures_util::stream::BoxStream;
 use log::error;
+use std::fmt::Display;
+use std::future;
+use std::str::FromStr;
+use std::time::Duration;
 use uuid::Uuid;
 
 use crate::errors_internal::{BleConnectionError, Error, InternalStreamError};
+use crate::types::EncodedToRadioPacketWithHeader;
+use crate::utils::format_data_packet;
 
 const MSH_SERVICE: Uuid = Uuid::from_u128(0x6ba1b218_15a8_461f_9fa8_5dcae273eafd);
 const FROMRADIO: Uuid = Uuid::from_u128(0x2c55e69e_4993_11ed_b878_0242ac120002);
@@ -22,13 +29,63 @@ pub struct BleHandler {
     fromnum_char: Characteristic,
 }
 
+#[derive(PartialEq)]
+pub enum AdapterEvent {
+    Disconnected,
+}
+
+pub enum RadioMessage {
+    Eof,
+    Packet(EncodedToRadioPacketWithHeader),
+}
+
+/// Bluetooth Low Energy ID, used to filter available devices.
+pub enum BleId {
+    /// ID constructed from a name
+    Name(String),
+    /// ID represented from a MAC address
+    MacAddress(BDAddr),
+}
+
+impl BleId {
+    /// Constructs BLE ID from the name used by Meshtastic.
+    ///
+    /// The first parts of the name is the Meshtastic short name and it ends with `_abcd`, where
+    /// `abcd` are the last 4 hex-digits of the MAC address.
+    ///
+    /// A device with a short name "ZG1" and a MAC address ending with `2ef4` has name "ZG1_2ef4".
+    pub fn from_name(name: &str) -> BleId {
+        BleId::Name(name.to_owned())
+    }
+
+    /// Constructs a BLE ID from a MAC address.
+    ///
+    /// Both `aa:bb:cc:dd:ee:ff` and `aabbccddeeff` formats are acceptable.
+    pub fn from_mac_address(mac: &str) -> Result<BleId, Error> {
+        let bdaddr = BDAddr::from_str(mac).map_err(|e| Error::InvalidParameter {
+            source: Box::new(e),
+            description: "Error while parsing a MAC address".to_owned(),
+        })?;
+        Ok(BleId::MacAddress(bdaddr))
+    }
+}
+
+impl Display for BleId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            BleId::Name(name) => write!(f, "name={name}"),
+            BleId::MacAddress(mac) => write!(f, "MAC={mac}"),
+        }
+    }
+}
+
 #[allow(dead_code)]
 impl BleHandler {
-    pub async fn new(name: String) -> Result<Self, Error> {
-        let (radio, adapter) = Self::find_ble_radio(&name).await?;
+    pub async fn new(ble_id: &BleId, scan_duration: Duration) -> Result<Self, Error> {
+        let (radio, adapter) = Self::find_ble_radio(ble_id, scan_duration).await?;
         radio.connect().await.map_err(|e| Error::StreamBuildError {
             source: Box::new(e),
-            description: format!("Failed to connect to the device {name}"),
+            description: format!("Failed to connect to the device {ble_id}"),
         })?;
         let [toradio_char, fromnum_char, fromradio_char] =
             Self::find_characteristics(&radio).await?;
@@ -41,12 +98,16 @@ impl BleHandler {
         })
     }
 
-    async fn scan_peripherals(adapter: &Adapter) -> Result<Vec<Peripheral>, btleplug::Error> {
+    async fn scan_peripherals(
+        adapter: &Adapter,
+        scan_duration: Duration,
+    ) -> Result<Vec<Peripheral>, btleplug::Error> {
         adapter
             .start_scan(ScanFilter {
                 services: vec![MSH_SERVICE],
             })
             .await?;
+        tokio::time::sleep(scan_duration).await;
         adapter.peripherals().await
     }
 
@@ -54,7 +115,10 @@ impl BleHandler {
     /// It searches for the 'MSH_SERVICE' running on the device.
     ///
     /// It also returns the associated adapter that can reach this radio.
-    async fn find_ble_radio(name: &str) -> Result<(Peripheral, Adapter), Error> {
+    async fn find_ble_radio(
+        ble_id: &BleId,
+        scan_duration: Duration,
+    ) -> Result<(Peripheral, Adapter), Error> {
         //TODO: support searching both by a name and by a MAC address
         let scan_error_fn = |e: btleplug::Error| Error::StreamBuildError {
             source: Box::new(e),
@@ -64,7 +128,7 @@ impl BleHandler {
         let adapters = manager.adapters().await.map_err(scan_error_fn)?;
 
         for adapter in &adapters {
-            let peripherals = Self::scan_peripherals(&adapter).await;
+            let peripherals = Self::scan_peripherals(adapter, scan_duration).await;
             match peripherals {
                 Err(e) => {
                     error!("Error while scanning for meshtastic peripherals: {e:?}");
@@ -72,10 +136,15 @@ impl BleHandler {
                     continue;
                 }
                 Ok(peripherals) => {
-                    let needle = Some(name.to_owned());
                     for peripheral in peripherals {
                         if let Ok(Some(peripheral_properties)) = peripheral.properties().await {
-                            if peripheral_properties.local_name == needle {
+                            let matches = match ble_id {
+                                BleId::Name(name) => {
+                                    peripheral_properties.local_name.as_ref() == Some(name)
+                                }
+                                BleId::MacAddress(mac) => peripheral_properties.address == *mac,
+                            };
+                            if matches {
                                 return Ok((peripheral, adapter.clone()));
                             }
                         }
@@ -86,8 +155,8 @@ impl BleHandler {
         Err(Error::StreamBuildError {
             source: Box::new(BleConnectionError()),
             description: format!(
-                "Failed to find {name}, or meshtastic is not running on the device"
-            ) + ", or it's already connected.",
+                "Failed to find {ble_id}, or meshtastic is not running on the device"
+            ) + ", or it's already connected to a client.",
         })
     }
 
@@ -137,20 +206,27 @@ impl BleHandler {
         })
     }
 
-    pub async fn read_from_radio(&self) -> Result<Vec<u8>, Error> {
+    pub async fn read_from_radio(&self) -> Result<RadioMessage, Error> {
         self.radio
             .read(&self.fromradio_char)
             .await
             .map_err(Self::ble_read_error_fn)
+            .and_then(|data| {
+                if data.is_empty() {
+                    Ok(RadioMessage::Eof)
+                } else {
+                    format_data_packet(data.into()).map(RadioMessage::Packet)
+                }
+            })
     }
 
     fn parse_u32(data: Vec<u8>) -> Result<u32, Error> {
-        let parsed_value = u32::from_le_bytes(data.as_slice().try_into().map_err(|e| {
+        let data = data.as_slice().try_into().map_err(|e| {
             Error::InternalStreamError(InternalStreamError::StreamReadError {
                 source: Box::new(e),
             })
-        })?);
-        Ok(parsed_value)
+        })?;
+        Ok(u32::from_le_bytes(data))
     }
 
     pub async fn read_fromnum(&self) -> Result<u32, Error> {
@@ -159,44 +235,51 @@ impl BleHandler {
             .read(&self.fromnum_char)
             .await
             .map_err(Self::ble_read_error_fn)?;
+        if data.is_empty() {
+            return Ok(0);
+        }
         Self::parse_u32(data)
     }
 
-    pub async fn notifications(&self) -> Result<BoxStream<ValueNotification>, Error> {
+    pub async fn notifications(&self) -> Result<BoxStream<u32>, Error> {
         self.radio
             .subscribe(&self.fromnum_char)
             .await
             .map_err(Self::ble_read_error_fn)?;
-        self.radio
+        let notification_stream = self
+            .radio
             .notifications()
             .await
-            .map_err(Self::ble_read_error_fn)
+            .map_err(Self::ble_read_error_fn)?;
+
+        Ok(Box::pin(notification_stream.filter_map(
+            |notification| match notification {
+                ValueNotification {
+                    uuid: FROMNUM,
+                    value,
+                } => future::ready(Self::parse_u32(value).ok()),
+                _ => future::ready(None),
+            },
+        )))
     }
 
-    pub async fn filter_map(notification: ValueNotification) -> Option<u32> {
-        match notification {
-            ValueNotification {
-                uuid: FROMNUM,
-                value,
-            } => Some(Self::parse_u32(value).unwrap()),
-            _ => None,
-        }
-    }
-
-    pub async fn adapter_events(&self) -> Result<BoxStream<CentralEvent>, Error> {
-        self.adapter
+    pub async fn adapter_events(&self) -> Result<BoxStream<AdapterEvent>, Error> {
+        let stream = self
+            .adapter
             .events()
             .await
             .map_err(|e| Error::StreamBuildError {
                 source: Box::new(e),
-                description: format!("Failed to listen to device events"),
-            })
-    }
-
-    pub fn is_disconnected_event(&self, event: Option<CentralEvent>) -> bool {
-        if let Some(CentralEvent::DeviceDisconnected(peripheral_id)) = event {
-            return self.radio.id() == peripheral_id;
-        }
-        return false;
+                description: "Failed to listen to device events".to_owned(),
+            })?;
+        let id = self.radio.id();
+        Ok(Box::pin(stream.filter_map(move |event| {
+            if let CentralEvent::DeviceDisconnected(peripheral_id) = event {
+                if id == peripheral_id {
+                    return future::ready(Some(AdapterEvent::Disconnected));
+                }
+            }
+            future::ready(None)
+        })))
     }
 }
