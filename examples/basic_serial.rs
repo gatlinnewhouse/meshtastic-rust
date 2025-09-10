@@ -1,6 +1,6 @@
-/// This example connects to a radio via serial, and prints out all received packets.
-/// This example requires a powered and flashed Meshtastic radio.
-/// https://meshtastic.org/docs/supported-hardware
+//! This example connects to a radio via serial, and prints out all received packets.
+//! This example requires a powered and flashed Meshtastic radio.
+//! https://meshtastic.org/docs/supported-hardware
 extern crate meshtastic;
 
 use std::io::{self, BufRead};
@@ -10,7 +10,8 @@ use meshtastic::api::StreamApi;
 use meshtastic::utils;
 
 /// Set up the logger to output to stdout  
-/// **Note:** the invokation of this function is commented out in main by default.
+/// **Note:** the invocation of this function is commented out in main by default.
+#[allow(dead_code)]
 fn setup_logger() -> Result<(), fern::InitError> {
     fern::Dispatch::new()
         .format(|out, message, record| {

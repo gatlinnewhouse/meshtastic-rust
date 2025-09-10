@@ -61,7 +61,7 @@ pub struct StreamApi;
 /// on the `StreamApi` struct. Once the user has called `StreamApi::connect`, the user is then expected
 /// to call the `configure` method on the resulting `ConnectedStreamApi` instance. The "send" methods
 /// will not be available to the user until `configure` has been called, as the device will not
-/// repond to them.
+/// respond to them.
 ///
 /// This struct can either be in the `Connected`, or `Configured` state. The `Connected` state is
 /// used to indicate that the user has connected to a radio, but that the device connection has not
@@ -84,11 +84,23 @@ pub struct ConnectedStreamApi<State = state::Configured> {
 /// A struct that provides a reference to an underlying stream for reading/writing data and
 /// potentially an accompanying join handle that processes data on the other side of the stream.
 pub struct StreamHandle<T: AsyncReadExt + AsyncWriteExt + Send> {
+    /// The underlying stream.
     pub stream: T,
+    /// An optional join handle that processes data on the other side of the stream.
     pub join_handle: Option<JoinHandle<Result<(), Error>>>,
 }
 
 impl<T: AsyncReadExt + AsyncWriteExt + Send> StreamHandle<T> {
+    /// A method to create a new `StreamHandle` from a provided stream. The resulting [`StreamHandle`]
+    /// will have no join handle.
+    ///
+    /// # Arguments
+    ///
+    /// * `stream` - A generic stream that will be used as the underlying stream for the `StreamHandle`.
+    ///
+    /// # Returns
+    ///
+    /// Returns a new `StreamHandle` instance with the provided stream as the underlying stream.
     pub fn from_stream(stream: T) -> Self {
         Self {
             stream,
@@ -112,11 +124,11 @@ impl<State> ConnectedStreamApi<State> {
     /// * `destination` - A `PacketDestination` enum that specifies the destination of the packet.
     /// * `channel` - A `u32` that specifies the message channel to send the packet on, in the range [0..7).
     /// * `want_ack` - A `bool` that specifies whether or not the radio should wait for acknowledgement
-    ///     from other nodes on the mesh.
+    ///   from other nodes on the mesh.
     /// * `want_response` - A `bool` that specifies whether or not the radio should wait for a response
-    ///     from other nodes on the mesh.
+    ///   from other nodes on the mesh.
     /// * `echo_response` - A `bool` that specifies whether or not the radio should echo the packet back
-    ///     to the client.
+    ///   to the client.
     /// * `reply_id` - An optional `u32` that specifies the ID of the packet to reply to.
     /// * `emoji` - An optional `u32` that specifies the unicode emoji data to send with the packet.
     ///
@@ -179,10 +191,6 @@ impl<State> ConnectedStreamApi<State> {
             PacketDestination::Node(id) => id,
         };
 
-        // NOTE(canardleteer): We don't warn on deprecation here, because it
-        //                     remains valid for many active nodes, and
-        //                     remains a part of the generated interface.
-        #[allow(deprecated)]
         let mut mesh_packet = protobufs::MeshPacket {
             payload_variant: Some(protobufs::mesh_packet::PayloadVariant::Decoded(
                 protobufs::Data {
@@ -191,30 +199,15 @@ impl<State> ConnectedStreamApi<State> {
                     want_response,
                     reply_id: reply_id.unwrap_or(0),
                     emoji: emoji.unwrap_or(0),
-                    dest: 0,       // TODO change this
-                    request_id: 0, // TODO change this
-                    source: 0,     // TODO change this
-                    bitfield: None,
+                    ..Default::default()
                 },
             )),
-            rx_time: 0,   // * not transmitted
-            rx_snr: 0.0,  // * not transmitted
-            hop_limit: 0, // * not transmitted
-            priority: 0,  // * not transmitted
-            rx_rssi: 0,   // * not transmitted
-            delayed: 0,   // * not transmitted [deprecated since protobufs v2.2.19]
-            hop_start: 0, // * set on device
-            via_mqtt: false,
-            next_hop: 0,          // unsure
-            pki_encrypted: false, // unsure
-            public_key: vec![],   // unsure
-            relay_node: 0,        // unsure
-            tx_after: 0,          // unsure
             from: own_node_id.id(),
             to: packet_destination.id(),
             id: generate_rand_id(),
             want_ack,
             channel: channel.channel(),
+            ..Default::default()
         };
 
         if echo_response {
@@ -503,7 +496,7 @@ impl ConnectedStreamApi<state::Connected> {
     /// # Arguments
     ///
     /// * `config_id` - A randomly generated configuration ID that will be used
-    ///     to check that the configuration process has completed.
+    ///   to check that the configuration process has completed.
     ///
     /// # Returns
     ///
@@ -625,11 +618,11 @@ impl ConnectedStreamApi<state::Configured> {
     /// # Arguments
     ///
     /// * `packet_router` - A generic packet router field that implements the `PacketRouter` trait.
-    ///     This router is used in the event a packet needs to be echoed.
+    ///   This router is used in the event a packet needs to be echoed.
     /// * `text` - A `String` containing the text to send.
     /// * `destination` - A `PacketDestination` enum that specifies the destination of the packet.
     /// * `want_ack` - A `bool` that specifies whether or not the radio should wait for acknowledgement
-    ///     from other nodes on the mesh.
+    ///   from other nodes on the mesh.
     /// * `channel` - A `u32` that specifies the message channel to send the packet on [0..7).
     ///
     /// # Returns
@@ -697,11 +690,11 @@ impl ConnectedStreamApi<state::Configured> {
     /// # Arguments
     ///
     /// * `packet_router` - A generic packet router field that implements the `PacketRouter` trait.
-    ///     This router is used in the event a packet needs to be echoed.
+    ///   This router is used in the event a packet needs to be echoed.
     /// * `waypoint` - An instance of the `Waypoint` struct to send.
     /// * `destination` - A `PacketDestination` enum that specifies the destination of the packet.
     /// * `want_ack` - A `bool` that specifies whether or not the radio should wait for acknowledgement
-    ///     from other nodes on the mesh.
+    ///   from other nodes on the mesh.
     /// * `channel` - A `u32` that specifies the message channel to send the packet on [0..7).
     ///
     /// # Returns
@@ -768,7 +761,7 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
-    /// Sends the specified `Positon` over the mesh.
+    /// Sends the specified `Position` over the mesh.
     ///
     /// Sending a `Position` packet will update the internal position of the connected radio
     /// in addition to sending the packet over the mesh.
@@ -778,11 +771,11 @@ impl ConnectedStreamApi<state::Configured> {
     /// # Arguments
     ///
     /// * `packet_router` - A generic packet router field that implements the `PacketRouter` trait.
-    ///     This router is used in the event a packet needs to be echoed.
+    ///   This router is used in the event a packet needs to be echoed.
     /// * `position` - An instance of the `Position` struct to send.
     /// * `destination` - A `PacketDestination` enum that specifies the destination of the packet.
     /// * `want_ack` - A `bool` that specifies whether or not the radio should wait for acknowledgement
-    ///     from other nodes on the mesh.
+    ///   from other nodes on the mesh.
     /// * `channel` - A `u32` that specifies the message channel to send the packet on [0..7).
     ///
     /// # Returns
@@ -855,7 +848,7 @@ impl ConnectedStreamApi<state::Configured> {
     /// # Arguments
     ///
     /// * `packet_router` - A generic packet router field that implements the `PacketRouter` trait.
-    ///     This router is used in the event a packet needs to be echoed.
+    ///   This router is used in the event a packet needs to be echoed.
     /// * `config` - An instance of the `Config` struct to update the radio with.
     ///
     /// # Returns
@@ -895,7 +888,7 @@ impl ConnectedStreamApi<state::Configured> {
     ) -> Result<(), Error> {
         let config_packet = protobufs::AdminMessage {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetConfig(config)),
-            session_passkey: vec![], // unsure
+            session_passkey: Vec::new(),
         };
 
         let byte_data: EncodedMeshPacketData = config_packet.encode_to_vec().into();
@@ -930,7 +923,7 @@ impl ConnectedStreamApi<state::Configured> {
     /// # Arguments
     ///
     /// * `packet_router` - A generic packet router field that implements the `PacketRouter` trait.
-    ///     This router is used in the event a packet needs to be echoed.
+    ///   This router is used in the event a packet needs to be echoed.
     /// * `module_config` - An instance of the `ModuleConfig` struct to update the radio with.
     ///
     /// # Returns
@@ -972,7 +965,7 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetModuleConfig(
                 module_config,
             )),
-            session_passkey: vec![], // unsure
+            session_passkey: Vec::new(),
         };
 
         let byte_data: EncodedMeshPacketData = module_config_packet.encode_to_vec().into();
@@ -1005,7 +998,7 @@ impl ConnectedStreamApi<state::Configured> {
     /// # Arguments
     ///
     /// * `packet_router` - A generic packet router field that implements the `PacketRouter` trait.
-    ///     This router is used in the event a packet needs to be echoed.
+    ///   This router is used in the event a packet needs to be echoed.
     /// * `channel_config` - An instance of the `Channel` struct to update the radio with.
     ///
     /// # Returns
@@ -1049,7 +1042,7 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetChannel(
                 channel_config,
             )),
-            session_passkey: vec![], // unsure
+            session_passkey: Vec::new(),
         };
 
         let byte_data: EncodedMeshPacketData = channel_packet.encode_to_vec().into();
@@ -1077,7 +1070,7 @@ impl ConnectedStreamApi<state::Configured> {
     /// # Arguments
     ///
     /// * `packet_router` - A generic packet router field that implements the `PacketRouter` trait.
-    ///     This router is used in the event a packet needs to be echoed.
+    ///   This router is used in the event a packet needs to be echoed.
     /// * `user` - An instance of the `User` struct to update the radio user with.
     ///
     /// # Returns
@@ -1117,7 +1110,7 @@ impl ConnectedStreamApi<state::Configured> {
     ) -> Result<(), Error> {
         let user_packet = protobufs::AdminMessage {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetOwner(user)),
-            session_passkey: vec![], // unsure
+            session_passkey: Vec::new(),
         };
 
         let byte_data: EncodedMeshPacketData = user_packet.encode_to_vec().into();
@@ -1201,7 +1194,7 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::BeginEditSettings(
                 true,
             )),
-            session_passkey: vec![], // unsure
+            session_passkey: Vec::new(),
         };
 
         let mut packet_buf = vec![];
@@ -1226,7 +1219,7 @@ impl ConnectedStreamApi<state::Configured> {
     /// This is a limitation of the current firmware.
     ///
     /// **Note:** It is the responsibility of the user of this library to avoid calling
-    /// this method multiple times, and to avoid calling this method without first caling the
+    /// this method multiple times, and to avoid calling this method without first calling the
     /// `start_config_transaction` method. This will result in undefined radio behavior.
     ///
     /// # Arguments
@@ -1259,7 +1252,7 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(
                 protobufs::admin_message::PayloadVariant::CommitEditSettings(true),
             ),
-            session_passkey: vec![], // unsure
+            session_passkey: Vec::new(),
         };
 
         let mut packet_buf = vec![];
@@ -1277,7 +1270,7 @@ impl ConnectedStreamApi<state::Configured> {
     /// # Arguments
     ///
     /// * `packet_router` - A generic packet router field that implements the `PacketRouter` trait.
-    ///     This router is used in the event a packet needs to be echoed.
+    ///   This router is used in the event a packet needs to be echoed.
     /// * `local_config` - An instance of the `LocalConfig` struct to update the radio with.
     ///
     /// # Returns
@@ -1392,7 +1385,7 @@ impl ConnectedStreamApi<state::Configured> {
     /// # Arguments
     ///
     /// * `packet_router` - A generic packet router field that implements the `PacketRouter` trait.
-    ///     This router is used in the event a packet needs to be echoed.
+    ///   This router is used in the event a packet needs to be echoed.
     /// * `local_module_config` - An instance of the `LocalModuleConfig` struct to update the radio with.
     ///
     /// # Returns
@@ -1535,7 +1528,7 @@ impl ConnectedStreamApi<state::Configured> {
     /// # Arguments
     ///
     /// * `packet_router` - A generic packet router field that implements the `PacketRouter` trait.
-    ///     This router is used in the event a packet needs to be echoed.
+    ///   This router is used in the event a packet needs to be echoed.
     /// * `channel_config` - A list of updates to make to radio channels.
     ///
     /// # Returns
