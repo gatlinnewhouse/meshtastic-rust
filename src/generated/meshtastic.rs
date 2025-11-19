@@ -3703,7 +3703,7 @@ pub struct HealthMetrics {
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
 #[allow(clippy::doc_lazy_continuation)]
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct ErrorMetrics {
     ///
     /// How often packets collided (percent) over the module's time period
@@ -3757,18 +3757,13 @@ pub struct ErrorMetrics {
     /// Count of too large errors
     #[prost(uint32, optional, tag = "12")]
     pub too_large: ::core::option::Option<u32>,
-    ///
-    /// An entry for each seen node in the mesh reporting:
-    /// last heard seconds, number of packets rx'd, last rx rssi, and battery_level
-    #[prost(message, repeated, tag = "13")]
-    pub node_stats: ::prost::alloc::vec::Vec<NodeStats>,
 }
 ///
 /// Types of Measurements the telemetry module is equipped to handle
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
 #[allow(clippy::doc_lazy_continuation)]
-#[derive(Clone, PartialEq, ::prost::Message)]
+#[derive(Clone, Copy, PartialEq, ::prost::Message)]
 pub struct Telemetry {
     ///
     /// Seconds since 1970 - or 0 for unknown/unset
@@ -3782,7 +3777,7 @@ pub mod telemetry {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, PartialEq, ::prost::Oneof)]
+    #[derive(Clone, Copy, PartialEq, ::prost::Oneof)]
     pub enum Variant {
         ///
         /// Key native device metrics such as battery level
@@ -3813,38 +3808,6 @@ pub mod telemetry {
         #[prost(message, tag = "8")]
         ErrorMetrics(super::ErrorMetrics),
     }
-}
-///
-/// Stats about nodes to send over mesh
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-#[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
-#[allow(clippy::doc_lazy_continuation)]
-#[derive(Clone, Copy, PartialEq, ::prost::Message)]
-pub struct NodeStats {
-    ///
-    /// The node id we are reporting on
-    #[prost(fixed32, optional, tag = "1")]
-    pub node_id: ::core::option::Option<u32>,
-    ///
-    /// The last time we heard from the node (in seconds)
-    #[prost(uint32, optional, tag = "2")]
-    pub last_heard: ::core::option::Option<u32>,
-    ///
-    /// How many times have we heard from them (packet count)?
-    #[prost(uint32, optional, tag = "3")]
-    pub num_packets_rx: ::core::option::Option<u32>,
-    ///
-    /// 0-100 (>100 means powered)
-    #[prost(uint32, optional, tag = "4")]
-    pub battery_level: ::core::option::Option<u32>,
-    ///
-    /// Last rssi from a the given node
-    #[prost(int32, optional, tag = "5")]
-    pub rx_rssi: ::core::option::Option<i32>,
-    ///
-    /// Last snr from a the given node
-    #[prost(float, optional, tag = "6")]
-    pub snr: ::core::option::Option<f32>,
 }
 ///
 /// NAU7802 Telemetry configuration, for saving to flash
@@ -5555,7 +5518,6 @@ pub struct Neighbor {
     pub snr: f32,
     ///
     /// Reception time (in secs since 1970) of last message that was last sent by this ID.
-    /// Note: this is for local storage only and will not be sent out over the mesh.
     #[prost(fixed32, tag = "3")]
     pub last_rx_time: u32,
     ///
@@ -5563,6 +5525,18 @@ pub struct Neighbor {
     /// Note: this is for local storage only and will not be sent out over the mesh.
     #[prost(uint32, tag = "4")]
     pub node_broadcast_interval_secs: u32,
+    ///
+    /// Number of packets heard from this node
+    #[prost(uint32, tag = "5")]
+    pub num_packets_rx: u32,
+    ///
+    /// Last RSSI from a given node
+    #[prost(int32, tag = "6")]
+    pub rssi: i32,
+    ///
+    /// 0-100 (>100 means powered)
+    #[prost(uint32, tag = "7")]
+    pub battery_level: u32,
 }
 ///
 /// Device metadata response
