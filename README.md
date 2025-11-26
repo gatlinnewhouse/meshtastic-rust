@@ -3,7 +3,7 @@
 ## Overview
 
 Meshtastic.rs is a crate that allows you to interact with Meshtastic devices in Rust. This crate is designed
-to be used on a desktop environment, and currently supports connecting to radios via USB serial and TCP.
+to be used on a desktop environment and currently supports connecting to radios via USB serial and TCP.
 
 This crate is designed to be used within the tokio asynchronous runtime.
 
@@ -39,14 +39,15 @@ these examples using the following commands:
 ```bash
 cargo run --example basic_tcp
 cargo run --example basic_serial
+cargo run --features="bluetooth-le tokio" --example basic_ble
 ```
 
 ### TCP Example
 
-This example requires a Meshtastic with an exposed IP port, or a simulated radio via the Meshtastic Docker instance ([see here](https://meshtastic.org/docs/software/linux-native#usage-with-docker)).
+This example requires a Meshtastic with an exposed IP port or a simulated radio via the Meshtastic Docker instance ([see here](https://meshtastic.org/docs/software/linux-native#usage-with-docker)).
 
 ```rust
-/// This example connects to a TCP port on the radio, and prints out all received packets.
+/// This example connects to a TCP port on the radio and prints out all received packets.
 /// This can be used with a simulated radio via the Meshtastic Docker firmware image.
 /// https://meshtastic.org/docs/software/linux-native#usage-with-docker
 
@@ -75,15 +76,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config_id = utils::generate_rand_id();
     let stream_api = stream_api.configure(config_id).await?;
 
-    // This loop can be broken with ctrl+c, or by unpowering the radio.
+    // This loop can be broken with ctrl+c or by unpowering the radio.
     while let Some(decoded) = decoded_listener.recv().await {
         println!("Received: {:?}", decoded);
     }
 
     // Note that in this specific example, this will only be called when
     // the radio is disconnected, as the above loop will never exit.
-    // Typically you would allow the user to manually kill the loop,
-    // for example with tokio::select!.
+    // Typically, you would allow the user to manually kill the loop,
+    // for example, with tokio::select!.
     let _stream_api = stream_api.disconnect().await?;
 
     Ok(())
@@ -95,7 +96,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 This example requires a powered and flashed Meshtastic radio connected to the host machine via a USB serial port.
 
 ```rust
-/// This example connects to a radio via serial, and prints out all received packets.
+/// This example connects to a radio via serial and prints out all received packets.
 /// This example requires a powered and flashed Meshtastic radio.
 /// https://meshtastic.org/docs/supported-hardware
 
@@ -126,7 +127,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config_id = utils::generate_rand_id();
     let stream_api = stream_api.configure(config_id).await?;
 
-    // This loop can be broken with ctrl+c, or by disconnecting
+    // This loop can be broken with ctrl+c or by disconnecting
     // the attached serial port.
     while let Some(decoded) = decoded_listener.recv().await {
         println!("Received: {:?}", decoded);
@@ -134,8 +135,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Note that in this specific example, this will only be called when
     // the radio is disconnected, as the above loop will never exit.
-    // Typically you would allow the user to manually kill the loop,
-    // for example with tokio::select!.
+    // Typically, you would allow the user to manually kill the loop,
+    // for example, with tokio::select!.
     let _stream_api = stream_api.disconnect().await?;
 
     Ok(())
@@ -147,10 +148,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 This example requires a powered and flashed Meshtastic radio with BLE enabled. You need to pair it first using your operating system utilities. PIN might be needed.
 
 > [!NOTE]
-> You need `bluetooth-le` feature enabled for Bluetooth low energy support.
+> You need `bluetooth-le` feature enabled for Bluetooth Low Energy support.
 
 ```rust
-/// This example connects via Bluetooth LE to the radio, and prints out all received packets.
+/// This example connects via Bluetooth LE to the radio and prints out all received packets.
 extern crate meshtastic;
 
 use std::io::{self, BufRead};
@@ -190,8 +191,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Note that in this specific example, this will only be called when
     // the radio is disconnected, as the above loop will never exit.
-    // Typically you would allow the user to manually kill the loop,
-    // for example with tokio::select!.
+    // Typically, you would allow the user to manually kill the loop,
+    // for example, with tokio::select!.
     let _stream_api = stream_api.disconnect().await?;
 
     Ok(())

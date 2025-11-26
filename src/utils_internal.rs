@@ -1,5 +1,5 @@
 #[cfg(feature = "bluetooth-le")]
-use crate::connections::ble_handler::BleHandler;
+use crate::connections::ble_handler::{BleDevice, BleHandler};
 use crate::errors_internal::Error;
 #[cfg(feature = "bluetooth-le")]
 use futures::stream::StreamExt;
@@ -201,6 +201,41 @@ pub async fn build_tcp_stream(
     Ok(StreamHandle::from_stream(stream))
 }
 
+/// A helper method to list the names of all reachable Meshtastic Bluetooth radios.
+///
+/// This method is intended to be used to select a valid Bluetooth radio, then to pass that device
+/// MAC address to the `build_ble_stream` method.
+///
+/// # Arguments
+///
+/// `scan_duration` - Duration of a Bluetooth LE scan for devices
+///
+/// # Returns
+///
+/// A vector of [`BleDevice`]s, each identified by a MAC address and optionally also a name.
+///
+/// # Examples
+///
+/// ```no_run
+/// use std::time::Duration;
+/// use meshtastic::utils;
+/// use meshtastic::BleId;
+///
+/// let ble_devices = utils::available_ble_devices(Duration::from_secs(5)).await?;
+/// if let Some(device) = ble_devices.first() {
+///     let stream = utils::build_ble_stream(device, Duration::from_secs(10)).await;
+///     ...
+/// }
+/// ```
+///
+/// # Errors
+///
+/// Fails if the Blueetooth scan fails.
+#[cfg(feature = "bluetooth-le")]
+pub async fn available_ble_devices(scan_duration: Duration) -> Result<Vec<BleDevice>, Error> {
+    BleHandler::available_ble_devices(scan_duration).await
+}
+
 /// A helper method that uses the `btleplug` and `tokio` crates to build a BLE stream
 /// that is compatible with the `StreamApi` API. This requires that the stream
 /// implements `AsyncReadExt + AsyncWriteExt` traits.
@@ -210,7 +245,8 @@ pub async fn build_tcp_stream(
 ///
 /// # Arguments
 ///
-/// * `ble_id` - Name or MAC address of a BLE device
+/// * `ble_id` - Name or MAC address of a BLE device to connect to.
+/// * `scan_duration` - The duration of the BLE scan.
 ///
 /// # Returns
 ///
@@ -221,7 +257,11 @@ pub async fn build_tcp_stream(
 ///
 /// ```
 /// // Connect to a radio, identified by its MAC address
-/// let duplex_stream = utils::build_ble_stream(BleId::from_mac_address("E3:44:4E:18:F7:A4").await?;
+/// let duplex_stream = utils::build_ble_stream(
+///     BleId::from_mac_address("E3:44:4E:18:F7:A4").unwrap(),
+///     Duration::from_secs(5),
+/// )
+/// .await?;
 /// let decoded_listener = stream_api.connect(duplex_stream).await;
 /// ```
 ///
@@ -235,15 +275,19 @@ pub async fn build_tcp_stream(
 /// None
 ///
 #[cfg(feature = "bluetooth-le")]
-pub async fn build_ble_stream(
-    ble_id: &crate::connections::ble_handler::BleId,
+pub async fn build_ble_stream<'a, B>(
+    device: B,
     scan_duration: Duration,
-) -> Result<StreamHandle<DuplexStream>, Error> {
+) -> Result<StreamHandle<DuplexStream>, Error>
+where
+    B: Into<std::borrow::Cow<'a, crate::connections::ble_handler::BleId>>,
+{
     use crate::{
         connections::ble_handler::{AdapterEvent, RadioMessage},
         errors_internal::InternalStreamError,
     };
-    let ble_handler = BleHandler::new(ble_id, scan_duration).await?;
+    let ble_id: std::borrow::Cow<_> = device.into();
+    let ble_handler = BleHandler::new(&ble_id, scan_duration).await?;
     // `client` will be returned to the user, server is the opposite end of the channel and it's
     // directly connected to a `BleHandler`.
     let (client, mut server) = tokio::io::duplex(1024);
@@ -291,7 +335,9 @@ pub async fn build_ble_stream(
                 // Data from user, forward it to the device
                 from_server = server.read(&mut buf) => {
                     let len = from_server.map_err(duplex_write_error_fn)?;
-                    ble_handler.write_to_radio(&buf[..len]).await?;
+                    if len != 0 {
+                        ble_handler.write_to_radio(&buf[..len]).await?;
+                    }
                 },
                 event = adapter_events.next() => {
                     if Some(AdapterEvent::Disconnected) == event {

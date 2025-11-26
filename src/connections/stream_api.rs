@@ -118,7 +118,7 @@ impl<State> ConnectedStreamApi<State> {
     ///
     /// # Arguments
     ///
-    /// * `packet_router` - A generic packet router field that implements the `PacketRouter` trait.
+    /// * `packet_router` - A struct that implements the `PacketRouter` trait.
     /// * `byte_data` - A `Vec<u8>` containing the byte data to send.
     /// * `port_num` - A `PortNum` enum that specifies the port number to send the packet on.
     /// * `destination` - A `PacketDestination` enum that specifies the destination of the packet.
@@ -210,17 +210,21 @@ impl<State> ConnectedStreamApi<State> {
             ..Default::default()
         };
 
-        if echo_response {
-            mesh_packet.rx_time = current_epoch_secs_u32();
-            packet_router
-                .handle_mesh_packet(mesh_packet.clone())
-                .map_err(|e| Error::PacketHandlerFailure {
-                    source: Box::new(e),
-                })?;
-        }
+        mesh_packet.rx_time = current_epoch_secs_u32();
 
-        let payload_variant = Some(protobufs::to_radio::PayloadVariant::Packet(mesh_packet));
+        let payload_variant = Some(protobufs::to_radio::PayloadVariant::Packet(
+            mesh_packet.clone(),
+        ));
         self.send_to_radio_packet(payload_variant).await?;
+
+        // If the sending was successful, echo it back to the client via the `PacketRouter`
+        if echo_response {
+            packet_router.handle_mesh_packet(mesh_packet).map_err(|e| {
+                Error::PacketHandlerFailure {
+                    source: Box::new(e),
+                }
+            })?;
+        }
 
         Ok(())
     }

@@ -3,13 +3,14 @@ name = "meshtastic"
 description = "A Rust library for communicating with and configuring Meshtastic devices."
 homepage = "https://meshtastic.org/"
 repository = "https://github.com/meshtastic/rust"
+documentation = "https://docs.rs/meshtastic"
 keywords = ["meshtastic", "mesh", "lora", "tcp", "serial"]
 categories = ["embedded", "config", "encoding"]
 authors = ["Adam McQuilkin"]
 readme = "README.md"
 license = "GPL-3.0"
-version = "0.1.7"
-rust-version = "1.76"
+version = "0.1.8"
+rust-version = "1.84"
 edition = "2021"
 
 [lib]
@@ -71,7 +72,7 @@ serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0", optional = true }
 thiserror = "2.0.11"
 uuid = { version = "1.12.1", optional = true }
-btleplug = { version = "0.11.7", optional = true }
+btleplug = { version = "0.11.7", optional = true, features = ["serde"] }
 futures = { version = "0.3.31", optional = true }
 
 #TODO: drop pinning of the bluez-async version once we move the MSRV to 1.84 and we can use
@@ -83,3 +84,7 @@ bluez-async = { version = "=0.8.0", optional = true }
 [dev-dependencies]
 fern = { version = "0.7.1", features = ["colored"] }
 humantime = "2.1.0"
+
+[package.metadata.docs.rs]
+features = ["bluetooth-le"]
+rustdoc-args = ["--cfg", "docsrs"]

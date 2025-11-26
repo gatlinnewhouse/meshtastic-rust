@@ -1,3 +1,5 @@
+#![cfg_attr(docsrs, feature(doc_cfg))]
+
 //! A Rust library for communicating with and configuring Meshtastic devices.
 #[cfg(feature = "tokio")]
 pub(crate) mod connections;
@@ -140,7 +142,11 @@ pub mod utils {
     /// can also be used to list all available serial ports on the host machine.
     pub mod stream {
         #[cfg(feature = "bluetooth-le")]
+        pub use crate::connections::ble_handler::BleDevice;
+        #[cfg(feature = "bluetooth-le")]
         pub use crate::connections::ble_handler::BleId;
+        #[cfg(feature = "bluetooth-le")]
+        pub use crate::utils_internal::available_ble_devices;
         pub use crate::utils_internal::available_serial_ports;
         #[cfg(feature = "bluetooth-le")]
         pub use crate::utils_internal::build_ble_stream;
