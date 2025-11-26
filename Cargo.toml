@@ -18,6 +18,7 @@ doctest = false
 [features]
 default = ["serde", "tokio"]
 gen = ["dep:prost-build", "dep:protoc-bin-vendored", "dep:walkdir"]
+no-std = ["dep:walkdir", "dep:femtopb-build", "dep:anyhow", "dep:femtopb"]
 
 serde = ["dep:serde", "dep:serde_json"]
 ts-gen = ["serde", "dep:specta", "dep:specta-typescript"]
@@ -51,6 +52,8 @@ required-features = ["bluetooth-le", "tokio"]
 prost-build = { version = "0.14", optional = true }
 protoc-bin-vendored = { version = "3.1.0", optional = true }
 walkdir = { version = "2.5.0", optional = true }
+anyhow = { version = "1.0.96", optional = true }
+femtopb-build = { version = "0.8.0", optional = true }
 
 [dependencies]
 futures-util = "0.3.31"
@@ -67,6 +70,7 @@ specta = { git = "https://github.com/specta-rs/specta.git", rev = "b596ef0", opt
     "chrono",
 ], version = "=2.0.0-rc.22" }
 specta-typescript = { git = "https://github.com/specta-rs/specta.git", rev = "b596ef0", optional = true, version = "=0.0.9" }
+femtopb = { version = "0.8.0", optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0", optional = true }
 thiserror = "2.0.11"
