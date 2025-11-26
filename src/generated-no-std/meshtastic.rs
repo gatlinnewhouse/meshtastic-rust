@@ -173,10 +173,292 @@ pub mod channel {
     }
 }
 #[derive(Clone, PartialEq, ::femtopb::Message)]
+pub struct DeviceUiConfig<'a> {
+    ///
+    /// A version integer used to invalidate saved files when we make incompatible changes.
+    #[femtopb(uint32, tag = 1)]
+    pub version: u32,
+    ///
+    /// TFT display brightness 1..255
+    #[femtopb(uint32, tag = 2)]
+    pub screen_brightness: u32,
+    ///
+    /// Screen timeout 0..900
+    #[femtopb(uint32, tag = 3)]
+    pub screen_timeout: u32,
+    ///
+    /// Screen/Settings lock enabled
+    #[femtopb(bool, tag = 4)]
+    pub screen_lock: bool,
+    #[femtopb(bool, tag = 5)]
+    pub settings_lock: bool,
+    #[femtopb(uint32, tag = 6)]
+    pub pin_code: u32,
+    ///
+    /// Color theme
+    #[femtopb(enumeration, tag = 7)]
+    pub theme: ::femtopb::enumeration::EnumValue<Theme>,
+    ///
+    /// Audible message, banner and ring tone
+    #[femtopb(bool, tag = 8)]
+    pub alert_enabled: bool,
+    #[femtopb(bool, tag = 9)]
+    pub banner_enabled: bool,
+    #[femtopb(uint32, tag = 10)]
+    pub ring_tone_id: u32,
+    ///
+    /// Localization
+    #[femtopb(enumeration, tag = 11)]
+    pub language: ::femtopb::enumeration::EnumValue<Language>,
+    ///
+    /// Node list filter
+    #[femtopb(message, optional, tag = 12)]
+    pub node_filter: ::core::option::Option<NodeFilter<'a>>,
+    ///
+    /// Node list highlightening
+    #[femtopb(message, optional, tag = 13)]
+    pub node_highlight: ::core::option::Option<NodeHighlight<'a>>,
+    ///
+    /// 8 integers for screen calibration data
+    #[femtopb(bytes, tag = 14)]
+    pub calibration_data: &'a [u8],
+    #[femtopb(unknown_fields)]
+    pub unknown_fields: femtopb::UnknownFields<'a>,
+}
+#[derive(Clone, PartialEq, ::femtopb::Message)]
+pub struct NodeFilter<'a> {
+    ///
+    /// Filter unknown nodes
+    #[femtopb(bool, tag = 1)]
+    pub unknown_switch: bool,
+    ///
+    /// Filter offline nodes
+    #[femtopb(bool, tag = 2)]
+    pub offline_switch: bool,
+    ///
+    /// Filter nodes w/o public key
+    #[femtopb(bool, tag = 3)]
+    pub public_key_switch: bool,
+    ///
+    /// Filter based on hops away
+    #[femtopb(int32, tag = 4)]
+    pub hops_away: i32,
+    ///
+    /// Filter nodes w/o position
+    #[femtopb(bool, tag = 5)]
+    pub position_switch: bool,
+    ///
+    /// Filter nodes by matching name string
+    #[femtopb(string, tag = 6)]
+    pub node_name: &'a str,
+    ///
+    /// Filter based on channel
+    #[femtopb(int32, tag = 7)]
+    pub channel: i32,
+    #[femtopb(unknown_fields)]
+    pub unknown_fields: femtopb::UnknownFields<'a>,
+}
+#[derive(Clone, PartialEq, ::femtopb::Message)]
+pub struct NodeHighlight<'a> {
+    ///
+    /// Hightlight nodes w/ active chat
+    #[femtopb(bool, tag = 1)]
+    pub chat_switch: bool,
+    ///
+    /// Highlight nodes w/ position
+    #[femtopb(bool, tag = 2)]
+    pub position_switch: bool,
+    ///
+    /// Highlight nodes w/ telemetry data
+    #[femtopb(bool, tag = 3)]
+    pub telemetry_switch: bool,
+    ///
+    /// Highlight nodes w/ iaq data
+    #[femtopb(bool, tag = 4)]
+    pub iaq_switch: bool,
+    ///
+    /// Highlight nodes by matching name string
+    #[femtopb(string, tag = 5)]
+    pub node_name: &'a str,
+    #[femtopb(unknown_fields)]
+    pub unknown_fields: femtopb::UnknownFields<'a>,
+}
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+    Hash,
+    PartialOrd,
+    Ord,
+    ::femtopb::Enumeration
+)]
+#[repr(i32)]
+#[derive(Default)]
+pub enum Theme {
+    ///
+    /// Dark
+    #[default]
+    Dark = 0,
+    ///
+    /// Light
+    Light = 1,
+    ///
+    /// Red
+    Red = 2,
+}
+impl Theme {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            Self::Dark => "DARK",
+            Self::Light => "LIGHT",
+            Self::Red => "RED",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "DARK" => Some(Self::Dark),
+            "LIGHT" => Some(Self::Light),
+            "RED" => Some(Self::Red),
+            _ => None,
+        }
+    }
+}
+///
+/// Localization
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+    Hash,
+    PartialOrd,
+    Ord,
+    ::femtopb::Enumeration
+)]
+#[repr(i32)]
+#[derive(Default)]
+pub enum Language {
+    ///
+    /// English
+    #[default]
+    English = 0,
+    ///
+    /// French
+    French = 1,
+    ///
+    /// German
+    German = 2,
+    ///
+    /// Italian
+    Italian = 3,
+    ///
+    /// Portuguese
+    Portuguese = 4,
+    ///
+    /// Spanish
+    Spanish = 5,
+    ///
+    /// Swedish
+    Swedish = 6,
+    ///
+    /// Finnish
+    Finnish = 7,
+    ///
+    /// Polish
+    Polish = 8,
+    ///
+    /// Turkish
+    Turkish = 9,
+    ///
+    /// Serbian
+    Serbian = 10,
+    ///
+    /// Russian
+    Russian = 11,
+    ///
+    /// Dutch
+    Dutch = 12,
+    ///
+    /// Greek
+    Greek = 13,
+    ///
+    /// Norwegian
+    Norwegian = 14,
+    ///
+    /// Slovenian
+    Slovenian = 15,
+    ///
+    /// Simplified Chinese (experimental)
+    SimplifiedChinese = 30,
+    ///
+    /// Traditional Chinese (experimental)
+    TraditionalChinese = 31,
+}
+impl Language {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            Self::English => "ENGLISH",
+            Self::French => "FRENCH",
+            Self::German => "GERMAN",
+            Self::Italian => "ITALIAN",
+            Self::Portuguese => "PORTUGUESE",
+            Self::Spanish => "SPANISH",
+            Self::Swedish => "SWEDISH",
+            Self::Finnish => "FINNISH",
+            Self::Polish => "POLISH",
+            Self::Turkish => "TURKISH",
+            Self::Serbian => "SERBIAN",
+            Self::Russian => "RUSSIAN",
+            Self::Dutch => "DUTCH",
+            Self::Greek => "GREEK",
+            Self::Norwegian => "NORWEGIAN",
+            Self::Slovenian => "SLOVENIAN",
+            Self::SimplifiedChinese => "SIMPLIFIED_CHINESE",
+            Self::TraditionalChinese => "TRADITIONAL_CHINESE",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "ENGLISH" => Some(Self::English),
+            "FRENCH" => Some(Self::French),
+            "GERMAN" => Some(Self::German),
+            "ITALIAN" => Some(Self::Italian),
+            "PORTUGUESE" => Some(Self::Portuguese),
+            "SPANISH" => Some(Self::Spanish),
+            "SWEDISH" => Some(Self::Swedish),
+            "FINNISH" => Some(Self::Finnish),
+            "POLISH" => Some(Self::Polish),
+            "TURKISH" => Some(Self::Turkish),
+            "SERBIAN" => Some(Self::Serbian),
+            "RUSSIAN" => Some(Self::Russian),
+            "DUTCH" => Some(Self::Dutch),
+            "GREEK" => Some(Self::Greek),
+            "NORWEGIAN" => Some(Self::Norwegian),
+            "SLOVENIAN" => Some(Self::Slovenian),
+            "SIMPLIFIED_CHINESE" => Some(Self::SimplifiedChinese),
+            "TRADITIONAL_CHINESE" => Some(Self::TraditionalChinese),
+            _ => None,
+        }
+    }
+}
+#[derive(Clone, PartialEq, ::femtopb::Message)]
 pub struct Config<'a> {
     ///
     /// Payload Variant
-    #[femtopb(oneof, tags = [1, 2, 3, 4, 5, 6, 7])]
+    #[femtopb(oneof, tags = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])]
     pub payload_variant: ::core::option::Option<config::PayloadVariant<'a>>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
@@ -193,13 +475,10 @@ pub mod config {
         pub role: ::femtopb::enumeration::EnumValue<device_config::Role>,
         ///
         /// Disabling this will disable the SerialConsole by not initilizing the StreamAPI
+        /// Moved to SecurityConfig
+        #[deprecated]
         #[femtopb(bool, tag = 2)]
         pub serial_enabled: bool,
-        ///
-        /// By default we turn off logging as soon as an API client connects (to keep shared serial link quiet).
-        /// Set this to true to leave the debug log outputting even when API is active.
-        #[femtopb(bool, tag = 3)]
-        pub debug_log_enabled: bool,
         ///
         /// For boards without a hard wired button, this is the pin number that will be used
         /// Boards that have more than one button can swap the function with this one. defaults to BUTTON_PIN if defined.
@@ -228,6 +507,8 @@ pub mod config {
         ///
         /// If true, device is considered to be "managed" by a mesh administrator
         /// Clients should then limit available configuration and administrative options inside the user interface
+        /// Moved to SecurityConfig
+        #[deprecated]
         #[femtopb(bool, tag = 9)]
         pub is_managed: bool,
         ///
@@ -320,6 +601,13 @@ pub mod config {
             ///     and automatic TAK PLI (position location information) broadcasts.
             ///     Uses position module configuration to determine TAK PLI broadcast interval.
             TakTracker = 10,
+            ///
+            /// Description: Will always rebroadcast packets, but will do so after all other modes.
+            /// Technical Details: Used for router nodes that are intended to provide additional coverage
+            ///     in areas not already covered by other routers, or to bridge around problematic terrain,
+            ///     but should not be given priority over other routers in order to avoid unnecessaraily
+            ///     consuming hops.
+            RouterLate = 11,
         }
         impl Role {
             /// String value of the enum field names used in the ProtoBuf definition.
@@ -339,6 +627,7 @@ pub mod config {
                     Self::ClientHidden => "CLIENT_HIDDEN",
                     Self::LostAndFound => "LOST_AND_FOUND",
                     Self::TakTracker => "TAK_TRACKER",
+                    Self::RouterLate => "ROUTER_LATE",
                 }
             }
             /// Creates an enum from field names used in the ProtoBuf definition.
@@ -355,6 +644,7 @@ pub mod config {
                     "CLIENT_HIDDEN" => Some(Self::ClientHidden),
                     "LOST_AND_FOUND" => Some(Self::LostAndFound),
                     "TAK_TRACKER" => Some(Self::TakTracker),
+                    "ROUTER_LATE" => Some(Self::RouterLate),
                     _ => None,
                 }
             }
@@ -392,6 +682,13 @@ pub mod config {
             /// Ignores observed messages from foreign meshes like LOCAL_ONLY,
             /// but takes it step further by also ignoring messages from nodenums not in the node's known list (NodeDB)
             KnownOnly = 3,
+            ///
+            /// Only permitted for SENSOR, TRACKER and TAK_TRACKER roles, this will inhibit all rebroadcasts, not unlike CLIENT_MUTE role.
+            None = 4,
+            ///
+            /// Ignores packets from non-standard portnums such as: TAK, RangeTest, PaxCounter, etc.
+            /// Only rebroadcasts packets with standard portnums: NodeInfo, Text, Position, Telemetry, and Routing.
+            CorePortnumsOnly = 5,
         }
         impl RebroadcastMode {
             /// String value of the enum field names used in the ProtoBuf definition.
@@ -404,6 +701,8 @@ pub mod config {
                     Self::AllSkipDecoding => "ALL_SKIP_DECODING",
                     Self::LocalOnly => "LOCAL_ONLY",
                     Self::KnownOnly => "KNOWN_ONLY",
+                    Self::None => "NONE",
+                    Self::CorePortnumsOnly => "CORE_PORTNUMS_ONLY",
                 }
             }
             /// Creates an enum from field names used in the ProtoBuf definition.
@@ -413,6 +712,8 @@ pub mod config {
                     "ALL_SKIP_DECODING" => Some(Self::AllSkipDecoding),
                     "LOCAL_ONLY" => Some(Self::LocalOnly),
                     "KNOWN_ONLY" => Some(Self::KnownOnly),
+                    "NONE" => Some(Self::None),
+                    "CORE_PORTNUMS_ONLY" => Some(Self::CorePortnumsOnly),
                     _ => None,
                 }
             }
@@ -726,6 +1027,10 @@ pub mod config {
         /// rsyslog Server and Port
         #[femtopb(string, tag = 9)]
         pub rsyslog_server: &'a str,
+        ///
+        /// Flags for enabling/disabling network protocols
+        #[femtopb(uint32, tag = 10)]
+        pub enabled_protocols: u32,
         #[femtopb(unknown_fields)]
         pub unknown_fields: femtopb::UnknownFields<'a>,
     }
@@ -790,6 +1095,50 @@ pub mod config {
                 match value {
                     "DHCP" => Some(Self::Dhcp),
                     "STATIC" => Some(Self::Static),
+                    _ => None,
+                }
+            }
+        }
+        ///
+        /// Available flags auxiliary network protocols
+        #[derive(
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::femtopb::Enumeration
+        )]
+        #[repr(i32)]
+        #[derive(Default)]
+        pub enum ProtocolFlags {
+            ///
+            /// Do not broadcast packets over any network protocol
+            #[default]
+            NoBroadcast = 0,
+            ///
+            /// Enable broadcasting packets via UDP over the local network
+            UdpBroadcast = 1,
+        }
+        impl ProtocolFlags {
+            /// String value of the enum field names used in the ProtoBuf definition.
+            ///
+            /// The values are not transformed in any way and thus are considered stable
+            /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+            pub fn as_str_name(&self) -> &'static str {
+                match self {
+                    Self::NoBroadcast => "NO_BROADCAST",
+                    Self::UdpBroadcast => "UDP_BROADCAST",
+                }
+            }
+            /// Creates an enum from field names used in the ProtoBuf definition.
+            pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+                match value {
+                    "NO_BROADCAST" => Some(Self::NoBroadcast),
+                    "UDP_BROADCAST" => Some(Self::UdpBroadcast),
                     _ => None,
                 }
             }
@@ -1256,6 +1605,10 @@ pub mod config {
         /// If true, the device will not process any packets received via LoRa that passed via MQTT anywhere on the path towards it.
         #[femtopb(bool, tag = 104)]
         pub ignore_mqtt: bool,
+        ///
+        /// Sets the ok_to_mqtt bit on outgoing packets
+        #[femtopb(bool, tag = 105)]
+        pub config_ok_to_mqtt: bool,
         #[femtopb(unknown_fields)]
         pub unknown_fields: femtopb::UnknownFields<'a>,
     }
@@ -1333,6 +1686,15 @@ pub mod config {
             ///
             /// Singapore 923mhz
             Sg923 = 18,
+            ///
+            /// Philippines 433mhz
+            Ph433 = 19,
+            ///
+            /// Philippines 868mhz
+            Ph868 = 20,
+            ///
+            /// Philippines 915mhz
+            Ph915 = 21,
         }
         impl RegionCode {
             /// String value of the enum field names used in the ProtoBuf definition.
@@ -1360,6 +1722,9 @@ pub mod config {
                     Self::My433 => "MY_433",
                     Self::My919 => "MY_919",
                     Self::Sg923 => "SG_923",
+                    Self::Ph433 => "PH_433",
+                    Self::Ph868 => "PH_868",
+                    Self::Ph915 => "PH_915",
                 }
             }
             /// Creates an enum from field names used in the ProtoBuf definition.
@@ -1384,6 +1749,9 @@ pub mod config {
                     "MY_433" => Some(Self::My433),
                     "MY_919" => Some(Self::My919),
                     "SG_923" => Some(Self::Sg923),
+                    "PH_433" => Some(Self::Ph433),
+                    "PH_868" => Some(Self::Ph868),
+                    "PH_915" => Some(Self::Ph915),
                     _ => None,
                 }
             }
@@ -1414,6 +1782,7 @@ pub mod config {
             LongSlow = 1,
             ///
             /// Very Long Range - Slow
+            /// Deprecated in 2.5: Works only with txco and is unusably slow
             VeryLongSlow = 2,
             ///
             /// Medium Range - Slow
@@ -1430,6 +1799,11 @@ pub mod config {
             ///
             /// Long Range - Moderately Fast
             LongModerate = 7,
+            ///
+            /// Short Range - Turbo
+            /// This is the fastest preset and the only one with 500kHz bandwidth.
+            /// It is not legal to use in all regions due to this wider bandwidth.
+            ShortTurbo = 8,
         }
         impl ModemPreset {
             /// String value of the enum field names used in the ProtoBuf definition.
@@ -1446,6 +1820,7 @@ pub mod config {
                     Self::ShortSlow => "SHORT_SLOW",
                     Self::ShortFast => "SHORT_FAST",
                     Self::LongModerate => "LONG_MODERATE",
+                    Self::ShortTurbo => "SHORT_TURBO",
                 }
             }
             /// Creates an enum from field names used in the ProtoBuf definition.
@@ -1459,6 +1834,7 @@ pub mod config {
                     "SHORT_SLOW" => Some(Self::ShortSlow),
                     "SHORT_FAST" => Some(Self::ShortFast),
                     "LONG_MODERATE" => Some(Self::LongModerate),
+                    "SHORT_TURBO" => Some(Self::ShortTurbo),
                     _ => None,
                 }
             }
@@ -1478,10 +1854,6 @@ pub mod config {
         /// Specified PIN for PairingMode.FixedPin
         #[femtopb(uint32, tag = 3)]
         pub fixed_pin: u32,
-        ///
-        /// Enables device (serial style logs) over Bluetooth
-        #[femtopb(bool, tag = 4)]
-        pub device_logging_enabled: bool,
         #[femtopb(unknown_fields)]
         pub unknown_fields: femtopb::UnknownFields<'a>,
     }
@@ -1535,6 +1907,54 @@ pub mod config {
             }
         }
     }
+    #[derive(Clone, PartialEq, ::femtopb::Message)]
+    pub struct SecurityConfig<'a> {
+        ///
+        /// The public key of the user's device.
+        /// Sent out to other nodes on the mesh to allow them to compute a shared secret key.
+        #[femtopb(bytes, tag = 1)]
+        pub public_key: &'a [u8],
+        ///
+        /// The private key of the device.
+        /// Used to create a shared key with a remote device.
+        #[femtopb(bytes, tag = 2)]
+        pub private_key: &'a [u8],
+        ///
+        /// The public key authorized to send admin messages to this node.
+        #[femtopb(bytes, repeated, tag = 3)]
+        pub admin_key: ::femtopb::repeated::Repeated<
+            'a,
+            &'a [u8],
+            ::femtopb::item_encoding::Bytes,
+        >,
+        ///
+        /// If true, device is considered to be "managed" by a mesh administrator via admin messages
+        /// Device is managed by a mesh administrator.
+        #[femtopb(bool, tag = 4)]
+        pub is_managed: bool,
+        ///
+        /// Serial Console over the Stream API."
+        #[femtopb(bool, tag = 5)]
+        pub serial_enabled: bool,
+        ///
+        /// By default we turn off logging as soon as an API client connects (to keep shared serial link quiet).
+        /// Output live debug logging over serial or bluetooth is set to true.
+        #[femtopb(bool, tag = 6)]
+        pub debug_log_api_enabled: bool,
+        ///
+        /// Allow incoming device control over the insecure legacy admin channel.
+        #[femtopb(bool, tag = 8)]
+        pub admin_channel_enabled: bool,
+        #[femtopb(unknown_fields)]
+        pub unknown_fields: femtopb::UnknownFields<'a>,
+    }
+    ///
+    /// Blank config request, strictly for getting the session key
+    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    pub struct SessionkeyConfig<'a> {
+        #[femtopb(unknown_fields)]
+        pub unknown_fields: femtopb::UnknownFields<'a>,
+    }
     ///
     /// Payload Variant
     #[derive(Clone, PartialEq, ::femtopb::Oneof)]
@@ -1554,6 +1974,12 @@ pub mod config {
         Lora(LoRaConfig<'a>),
         #[femtopb(message, tag = 7)]
         Bluetooth(BluetoothConfig<'a>),
+        #[femtopb(message, tag = 8)]
+        Security(SecurityConfig<'a>),
+        #[femtopb(message, tag = 9)]
+        Sessionkey(SessionkeyConfig<'a>),
+        #[femtopb(message, tag = 10)]
+        DeviceUi(super::DeviceUiConfig<'a>),
         #[femtopb(phantom)]
         _Phantom(::core::marker::PhantomData<&'a ()>),
     }
@@ -1684,8 +2110,9 @@ pub mod module_config {
     #[derive(Clone, PartialEq, ::femtopb::Message)]
     pub struct MqttConfig<'a> {
         ///
-        /// If a meshtastic node is able to reach the internet it will normally attempt to gateway any channels that are marked as
-        /// is_uplink_enabled or is_downlink_enabled.
+        /// If a meshtastic node is able to reach the internet it will normally
+        /// attempt to gateway any channels that are marked as is_uplink_enabled or
+        /// is_downlink_enabled.
         #[femtopb(bool, tag = 1)]
         pub enabled: bool,
         ///
@@ -1696,20 +2123,23 @@ pub mod module_config {
         ///
         /// MQTT username to use (most useful for a custom MQTT server).
         /// If using a custom server, this will be honoured even if empty.
-        /// If using the default server, this will only be honoured if set, otherwise the device will use the default username
+        /// If using the default server, this will only be honoured if set, otherwise
+        /// the device will use the default username
         #[femtopb(string, tag = 3)]
         pub username: &'a str,
         ///
         /// MQTT password to use (most useful for a custom MQTT server).
         /// If using a custom server, this will be honoured even if empty.
-        /// If using the default server, this will only be honoured if set, otherwise the device will use the default password
+        /// If using the default server, this will only be honoured if set, otherwise
+        /// the device will use the default password
         #[femtopb(string, tag = 4)]
         pub password: &'a str,
         ///
         /// Whether to send encrypted or decrypted packets to MQTT.
         /// This parameter is only honoured if you also set server
-        /// (the default official mqtt.meshtastic.org server can handle encrypted packets)
-        /// Decrypted packets may be useful for external systems that want to consume meshtastic packets
+        /// (the default official mqtt.meshtastic.org server can handle encrypted
+        /// packets) Decrypted packets may be useful for external systems that want
+        /// to consume meshtastic packets
         #[femtopb(bool, tag = 5)]
         pub encryption_enabled: bool,
         ///
@@ -1722,15 +2152,18 @@ pub mod module_config {
         pub tls_enabled: bool,
         ///
         /// The root topic to use for MQTT messages. Default is "msh".
-        /// This is useful if you want to use a single MQTT server for multiple meshtastic networks and separate them via ACLs
+        /// This is useful if you want to use a single MQTT server for multiple
+        /// meshtastic networks and separate them via ACLs
         #[femtopb(string, tag = 8)]
         pub root: &'a str,
         ///
-        /// If true, we can use the connected phone / client to proxy messages to MQTT instead of a direct connection
+        /// If true, we can use the connected phone / client to proxy messages to
+        /// MQTT instead of a direct connection
         #[femtopb(bool, tag = 9)]
         pub proxy_to_client_enabled: bool,
         ///
-        /// If true, we will periodically report unencrypted information about our node to a map via MQTT
+        /// If true, we will periodically report unencrypted information about our
+        /// node to a map via MQTT
         #[femtopb(bool, tag = 10)]
         pub map_reporting_enabled: bool,
         ///
@@ -1741,7 +2174,8 @@ pub mod module_config {
         pub unknown_fields: femtopb::UnknownFields<'a>,
     }
     ///
-    /// Settings for reporting unencrypted information about our node to a map via MQTT
+    /// Settings for reporting unencrypted information about our node to a map via
+    /// MQTT
     #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct MapReportSettings<'a> {
         ///
@@ -1749,7 +2183,8 @@ pub mod module_config {
         #[femtopb(uint32, tag = 1)]
         pub publish_interval_secs: u32,
         ///
-        /// Bits of precision for the location sent (default of 32 is full precision).
+        /// Bits of precision for the location sent (default of 32 is full
+        /// precision).
         #[femtopb(uint32, tag = 2)]
         pub position_precision: u32,
         #[femtopb(unknown_fields)]
@@ -1764,7 +2199,8 @@ pub mod module_config {
         #[femtopb(bool, tag = 1)]
         pub enabled: bool,
         ///
-        /// Whether the Module allows consumers to read / write to pins not defined in available_pins
+        /// Whether the Module allows consumers to read / write to pins not defined
+        /// in available_pins
         #[femtopb(bool, tag = 2)]
         pub allow_undefined_pin_access: bool,
         ///
@@ -1788,9 +2224,15 @@ pub mod module_config {
         pub enabled: bool,
         ///
         /// Interval in seconds of how often we should try to send our
-        /// Neighbor Info to the mesh
+        /// Neighbor Info (minimum is 14400, i.e., 4 hours)
         #[femtopb(uint32, tag = 2)]
         pub update_interval: u32,
+        ///
+        /// Whether in addition to sending it to MQTT and the PhoneAPI, our
+        /// NeighborInfo should be transmitted over LoRa. Note that this is not
+        /// available on a channel with default key and name.
+        #[femtopb(bool, tag = 3)]
+        pub transmit_over_lora: bool,
         #[femtopb(unknown_fields)]
         pub unknown_fields: femtopb::UnknownFields<'a>,
     }
@@ -1803,13 +2245,15 @@ pub mod module_config {
         #[femtopb(bool, tag = 1)]
         pub enabled: bool,
         ///
-        /// Interval in seconds of how often we can send a message to the mesh when a state change is detected
+        /// Interval in seconds of how often we can send a message to the mesh when a
+        /// trigger event is detected
         #[femtopb(uint32, tag = 2)]
         pub minimum_broadcast_secs: u32,
         ///
-        /// Interval in seconds of how often we should send a message to the mesh with the current state regardless of changes
-        /// When set to 0, only state changes will be broadcasted
-        /// Works as a sort of status heartbeat for peace of mind
+        /// Interval in seconds of how often we should send a message to the mesh
+        /// with the current state regardless of trigger events When set to 0, only
+        /// trigger events will be broadcasted Works as a sort of status heartbeat
+        /// for peace of mind
         #[femtopb(uint32, tag = 3)]
         pub state_broadcast_secs: u32,
         ///
@@ -1828,10 +2272,11 @@ pub mod module_config {
         #[femtopb(uint32, tag = 6)]
         pub monitor_pin: u32,
         ///
-        /// Whether or not the GPIO pin state detection is triggered on HIGH (1)
-        /// Otherwise LOW (0)
-        #[femtopb(bool, tag = 7)]
-        pub detection_triggered_high: bool,
+        /// The type of trigger event to be used
+        #[femtopb(enumeration, tag = 7)]
+        pub detection_trigger_type: ::femtopb::enumeration::EnumValue<
+            detection_sensor_config::TriggerType,
+        >,
         ///
         /// Whether or not use INPUT_PULLUP mode for GPIO pin
         /// Only applicable if the board uses pull-up resistors on the pin
@@ -1839,6 +2284,67 @@ pub mod module_config {
         pub use_pullup: bool,
         #[femtopb(unknown_fields)]
         pub unknown_fields: femtopb::UnknownFields<'a>,
+    }
+    /// Nested message and enum types in `DetectionSensorConfig`.
+    pub mod detection_sensor_config {
+        #[derive(
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::femtopb::Enumeration
+        )]
+        #[repr(i32)]
+        #[derive(Default)]
+        pub enum TriggerType {
+            /// Event is triggered if pin is low
+            #[default]
+            LogicLow = 0,
+            /// Event is triggered if pin is high
+            LogicHigh = 1,
+            /// Event is triggered when pin goes high to low
+            FallingEdge = 2,
+            /// Event is triggered when pin goes low to high
+            RisingEdge = 3,
+            /// Event is triggered on every pin state change, low is considered to be
+            /// "active"
+            EitherEdgeActiveLow = 4,
+            /// Event is triggered on every pin state change, high is considered to be
+            /// "active"
+            EitherEdgeActiveHigh = 5,
+        }
+        impl TriggerType {
+            /// String value of the enum field names used in the ProtoBuf definition.
+            ///
+            /// The values are not transformed in any way and thus are considered stable
+            /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+            pub fn as_str_name(&self) -> &'static str {
+                match self {
+                    Self::LogicLow => "LOGIC_LOW",
+                    Self::LogicHigh => "LOGIC_HIGH",
+                    Self::FallingEdge => "FALLING_EDGE",
+                    Self::RisingEdge => "RISING_EDGE",
+                    Self::EitherEdgeActiveLow => "EITHER_EDGE_ACTIVE_LOW",
+                    Self::EitherEdgeActiveHigh => "EITHER_EDGE_ACTIVE_HIGH",
+                }
+            }
+            /// Creates an enum from field names used in the ProtoBuf definition.
+            pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+                match value {
+                    "LOGIC_LOW" => Some(Self::LogicLow),
+                    "LOGIC_HIGH" => Some(Self::LogicHigh),
+                    "FALLING_EDGE" => Some(Self::FallingEdge),
+                    "RISING_EDGE" => Some(Self::RisingEdge),
+                    "EITHER_EDGE_ACTIVE_LOW" => Some(Self::EitherEdgeActiveLow),
+                    "EITHER_EDGE_ACTIVE_HIGH" => Some(Self::EitherEdgeActiveHigh),
+                    _ => None,
+                }
+            }
+        }
     }
     ///
     /// Audio Config for codec2 voice
@@ -1993,8 +2499,9 @@ pub mod module_config {
         #[femtopb(enumeration, tag = 7)]
         pub mode: ::femtopb::enumeration::EnumValue<serial_config::SerialMode>,
         ///
-        /// Overrides the platform's defacto Serial port instance to use with Serial module config settings
-        /// This is currently only usable in output modes like NMEA / CalTopo and may behave strangely or not work at all in other modes
+        /// Overrides the platform's defacto Serial port instance to use with Serial
+        /// module config settings This is currently only usable in output modes like
+        /// NMEA / CalTopo and may behave strangely or not work at all in other modes
         /// Existing logging over the Serial Console will still be present
         #[femtopb(bool, tag = 8)]
         pub override_console_serial_port: bool,
@@ -2214,8 +2721,9 @@ pub mod module_config {
         #[femtopb(uint32, tag = 14)]
         pub nag_timeout: u32,
         ///
-        /// When true, enables devices with native I2S audio output to use the RTTTL over speaker like a buzzer
-        /// T-Watch S3 and T-Deck for example have this capability
+        /// When true, enables devices with native I2S audio output to use the RTTTL
+        /// over speaker like a buzzer T-Watch S3 and T-Deck for example have this
+        /// capability
         #[femtopb(bool, tag = 15)]
         pub use_i2s_as_buzzer: bool,
         #[femtopb(unknown_fields)]
@@ -2246,7 +2754,8 @@ pub mod module_config {
         #[femtopb(uint32, tag = 5)]
         pub history_return_window: u32,
         ///
-        /// Set to true to let this node act as a server that stores received messages and resends them upon request.
+        /// Set to true to let this node act as a server that stores received
+        /// messages and resends them upon request.
         #[femtopb(bool, tag = 6)]
         pub is_server: bool,
         #[femtopb(unknown_fields)]
@@ -2307,20 +2816,42 @@ pub mod module_config {
         #[femtopb(uint32, tag = 7)]
         pub air_quality_interval: u32,
         ///
-        /// Interval in seconds of how often we should try to send our
-        /// air quality metrics to the mesh
+        /// Enable/disable Power metrics
         #[femtopb(bool, tag = 8)]
         pub power_measurement_enabled: bool,
         ///
         /// Interval in seconds of how often we should try to send our
-        /// air quality metrics to the mesh
+        /// power metrics to the mesh
         #[femtopb(uint32, tag = 9)]
         pub power_update_interval: u32,
         ///
-        /// Interval in seconds of how often we should try to send our
-        /// air quality metrics to the mesh
+        /// Enable/Disable the power measurement module on-device display
         #[femtopb(bool, tag = 10)]
         pub power_screen_enabled: bool,
+        ///
+        /// Preferences for the (Health) Telemetry Module
+        /// Enable/Disable the telemetry measurement module measurement collection
+        #[femtopb(bool, tag = 11)]
+        pub health_measurement_enabled: bool,
+        ///
+        /// Interval in seconds of how often we should try to send our
+        /// health metrics to the mesh
+        #[femtopb(uint32, tag = 12)]
+        pub health_update_interval: u32,
+        ///
+        /// Enable/Disable the health telemetry module on-device display
+        #[femtopb(bool, tag = 13)]
+        pub health_screen_enabled: bool,
+        ///
+        /// Preferences for the Error Telemetry Module
+        /// Enable/Disable this telemetry
+        #[femtopb(bool, tag = 14)]
+        pub error_measurement_enabled: bool,
+        ///
+        /// Error metric interval in seconds of how often we should try ot send our
+        /// metrics to the mesh
+        #[femtopb(uint32, tag = 15)]
+        pub error_update_interval: u32,
         #[femtopb(unknown_fields)]
         pub unknown_fields: femtopb::UnknownFields<'a>,
     }
@@ -2329,7 +2860,8 @@ pub mod module_config {
     #[derive(Clone, PartialEq, ::femtopb::Message)]
     pub struct CannedMessageConfig<'a> {
         ///
-        /// Enable the rotary encoder #1. This is a 'dumb' encoder sending pulses on both A and B pins while rotating.
+        /// Enable the rotary encoder #1. This is a 'dumb' encoder sending pulses on
+        /// both A and B pins while rotating.
         #[femtopb(bool, tag = 1)]
         pub rotary1_enabled: bool,
         ///
@@ -2363,7 +2895,8 @@ pub mod module_config {
             canned_message_config::InputEventChar,
         >,
         ///
-        /// Enable the Up/Down/Select input device. Can be RAK rotary encoder or 3 buttons. Uses the a/b/press definitions from inputbroker.
+        /// Enable the Up/Down/Select input device. Can be RAK rotary encoder or 3
+        /// buttons. Uses the a/b/press definitions from inputbroker.
         #[femtopb(bool, tag = 8)]
         pub updown1_enabled: bool,
         ///
@@ -2372,7 +2905,8 @@ pub mod module_config {
         pub enabled: bool,
         ///
         /// Input event origin accepted by the canned message module.
-        /// Can be e.g. "rotEnc1", "upDownEnc1" or keyword "_any"
+        /// Can be e.g. "rotEnc1", "upDownEnc1", "scanAndSelect", "cardkb",
+        /// "serialkb", or keyword "_any"
         #[femtopb(string, tag = 10)]
         pub allow_input_source: &'a str,
         ///
@@ -2461,7 +2995,8 @@ pub mod module_config {
         }
     }
     ///
-    /// Ambient Lighting Module - Settings for control of onboard LEDs to allow users to adjust the brightness levels and respective color levels.
+    /// Ambient Lighting Module - Settings for control of onboard LEDs to allow
+    /// users to adjust the brightness levels and respective color levels.
     /// Initially created for the RAK14001 RGB LED module.
     #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct AmbientLightingConfig<'a> {
@@ -2704,6 +3239,9 @@ pub enum PortNum {
     /// NOTE: This portnum traffic is not sent to the public MQTT starting at firmware version 2.2.9
     DetectionSensorApp = 10,
     ///
+    /// Same as Text Message but used for critical alerts.
+    AlertApp = 11,
+    ///
     /// Provides a 'ping' service that replies to any packet it receives.
     /// Also serves as a small example module.
     /// ENCODING: ASCII Plaintext
@@ -2754,7 +3292,7 @@ pub enum PortNum {
     SimulatorApp = 69,
     ///
     /// Provides a traceroute functionality to show the route a packet towards
-    /// a certain destination would take on the mesh.
+    /// a certain destination would take on the mesh. Contains a RouteDiscovery message as payload.
     /// ENCODING: Protobuf
     TracerouteApp = 70,
     ///
@@ -2802,6 +3340,7 @@ impl PortNum {
             Self::WaypointApp => "WAYPOINT_APP",
             Self::AudioApp => "AUDIO_APP",
             Self::DetectionSensorApp => "DETECTION_SENSOR_APP",
+            Self::AlertApp => "ALERT_APP",
             Self::ReplyApp => "REPLY_APP",
             Self::IpTunnelApp => "IP_TUNNEL_APP",
             Self::PaxcounterApp => "PAXCOUNTER_APP",
@@ -2835,6 +3374,7 @@ impl PortNum {
             "WAYPOINT_APP" => Some(Self::WaypointApp),
             "AUDIO_APP" => Some(Self::AudioApp),
             "DETECTION_SENSOR_APP" => Some(Self::DetectionSensorApp),
+            "ALERT_APP" => Some(Self::AlertApp),
             "REPLY_APP" => Some(Self::ReplyApp),
             "IP_TUNNEL_APP" => Some(Self::IpTunnelApp),
             "PAXCOUNTER_APP" => Some(Self::PaxcounterApp),
@@ -2862,24 +3402,25 @@ impl PortNum {
 pub struct DeviceMetrics<'a> {
     ///
     /// 0-100 (>100 means powered)
-    #[femtopb(uint32, tag = 1)]
-    pub battery_level: u32,
+    #[femtopb(uint32, optional, tag = 1)]
+    pub battery_level: ::core::option::Option<u32>,
     ///
     /// Voltage measured
-    #[femtopb(float, tag = 2)]
-    pub voltage: f32,
+    #[femtopb(float, optional, tag = 2)]
+    pub voltage: ::core::option::Option<f32>,
     ///
-    /// Utilization for the current channel, including well formed TX, RX and malformed RX (aka noise).
-    #[femtopb(float, tag = 3)]
-    pub channel_utilization: f32,
+    /// Utilization for the current channel, including well formed TX, RX and
+    /// malformed RX (aka noise).
+    #[femtopb(float, optional, tag = 3)]
+    pub channel_utilization: ::core::option::Option<f32>,
     ///
     /// Percent of airtime for transmission used within the last hour.
-    #[femtopb(float, tag = 4)]
-    pub air_util_tx: f32,
+    #[femtopb(float, optional, tag = 4)]
+    pub air_util_tx: ::core::option::Option<f32>,
     ///
     /// How long the device has been running since the last reboot (in seconds)
-    #[femtopb(uint32, tag = 5)]
-    pub uptime_seconds: u32,
+    #[femtopb(uint32, optional, tag = 5)]
+    pub uptime_seconds: ::core::option::Option<u32>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -2889,74 +3430,97 @@ pub struct DeviceMetrics<'a> {
 pub struct EnvironmentMetrics<'a> {
     ///
     /// Temperature measured
-    #[femtopb(float, tag = 1)]
-    pub temperature: f32,
+    #[femtopb(float, optional, tag = 1)]
+    pub temperature: ::core::option::Option<f32>,
     ///
     /// Relative humidity percent measured
-    #[femtopb(float, tag = 2)]
-    pub relative_humidity: f32,
+    #[femtopb(float, optional, tag = 2)]
+    pub relative_humidity: ::core::option::Option<f32>,
     ///
     /// Barometric pressure in hPA measured
-    #[femtopb(float, tag = 3)]
-    pub barometric_pressure: f32,
+    #[femtopb(float, optional, tag = 3)]
+    pub barometric_pressure: ::core::option::Option<f32>,
     ///
     /// Gas resistance in MOhm measured
-    #[femtopb(float, tag = 4)]
-    pub gas_resistance: f32,
+    #[femtopb(float, optional, tag = 4)]
+    pub gas_resistance: ::core::option::Option<f32>,
     ///
-    /// Voltage measured (To be depreciated in favor of PowerMetrics in Meshtastic 3.x)
-    #[femtopb(float, tag = 5)]
-    pub voltage: f32,
+    /// Voltage measured (To be depreciated in favor of PowerMetrics in
+    /// Meshtastic 3.x)
+    #[femtopb(float, optional, tag = 5)]
+    pub voltage: ::core::option::Option<f32>,
     ///
-    /// Current measured (To be depreciated in favor of PowerMetrics in Meshtastic 3.x)
-    #[femtopb(float, tag = 6)]
-    pub current: f32,
+    /// Current measured (To be depreciated in favor of PowerMetrics in
+    /// Meshtastic 3.x)
+    #[femtopb(float, optional, tag = 6)]
+    pub current: ::core::option::Option<f32>,
     ///
     /// relative scale IAQ value as measured by Bosch BME680 . value 0-500.
-    /// Belongs to Air Quality but is not particle but VOC measurement. Other VOC values can also be put in here.
-    #[femtopb(uint32, tag = 7)]
-    pub iaq: u32,
+    /// Belongs to Air Quality but is not particle but VOC measurement. Other VOC
+    /// values can also be put in here.
+    #[femtopb(uint32, optional, tag = 7)]
+    pub iaq: ::core::option::Option<u32>,
     ///
-    /// RCWL9620 Doppler Radar Distance Sensor, used for water level detection. Float value in mm.
-    #[femtopb(float, tag = 8)]
-    pub distance: f32,
+    /// RCWL9620 Doppler Radar Distance Sensor, used for water level detection.
+    /// Float value in mm.
+    #[femtopb(float, optional, tag = 8)]
+    pub distance: ::core::option::Option<f32>,
     ///
     /// VEML7700 high accuracy ambient light(Lux) digital 16-bit resolution sensor.
-    #[femtopb(float, tag = 9)]
-    pub lux: f32,
+    #[femtopb(float, optional, tag = 9)]
+    pub lux: ::core::option::Option<f32>,
     ///
-    /// VEML7700 high accuracy white light(irradiance) not calibrated digital 16-bit resolution sensor.
-    #[femtopb(float, tag = 10)]
-    pub white_lux: f32,
+    /// VEML7700 high accuracy white light(irradiance) not calibrated digital
+    /// 16-bit resolution sensor.
+    #[femtopb(float, optional, tag = 10)]
+    pub white_lux: ::core::option::Option<f32>,
     ///
     /// Infrared lux
-    #[femtopb(float, tag = 11)]
-    pub ir_lux: f32,
+    #[femtopb(float, optional, tag = 11)]
+    pub ir_lux: ::core::option::Option<f32>,
     ///
     /// Ultraviolet lux
-    #[femtopb(float, tag = 12)]
-    pub uv_lux: f32,
+    #[femtopb(float, optional, tag = 12)]
+    pub uv_lux: ::core::option::Option<f32>,
     ///
     /// Wind direction in degrees
     /// 0 degrees = North, 90 = East, etc...
-    #[femtopb(uint32, tag = 13)]
-    pub wind_direction: u32,
+    #[femtopb(uint32, optional, tag = 13)]
+    pub wind_direction: ::core::option::Option<u32>,
     ///
     /// Wind speed in m/s
-    #[femtopb(float, tag = 14)]
-    pub wind_speed: f32,
+    #[femtopb(float, optional, tag = 14)]
+    pub wind_speed: ::core::option::Option<f32>,
     ///
     /// Weight in KG
-    #[femtopb(float, tag = 15)]
-    pub weight: f32,
+    #[femtopb(float, optional, tag = 15)]
+    pub weight: ::core::option::Option<f32>,
     ///
     /// Wind gust in m/s
-    #[femtopb(float, tag = 16)]
-    pub wind_gust: f32,
+    #[femtopb(float, optional, tag = 16)]
+    pub wind_gust: ::core::option::Option<f32>,
     ///
     /// Wind lull in m/s
-    #[femtopb(float, tag = 17)]
-    pub wind_lull: f32,
+    #[femtopb(float, optional, tag = 17)]
+    pub wind_lull: ::core::option::Option<f32>,
+    ///
+    /// Radiation in µR/h
+    #[femtopb(float, optional, tag = 18)]
+    pub radiation: ::core::option::Option<f32>,
+    ///
+    /// Rainfall in the last hour in mm
+    #[femtopb(float, optional, tag = 19)]
+    pub rainfall_1h: ::core::option::Option<f32>,
+    ///
+    /// Rainfall in the last 24 hours in mm
+    #[femtopb(float, optional, tag = 20)]
+    pub rainfall_24h: ::core::option::Option<f32>,
+    ///
+    /// Sensor type
+    #[femtopb(enumeration, optional, tag = 21)]
+    pub sensor: ::core::option::Option<
+        ::femtopb::enumeration::EnumValue<TelemetrySensorType>,
+    >,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -2966,28 +3530,28 @@ pub struct EnvironmentMetrics<'a> {
 pub struct PowerMetrics<'a> {
     ///
     /// Voltage (Ch1)
-    #[femtopb(float, tag = 1)]
-    pub ch1_voltage: f32,
+    #[femtopb(float, optional, tag = 1)]
+    pub ch1_voltage: ::core::option::Option<f32>,
     ///
     /// Current (Ch1)
-    #[femtopb(float, tag = 2)]
-    pub ch1_current: f32,
+    #[femtopb(float, optional, tag = 2)]
+    pub ch1_current: ::core::option::Option<f32>,
     ///
     /// Voltage (Ch2)
-    #[femtopb(float, tag = 3)]
-    pub ch2_voltage: f32,
+    #[femtopb(float, optional, tag = 3)]
+    pub ch2_voltage: ::core::option::Option<f32>,
     ///
     /// Current (Ch2)
-    #[femtopb(float, tag = 4)]
-    pub ch2_current: f32,
+    #[femtopb(float, optional, tag = 4)]
+    pub ch2_current: ::core::option::Option<f32>,
     ///
     /// Voltage (Ch3)
-    #[femtopb(float, tag = 5)]
-    pub ch3_voltage: f32,
+    #[femtopb(float, optional, tag = 5)]
+    pub ch3_voltage: ::core::option::Option<f32>,
     ///
     /// Current (Ch3)
-    #[femtopb(float, tag = 6)]
-    pub ch3_current: f32,
+    #[femtopb(float, optional, tag = 6)]
+    pub ch3_current: ::core::option::Option<f32>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -2997,52 +3561,197 @@ pub struct PowerMetrics<'a> {
 pub struct AirQualityMetrics<'a> {
     ///
     /// Concentration Units Standard PM1.0
-    #[femtopb(uint32, tag = 1)]
-    pub pm10_standard: u32,
+    #[femtopb(uint32, optional, tag = 1)]
+    pub pm10_standard: ::core::option::Option<u32>,
     ///
     /// Concentration Units Standard PM2.5
-    #[femtopb(uint32, tag = 2)]
-    pub pm25_standard: u32,
+    #[femtopb(uint32, optional, tag = 2)]
+    pub pm25_standard: ::core::option::Option<u32>,
     ///
     /// Concentration Units Standard PM10.0
-    #[femtopb(uint32, tag = 3)]
-    pub pm100_standard: u32,
+    #[femtopb(uint32, optional, tag = 3)]
+    pub pm100_standard: ::core::option::Option<u32>,
     ///
     /// Concentration Units Environmental PM1.0
-    #[femtopb(uint32, tag = 4)]
-    pub pm10_environmental: u32,
+    #[femtopb(uint32, optional, tag = 4)]
+    pub pm10_environmental: ::core::option::Option<u32>,
     ///
     /// Concentration Units Environmental PM2.5
-    #[femtopb(uint32, tag = 5)]
-    pub pm25_environmental: u32,
+    #[femtopb(uint32, optional, tag = 5)]
+    pub pm25_environmental: ::core::option::Option<u32>,
     ///
     /// Concentration Units Environmental PM10.0
-    #[femtopb(uint32, tag = 6)]
-    pub pm100_environmental: u32,
+    #[femtopb(uint32, optional, tag = 6)]
+    pub pm100_environmental: ::core::option::Option<u32>,
     ///
     /// 0.3um Particle Count
-    #[femtopb(uint32, tag = 7)]
-    pub particles_03um: u32,
+    #[femtopb(uint32, optional, tag = 7)]
+    pub particles_03um: ::core::option::Option<u32>,
     ///
     /// 0.5um Particle Count
-    #[femtopb(uint32, tag = 8)]
-    pub particles_05um: u32,
+    #[femtopb(uint32, optional, tag = 8)]
+    pub particles_05um: ::core::option::Option<u32>,
     ///
     /// 1.0um Particle Count
-    #[femtopb(uint32, tag = 9)]
-    pub particles_10um: u32,
+    #[femtopb(uint32, optional, tag = 9)]
+    pub particles_10um: ::core::option::Option<u32>,
     ///
     /// 2.5um Particle Count
-    #[femtopb(uint32, tag = 10)]
-    pub particles_25um: u32,
+    #[femtopb(uint32, optional, tag = 10)]
+    pub particles_25um: ::core::option::Option<u32>,
     ///
     /// 5.0um Particle Count
-    #[femtopb(uint32, tag = 11)]
-    pub particles_50um: u32,
+    #[femtopb(uint32, optional, tag = 11)]
+    pub particles_50um: ::core::option::Option<u32>,
     ///
     /// 10.0um Particle Count
-    #[femtopb(uint32, tag = 12)]
-    pub particles_100um: u32,
+    #[femtopb(uint32, optional, tag = 12)]
+    pub particles_100um: ::core::option::Option<u32>,
+    ///
+    /// 10.0um Particle Count
+    #[femtopb(uint32, optional, tag = 13)]
+    pub co2: ::core::option::Option<u32>,
+    ///
+    /// Sensor type
+    #[femtopb(enumeration, optional, tag = 14)]
+    pub sensor: ::core::option::Option<
+        ::femtopb::enumeration::EnumValue<TelemetrySensorType>,
+    >,
+    #[femtopb(unknown_fields)]
+    pub unknown_fields: femtopb::UnknownFields<'a>,
+}
+///
+/// Local device mesh statistics
+#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+pub struct LocalStats<'a> {
+    ///
+    /// How long the device has been running since the last reboot (in seconds)
+    #[femtopb(uint32, tag = 1)]
+    pub uptime_seconds: u32,
+    ///
+    /// Utilization for the current channel, including well formed TX, RX and
+    /// malformed RX (aka noise).
+    #[femtopb(float, tag = 2)]
+    pub channel_utilization: f32,
+    ///
+    /// Percent of airtime for transmission used within the last hour.
+    #[femtopb(float, tag = 3)]
+    pub air_util_tx: f32,
+    ///
+    /// Number of packets sent
+    #[femtopb(uint32, tag = 4)]
+    pub num_packets_tx: u32,
+    ///
+    /// Number of packets received (both good and bad)
+    #[femtopb(uint32, tag = 5)]
+    pub num_packets_rx: u32,
+    ///
+    /// Number of packets received that are malformed or violate the protocol
+    #[femtopb(uint32, tag = 6)]
+    pub num_packets_rx_bad: u32,
+    ///
+    /// Number of nodes online (in the past 2 hours)
+    #[femtopb(uint32, tag = 7)]
+    pub num_online_nodes: u32,
+    ///
+    /// Number of nodes total
+    #[femtopb(uint32, tag = 8)]
+    pub num_total_nodes: u32,
+    ///
+    /// Number of received packets that were duplicates (due to multiple nodes
+    /// relaying). If this number is high, there are nodes in the mesh relaying
+    /// packets when it's unnecessary, for example due to the ROUTER/REPEATER role.
+    #[femtopb(uint32, tag = 9)]
+    pub num_rx_dupe: u32,
+    ///
+    /// Number of packets we transmitted that were a relay for others (not
+    /// originating from ourselves).
+    #[femtopb(uint32, tag = 10)]
+    pub num_tx_relay: u32,
+    ///
+    /// Number of times we canceled a packet to be relayed, because someone else
+    /// did it before us. This will always be zero for ROUTERs/REPEATERs. If this
+    /// number is high, some other node(s) is/are relaying faster than you.
+    #[femtopb(uint32, tag = 11)]
+    pub num_tx_relay_canceled: u32,
+    #[femtopb(unknown_fields)]
+    pub unknown_fields: femtopb::UnknownFields<'a>,
+}
+///
+/// Health telemetry metrics
+#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+pub struct HealthMetrics<'a> {
+    ///
+    /// Heart rate (beats per minute)
+    #[femtopb(uint32, optional, tag = 1)]
+    pub heart_bpm: ::core::option::Option<u32>,
+    ///
+    /// SpO2 (blood oxygen saturation) level
+    #[femtopb(uint32, optional, tag = 2)]
+    pub sp_o2: ::core::option::Option<u32>,
+    ///
+    /// Body temperature in degrees Celsius
+    #[femtopb(float, optional, tag = 3)]
+    pub temperature: ::core::option::Option<f32>,
+    #[femtopb(unknown_fields)]
+    pub unknown_fields: femtopb::UnknownFields<'a>,
+}
+///
+/// Error rate reporting from a device over the mesh
+#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+pub struct ErrorMetrics<'a> {
+    ///
+    /// How often packets collided (percent) over the module's time period
+    #[femtopb(float, optional, tag = 1)]
+    pub collision_rate: ::core::option::Option<f32>,
+    ///
+    /// How many nodes are online out of total nodes (percent) for the modules time
+    /// period
+    #[femtopb(float, optional, tag = 2)]
+    pub node_reach: ::core::option::Option<f32>,
+    ///
+    /// How many nodes are there total?
+    #[femtopb(uint32, optional, tag = 3)]
+    pub num_nodes: ::core::option::Option<u32>,
+    ///
+    /// How many packets contain new data in all packets seen (percent) over the
+    /// module's time period
+    #[femtopb(float, optional, tag = 4)]
+    pub usefulness: ::core::option::Option<f32>,
+    ///
+    /// How long did a packet have to delay on average (ms) over the module's time
+    /// period
+    #[femtopb(uint32, optional, tag = 5)]
+    pub avg_delay: ::core::option::Option<u32>,
+    ///
+    /// Time period (seconds) for measurements which occur, also the timeout for
+    /// how often the module collects and sends data
+    #[femtopb(uint32, optional, tag = 6)]
+    pub period: ::core::option::Option<u32>,
+    ///
+    /// Count of no route errors
+    #[femtopb(uint32, optional, tag = 7)]
+    pub noroute: ::core::option::Option<u32>,
+    ///
+    /// Count of NAK errors
+    #[femtopb(uint32, optional, tag = 8)]
+    pub naks: ::core::option::Option<u32>,
+    ///
+    /// Count of timeout errors
+    #[femtopb(uint32, optional, tag = 9)]
+    pub timeouts: ::core::option::Option<u32>,
+    ///
+    /// Count of max retransmit errors
+    #[femtopb(uint32, optional, tag = 10)]
+    pub max_retransmit: ::core::option::Option<u32>,
+    ///
+    /// Count of no channel errors
+    #[femtopb(uint32, optional, tag = 11)]
+    pub no_channel: ::core::option::Option<u32>,
+    ///
+    /// Count of too large errors
+    #[femtopb(uint32, optional, tag = 12)]
+    pub too_large: ::core::option::Option<u32>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -3054,7 +3763,7 @@ pub struct Telemetry<'a> {
     /// Seconds since 1970 - or 0 for unknown/unset
     #[femtopb(fixed32, tag = 1)]
     pub time: u32,
-    #[femtopb(oneof, tags = [2, 3, 4, 5])]
+    #[femtopb(oneof, tags = [2, 3, 4, 5, 6, 7, 8])]
     pub variant: ::core::option::Option<telemetry::Variant<'a>>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
@@ -3080,6 +3789,18 @@ pub mod telemetry {
         /// Power Metrics
         #[femtopb(message, tag = 5)]
         PowerMetrics(super::PowerMetrics<'a>),
+        ///
+        /// Local device mesh statistics
+        #[femtopb(message, tag = 6)]
+        LocalStats(super::LocalStats<'a>),
+        ///
+        /// Health telemetry metrics
+        #[femtopb(message, tag = 7)]
+        HealthMetrics(super::HealthMetrics<'a>),
+        ///
+        /// Error telemetry metrics
+        #[femtopb(message, tag = 8)]
+        ErrorMetrics(super::ErrorMetrics<'a>),
         #[femtopb(phantom)]
         _Phantom(::core::marker::PhantomData<&'a ()>),
     }
@@ -3162,7 +3883,8 @@ pub enum TelemetrySensorType {
     /// INA3221 3 Channel Voltage / Current Sensor
     Ina3221 = 14,
     ///
-    /// BMP085/BMP180 High accuracy temperature and pressure (older Version of BMP280)
+    /// BMP085/BMP180 High accuracy temperature and pressure (older Version of
+    /// BMP280)
     Bmp085 = 15,
     ///
     /// RCWL-9620 Doppler Radar Distance Sensor, used for water level detection
@@ -3189,7 +3911,8 @@ pub enum TelemetrySensorType {
     /// AHT10 Integrated temperature and humidity sensor
     Aht10 = 23,
     ///
-    /// DFRobot Lark Weather station (temperature, humidity, pressure, wind speed and direction)
+    /// DFRobot Lark Weather station (temperature, humidity, pressure, wind speed
+    /// and direction)
     DfrobotLark = 24,
     ///
     /// NAU7802 Scale Chip or compatible
@@ -3203,6 +3926,34 @@ pub enum TelemetrySensorType {
     ///
     /// MAX17048 1S lipo battery sensor (voltage, state of charge, time to go)
     Max17048 = 28,
+    ///
+    /// Custom I2C sensor implementation based on
+    /// <https://github.com/meshtastic/i2c-sensor>
+    CustomSensor = 29,
+    ///
+    /// MAX30102 Pulse Oximeter and Heart-Rate Sensor
+    Max30102 = 30,
+    ///
+    /// MLX90614 non-contact IR temperature sensor
+    Mlx90614 = 31,
+    ///
+    /// SCD40/SCD41 CO2, humidity, temperature sensor
+    Scd4x = 32,
+    ///
+    /// ClimateGuard RadSens, radiation, Geiger-Muller Tube
+    Radsens = 33,
+    ///
+    /// High accuracy current and voltage
+    Ina226 = 34,
+    ///
+    /// DFRobot Gravity tipping bucket rain gauge
+    DfrobotRain = 35,
+    ///
+    /// SCD30 Temperature, Humidity, and CO2
+    Scd30 = 36,
+    ///
+    /// AS7265X Spectral Triad spectroscopy sensor
+    As7265x = 37,
 }
 impl TelemetrySensorType {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -3240,6 +3991,15 @@ impl TelemetrySensorType {
             Self::Bmp3xx => "BMP3XX",
             Self::Icm20948 => "ICM20948",
             Self::Max17048 => "MAX17048",
+            Self::CustomSensor => "CUSTOM_SENSOR",
+            Self::Max30102 => "MAX30102",
+            Self::Mlx90614 => "MLX90614",
+            Self::Scd4x => "SCD4X",
+            Self::Radsens => "RADSENS",
+            Self::Ina226 => "INA226",
+            Self::DfrobotRain => "DFROBOT_RAIN",
+            Self::Scd30 => "SCD30",
+            Self::As7265x => "AS7265X",
         }
     }
     /// Creates an enum from field names used in the ProtoBuf definition.
@@ -3274,6 +4034,15 @@ impl TelemetrySensorType {
             "BMP3XX" => Some(Self::Bmp3xx),
             "ICM20948" => Some(Self::Icm20948),
             "MAX17048" => Some(Self::Max17048),
+            "CUSTOM_SENSOR" => Some(Self::CustomSensor),
+            "MAX30102" => Some(Self::Max30102),
+            "MLX90614" => Some(Self::Mlx90614),
+            "SCD4X" => Some(Self::Scd4x),
+            "RADSENS" => Some(Self::Radsens),
+            "INA226" => Some(Self::Ina226),
+            "DFROBOT_RAIN" => Some(Self::DfrobotRain),
+            "SCD30" => Some(Self::Scd30),
+            "AS7265X" => Some(Self::As7265x),
             _ => None,
         }
     }
@@ -3351,22 +4120,22 @@ pub mod x_modem {
     }
 }
 ///
-/// a gps position
+/// A GPS Position
 #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct Position<'a> {
     ///
     /// The new preferred location encoding, multiply by 1e-7 to get degrees
     /// in floating point
-    #[femtopb(sfixed32, tag = 1)]
-    pub latitude_i: i32,
+    #[femtopb(sfixed32, optional, tag = 1)]
+    pub latitude_i: ::core::option::Option<i32>,
     ///
     /// TODO: REPLACE
-    #[femtopb(sfixed32, tag = 2)]
-    pub longitude_i: i32,
+    #[femtopb(sfixed32, optional, tag = 2)]
+    pub longitude_i: ::core::option::Option<i32>,
     ///
     /// In meters above MSL (but see issue #359)
-    #[femtopb(int32, tag = 3)]
-    pub altitude: i32,
+    #[femtopb(int32, optional, tag = 3)]
+    pub altitude: ::core::option::Option<i32>,
     ///
     /// This is usually not sent over the mesh (to save space), but it is sent
     /// from the phone so that the local device can set its time if it is sent over
@@ -3392,12 +4161,12 @@ pub struct Position<'a> {
     pub timestamp_millis_adjust: i32,
     ///
     /// HAE altitude in meters - can be used instead of MSL altitude
-    #[femtopb(sint32, tag = 9)]
-    pub altitude_hae: i32,
+    #[femtopb(sint32, optional, tag = 9)]
+    pub altitude_hae: ::core::option::Option<i32>,
     ///
     /// Geoidal separation in meters
-    #[femtopb(sint32, tag = 10)]
-    pub altitude_geoidal_separation: i32,
+    #[femtopb(sint32, optional, tag = 10)]
+    pub altitude_geoidal_separation: ::core::option::Option<i32>,
     ///
     /// Horizontal, Vertical and Position Dilution of Precision, in 1/100 units
     /// - PDOP is sufficient for most cases
@@ -3427,12 +4196,12 @@ pub struct Position<'a> {
     /// - "heading" is where the fuselage points (measured in horizontal plane)
     /// - "yaw" indicates a relative rotation about the vertical axis
     /// TODO: REMOVE/INTEGRATE
-    #[femtopb(uint32, tag = 15)]
-    pub ground_speed: u32,
+    #[femtopb(uint32, optional, tag = 15)]
+    pub ground_speed: ::core::option::Option<u32>,
     ///
     /// TODO: REPLACE
-    #[femtopb(uint32, tag = 16)]
-    pub ground_track: u32,
+    #[femtopb(uint32, optional, tag = 16)]
+    pub ground_track: ::core::option::Option<u32>,
     ///
     /// GPS fix quality (from NMEA GxGGA statement or similar)
     #[femtopb(uint32, tag = 17)]
@@ -3648,17 +4417,38 @@ pub struct User<'a> {
     /// Indicates that the user's role in the mesh
     #[femtopb(enumeration, tag = 7)]
     pub role: ::femtopb::enumeration::EnumValue<config::device_config::Role>,
+    ///
+    /// The public key of the user's device.
+    /// This is sent out to other nodes on the mesh to allow them to compute a shared secret key.
+    #[femtopb(bytes, tag = 8)]
+    pub public_key: &'a [u8],
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
 ///
-/// A message used in our Dynamic Source Routing protocol (RFC 4728 based)
+/// A message used in a traceroute
 #[derive(Clone, PartialEq, ::femtopb::Message)]
 pub struct RouteDiscovery<'a> {
     ///
-    /// The list of nodenums this packet has visited so far
+    /// The list of nodenums this packet has visited so far to the destination.
     #[femtopb(fixed32, packed, tag = 1)]
     pub route: ::femtopb::packed::Packed<'a, u32, ::femtopb::item_encoding::Fixed32>,
+    ///
+    /// The list of SNRs (in dB, scaled by 4) in the route towards the destination.
+    #[femtopb(int32, packed, tag = 2)]
+    pub snr_towards: ::femtopb::packed::Packed<'a, i32, ::femtopb::item_encoding::Int32>,
+    ///
+    /// The list of nodenums the packet has visited on the way back from the destination.
+    #[femtopb(fixed32, packed, tag = 3)]
+    pub route_back: ::femtopb::packed::Packed<
+        'a,
+        u32,
+        ::femtopb::item_encoding::Fixed32,
+    >,
+    ///
+    /// The list of SNRs (in dB, scaled by 4) in the route back from the destination.
+    #[femtopb(int32, packed, tag = 4)]
+    pub snr_back: ::femtopb::packed::Packed<'a, i32, ::femtopb::item_encoding::Int32>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -3729,6 +4519,18 @@ pub mod routing {
         /// The application layer service on the remote node received your request, but considered your request not authorized
         /// (i.e you did not send the request on the required bound channel)
         NotAuthorized = 33,
+        ///
+        /// The client specified a PKI transport, but the node was unable to send the packet using PKI (and did not send the message at all)
+        PkiFailed = 34,
+        ///
+        /// The receiving node does not have a Public Key to decode with
+        PkiUnknownPubkey = 35,
+        ///
+        /// Admin packet otherwise checks out, but uses a bogus or expired session key
+        AdminBadSessionKey = 36,
+        ///
+        /// Admin packet sent using PKC, but not from a public key on the admin key list
+        AdminPublicKeyUnauthorized = 37,
     }
     impl Error {
         /// String value of the enum field names used in the ProtoBuf definition.
@@ -3749,6 +4551,10 @@ pub mod routing {
                 Self::DutyCycleLimit => "DUTY_CYCLE_LIMIT",
                 Self::BadRequest => "BAD_REQUEST",
                 Self::NotAuthorized => "NOT_AUTHORIZED",
+                Self::PkiFailed => "PKI_FAILED",
+                Self::PkiUnknownPubkey => "PKI_UNKNOWN_PUBKEY",
+                Self::AdminBadSessionKey => "ADMIN_BAD_SESSION_KEY",
+                Self::AdminPublicKeyUnauthorized => "ADMIN_PUBLIC_KEY_UNAUTHORIZED",
             }
         }
         /// Creates an enum from field names used in the ProtoBuf definition.
@@ -3766,6 +4572,10 @@ pub mod routing {
                 "DUTY_CYCLE_LIMIT" => Some(Self::DutyCycleLimit),
                 "BAD_REQUEST" => Some(Self::BadRequest),
                 "NOT_AUTHORIZED" => Some(Self::NotAuthorized),
+                "PKI_FAILED" => Some(Self::PkiFailed),
+                "PKI_UNKNOWN_PUBKEY" => Some(Self::PkiUnknownPubkey),
+                "ADMIN_BAD_SESSION_KEY" => Some(Self::AdminBadSessionKey),
+                "ADMIN_PUBLIC_KEY_UNAUTHORIZED" => Some(Self::AdminPublicKeyUnauthorized),
                 _ => None,
             }
         }
@@ -3838,6 +4648,10 @@ pub struct Data<'a> {
     /// a message a heart or poop emoji.
     #[femtopb(fixed32, tag = 8)]
     pub emoji: u32,
+    ///
+    /// Bitfield for extra flags. First use is to indicate that user approves the packet being uploaded to MQTT.
+    #[femtopb(uint32, optional, tag = 9)]
+    pub bitfield: ::core::option::Option<u32>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -3851,12 +4665,12 @@ pub struct Waypoint<'a> {
     pub id: u32,
     ///
     /// latitude_i
-    #[femtopb(sfixed32, tag = 2)]
-    pub latitude_i: i32,
+    #[femtopb(sfixed32, optional, tag = 2)]
+    pub latitude_i: ::core::option::Option<i32>,
     ///
     /// longitude_i
-    #[femtopb(sfixed32, tag = 3)]
-    pub longitude_i: i32,
+    #[femtopb(sfixed32, optional, tag = 3)]
+    pub longitude_i: ::core::option::Option<i32>,
     ///
     /// Time the waypoint is to expire (epoch)
     #[femtopb(uint32, tag = 4)]
@@ -3972,7 +4786,7 @@ pub struct MeshPacket<'a> {
     #[femtopb(float, tag = 8)]
     pub rx_snr: f32,
     ///
-    /// If unset treated as zero (no forwarding, send to adjacent nodes only)
+    /// If unset treated as zero (no forwarding, send to direct neighbor nodes only)
     /// if 1, allow hopping through one node, etc...
     /// For our usecase real world topologies probably have a max of about 3.
     /// This field is normally placed into a few of bits in the header.
@@ -4013,6 +4827,30 @@ pub struct MeshPacket<'a> {
     /// When receiving a packet, the difference between hop_start and hop_limit gives how many hops it traveled.
     #[femtopb(uint32, tag = 15)]
     pub hop_start: u32,
+    ///
+    /// Records the public key the packet was encrypted with, if applicable.
+    #[femtopb(bytes, tag = 16)]
+    pub public_key: &'a [u8],
+    ///
+    /// Indicates whether the packet was en/decrypted using PKI
+    #[femtopb(bool, tag = 17)]
+    pub pki_encrypted: bool,
+    ///
+    /// Last byte of the node number of the node that should be used as the next hop in routing.
+    /// Set by the firmware internally, clients are not supposed to set this.
+    #[femtopb(uint32, tag = 18)]
+    pub next_hop: u32,
+    ///
+    /// Last byte of the node number of the node that will relay/relayed this packet.
+    /// Set by the firmware internally, clients are not supposed to set this.
+    #[femtopb(uint32, tag = 19)]
+    pub relay_node: u32,
+    ///
+    /// *Never* sent over the radio links.
+    /// Timestamp after which this packet may be sent.
+    /// Set by the firmware internally, clients are not supposed to set this.
+    #[femtopb(uint32, tag = 20)]
+    pub tx_after: u32,
     #[femtopb(oneof, tags = [4, 5])]
     pub payload_variant: ::core::option::Option<mesh_packet::PayloadVariant<'a>>,
     #[femtopb(unknown_fields)]
@@ -4072,6 +4910,16 @@ pub mod mesh_packet {
         /// assume it is important and use a slightly higher priority
         Reliable = 70,
         ///
+        /// If priority is unset but the packet is a response to a request, we want it to get there relatively quickly.
+        /// Furthermore, responses stop relaying packets directed to a node early.
+        Response = 80,
+        ///
+        /// Higher priority for specific message types (portnums) to distinguish between other reliable packets.
+        High = 100,
+        ///
+        /// Higher priority alert message used for critical alerts which take priority over other reliable packets.
+        Alert = 110,
+        ///
         /// Ack/naks are sent with very high priority to ensure that retransmission
         /// stops as soon as possible
         Ack = 120,
@@ -4091,6 +4939,9 @@ pub mod mesh_packet {
                 Self::Background => "BACKGROUND",
                 Self::Default => "DEFAULT",
                 Self::Reliable => "RELIABLE",
+                Self::Response => "RESPONSE",
+                Self::High => "HIGH",
+                Self::Alert => "ALERT",
                 Self::Ack => "ACK",
                 Self::Max => "MAX",
             }
@@ -4103,6 +4954,9 @@ pub mod mesh_packet {
                 "BACKGROUND" => Some(Self::Background),
                 "DEFAULT" => Some(Self::Default),
                 "RELIABLE" => Some(Self::Reliable),
+                "RESPONSE" => Some(Self::Response),
+                "HIGH" => Some(Self::High),
+                "ALERT" => Some(Self::Alert),
                 "ACK" => Some(Self::Ack),
                 "MAX" => Some(Self::Max),
                 _ => None,
@@ -4227,14 +5081,19 @@ pub struct NodeInfo<'a> {
     #[femtopb(bool, tag = 8)]
     pub via_mqtt: bool,
     ///
-    /// Number of hops away from us this node is (0 if adjacent)
-    #[femtopb(uint32, tag = 9)]
-    pub hops_away: u32,
+    /// Number of hops away from us this node is (0 if direct neighbor)
+    #[femtopb(uint32, optional, tag = 9)]
+    pub hops_away: ::core::option::Option<u32>,
     ///
     /// True if node is in our favorites list
     /// Persists between NodeDB internal clean ups
     #[femtopb(bool, tag = 10)]
     pub is_favorite: bool,
+    ///
+    /// True if node is in our ignored list
+    /// Persists between NodeDB internal clean ups
+    #[femtopb(bool, tag = 11)]
+    pub is_ignored: bool,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -4242,7 +5101,7 @@ pub struct NodeInfo<'a> {
 /// Unique local debugging info for this node
 /// Note: we don't include position or the user info, because that will come in the
 /// Sent to the phone in response to WantNodes.
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Clone, PartialEq, ::femtopb::Message)]
 pub struct MyNodeInfo<'a> {
     ///
     /// Tells the phone what our node number is, default starting value is
@@ -4259,6 +5118,14 @@ pub struct MyNodeInfo<'a> {
     /// Phone/PC apps should compare this to their build number and if too low tell the user they must update their app
     #[femtopb(uint32, tag = 11)]
     pub min_app_version: u32,
+    ///
+    /// Unique hardware identifier for this device
+    #[femtopb(bytes, tag = 12)]
+    pub device_id: &'a [u8],
+    ///
+    /// The PlatformIO environment used to build this firmware
+    #[femtopb(string, tag = 13)]
+    pub pio_env: &'a str,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -4392,7 +5259,7 @@ pub struct FromRadio<'a> {
     pub id: u32,
     ///
     /// Log levels, chosen to match python logging conventions.
-    #[femtopb(oneof, tags = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15])]
+    #[femtopb(oneof, tags = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17])]
     pub payload_variant: ::core::option::Option<from_radio::PayloadVariant<'a>>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
@@ -4468,9 +5335,43 @@ pub mod from_radio {
         /// File system manifest messages
         #[femtopb(message, tag = 15)]
         FileInfo(super::FileInfo<'a>),
+        ///
+        /// Notification message to the client
+        #[femtopb(message, tag = 16)]
+        ClientNotification(super::ClientNotification<'a>),
+        ///
+        /// Persistent data for device-ui
+        #[femtopb(message, tag = 17)]
+        DeviceuiConfig(super::DeviceUiConfig<'a>),
         #[femtopb(phantom)]
         _Phantom(::core::marker::PhantomData<&'a ()>),
     }
+}
+///
+/// A notification message from the device to the client
+/// To be used for important messages that should to be displayed to the user
+/// in the form of push notifications or validation messages when saving
+/// invalid configuration.
+#[derive(Clone, PartialEq, ::femtopb::Message)]
+pub struct ClientNotification<'a> {
+    ///
+    /// The id of the packet we're notifying in response to
+    #[femtopb(uint32, optional, tag = 1)]
+    pub reply_id: ::core::option::Option<u32>,
+    ///
+    /// Seconds since 1970 - or 0 for unknown/unset
+    #[femtopb(fixed32, tag = 2)]
+    pub time: u32,
+    ///
+    /// The level type of notification
+    #[femtopb(enumeration, tag = 3)]
+    pub level: ::femtopb::enumeration::EnumValue<log_record::Level>,
+    ///
+    /// The message body of the notification
+    #[femtopb(string, tag = 4)]
+    pub message: &'a str,
+    #[femtopb(unknown_fields)]
+    pub unknown_fields: femtopb::UnknownFields<'a>,
 }
 ///
 /// Individual File info for the device
@@ -4597,7 +5498,6 @@ pub struct Neighbor<'a> {
     pub snr: f32,
     ///
     /// Reception time (in secs since 1970) of last message that was last sent by this ID.
-    /// Note: this is for local storage only and will not be sent out over the mesh.
     #[femtopb(fixed32, tag = 3)]
     pub last_rx_time: u32,
     ///
@@ -4605,6 +5505,14 @@ pub struct Neighbor<'a> {
     /// Note: this is for local storage only and will not be sent out over the mesh.
     #[femtopb(uint32, tag = 4)]
     pub node_broadcast_interval_secs: u32,
+    ///
+    /// Number of packets heard from this node
+    #[femtopb(uint32, tag = 5)]
+    pub num_packets_rx: u32,
+    ///
+    /// Last RSSI from a given node
+    #[femtopb(int32, tag = 6)]
+    pub rssi: i32,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -4652,6 +5560,15 @@ pub struct DeviceMetadata<'a> {
     /// Has Remote Hardware enabled
     #[femtopb(bool, tag = 10)]
     pub has_remote_hardware: bool,
+    ///
+    /// Has PKC capabilities
+    #[femtopb(bool, tag = 11)]
+    pub has_pkc: bool,
+    ///
+    /// Bit field of boolean for excluded modules
+    /// (bitwise OR of ExcludedModules)
+    #[femtopb(uint32, tag = 12)]
+    pub excluded_modules: u32,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -4839,6 +5756,9 @@ pub enum HardwareModel {
     /// Heltec HRU-3601: <https://heltec.org/project/hru-3601/>
     HeltecHru3601 = 23,
     ///
+    /// Heltec Wireless Bridge
+    HeltecWirelessBridge = 24,
+    ///
     /// B&Q Consulting Station Edition G1: <https://uniteng.com/wiki/doku.php?id=meshtastic:station>
     StationG1 = 25,
     ///
@@ -4892,7 +5812,7 @@ pub enum HardwareModel {
     /// Custom Disaster Radio esp32 v3 device <https://github.com/sudomesh/disaster-radio/tree/master/hardware/board_esp32_v3>
     DrDev = 41,
     ///
-    /// M5 esp32 based MCU modules with enclosure, TFT and LORA Shields. All Variants (Basic, Core, Fire, Core2, Paper) <https://m5stack.com/>
+    /// M5 esp32 based MCU modules with enclosure, TFT and LORA Shields. All Variants (Basic, Core, Fire, Core2, CoreS3, Paper) <https://m5stack.com/>
     M5stack = 42,
     ///
     /// New Heltec LoRA32 with ESP32-S3 CPU
@@ -5005,6 +5925,51 @@ pub enum HardwareModel {
     /// SSD1306 OLED and No GPS
     Radiomaster900Bandit = 74,
     ///
+    /// Minewsemi ME25LS01 (ME25LE01_V1.0). NRF52840 w/ LR1110 radio, buttons and leds and pins.
+    Me25ls014y10td = 75,
+    ///
+    /// RP2040_FEATHER_RFM95
+    /// Adafruit Feather RP2040 with RFM95 LoRa Radio RFM95 with SX1272, SSD1306 OLED
+    /// <https://www.adafruit.com/product/5714>
+    /// <https://www.adafruit.com/product/326>
+    /// <https://www.adafruit.com/product/938>
+    ///   ^^^ short A0 to switch to I2C address 0x3C
+    ///
+    Rp2040FeatherRfm95 = 76,
+    /// M5 esp32 based MCU modules with enclosure, TFT and LORA Shields. All Variants (Basic, Core, Fire, Core2, CoreS3, Paper) <https://m5stack.com/>
+    M5stackCorebasic = 77,
+    M5stackCore2 = 78,
+    /// Pico2 with Waveshare Hat, same as Pico
+    RpiPico2 = 79,
+    /// M5 esp32 based MCU modules with enclosure, TFT and LORA Shields. All Variants (Basic, Core, Fire, Core2, CoreS3, Paper) <https://m5stack.com/>
+    M5stackCores3 = 80,
+    /// Seeed XIAO S3 DK
+    SeeedXiaoS3 = 81,
+    ///
+    /// Nordic nRF52840+Semtech SX1262 LoRa BLE Combo Module. nRF52840+SX1262 MS24SF1
+    Ms24sf1 = 82,
+    ///
+    /// Lilygo TLora-C6 with the new ESP32-C6 MCU
+    TloraC6 = 83,
+    ///
+    /// WisMesh Tap
+    /// RAK-4631 w/ TFT in injection modled case
+    WismeshTap = 84,
+    ///
+    /// Similar to PORTDUINO but used by Routastic devices, this is not any
+    /// particular device and does not run Meshtastic's code but supports
+    /// the same frame format.
+    /// Runs on linux, see <https://github.com/Jorropo/routastic>
+    Routastic = 85,
+    ///
+    /// Mesh-Tab, esp32 based
+    /// <https://github.com/valzzu/Mesh-Tab>
+    MeshTab = 86,
+    ///
+    /// MeshLink board developed by LoraItalia. NRF52840, eByte E22900M22S (Will also come with other frequencies), 25w MPPT solar charger (5v,12v,18v selectable), support for gps, buzzer, oled or e-ink display, 10 gpios, hardware watchdog
+    /// <https://www.loraitalia.it>
+    Meshlink = 87,
+    ///
     /// ------------------------------------------------------------------------------------------------------------------------------------------
     /// Reserved ID For developing private Ports. These will show up in live traffic sparsely, so we can use a high number. Keep it within 8 bits.
     /// ------------------------------------------------------------------------------------------------------------------------------------------
@@ -5041,6 +6006,7 @@ impl HardwareModel {
             Self::WioWm1110 => "WIO_WM1110",
             Self::Rak2560 => "RAK2560",
             Self::HeltecHru3601 => "HELTEC_HRU_3601",
+            Self::HeltecWirelessBridge => "HELTEC_WIRELESS_BRIDGE",
             Self::StationG1 => "STATION_G1",
             Self::Rak11310 => "RAK11310",
             Self::SenseloraRp2040 => "SENSELORA_RP2040",
@@ -5091,6 +6057,19 @@ impl HardwareModel {
             Self::Rak3172 => "RAK3172",
             Self::WioE5 => "WIO_E5",
             Self::Radiomaster900Bandit => "RADIOMASTER_900_BANDIT",
+            Self::Me25ls014y10td => "ME25LS01_4Y10TD",
+            Self::Rp2040FeatherRfm95 => "RP2040_FEATHER_RFM95",
+            Self::M5stackCorebasic => "M5STACK_COREBASIC",
+            Self::M5stackCore2 => "M5STACK_CORE2",
+            Self::RpiPico2 => "RPI_PICO2",
+            Self::M5stackCores3 => "M5STACK_CORES3",
+            Self::SeeedXiaoS3 => "SEEED_XIAO_S3",
+            Self::Ms24sf1 => "MS24SF1",
+            Self::TloraC6 => "TLORA_C6",
+            Self::WismeshTap => "WISMESH_TAP",
+            Self::Routastic => "ROUTASTIC",
+            Self::MeshTab => "MESH_TAB",
+            Self::Meshlink => "MESHLINK",
             Self::PrivateHw => "PRIVATE_HW",
         }
     }
@@ -5121,6 +6100,7 @@ impl HardwareModel {
             "WIO_WM1110" => Some(Self::WioWm1110),
             "RAK2560" => Some(Self::Rak2560),
             "HELTEC_HRU_3601" => Some(Self::HeltecHru3601),
+            "HELTEC_WIRELESS_BRIDGE" => Some(Self::HeltecWirelessBridge),
             "STATION_G1" => Some(Self::StationG1),
             "RAK11310" => Some(Self::Rak11310),
             "SENSELORA_RP2040" => Some(Self::SenseloraRp2040),
@@ -5171,6 +6151,19 @@ impl HardwareModel {
             "RAK3172" => Some(Self::Rak3172),
             "WIO_E5" => Some(Self::WioE5),
             "RADIOMASTER_900_BANDIT" => Some(Self::Radiomaster900Bandit),
+            "ME25LS01_4Y10TD" => Some(Self::Me25ls014y10td),
+            "RP2040_FEATHER_RFM95" => Some(Self::Rp2040FeatherRfm95),
+            "M5STACK_COREBASIC" => Some(Self::M5stackCorebasic),
+            "M5STACK_CORE2" => Some(Self::M5stackCore2),
+            "RPI_PICO2" => Some(Self::RpiPico2),
+            "M5STACK_CORES3" => Some(Self::M5stackCores3),
+            "SEEED_XIAO_S3" => Some(Self::SeeedXiaoS3),
+            "MS24SF1" => Some(Self::Ms24sf1),
+            "TLORA_C6" => Some(Self::TloraC6),
+            "WISMESH_TAP" => Some(Self::WismeshTap),
+            "ROUTASTIC" => Some(Self::Routastic),
+            "MESH_TAB" => Some(Self::MeshTab),
+            "MESHLINK" => Some(Self::Meshlink),
             "PRIVATE_HW" => Some(Self::PrivateHw),
             _ => None,
         }
@@ -5201,7 +6194,7 @@ pub enum Constants {
     /// From mesh.options
     /// note: this payload length is ONLY the bytes that are sent inside of the Data protobuf (excluding protobuf overhead). The 16 byte header is
     /// outside of this envelope
-    DataPayloadLen = 237,
+    DataPayloadLen = 233,
 }
 impl Constants {
     /// String value of the enum field names used in the ProtoBuf definition.
@@ -5336,11 +6329,123 @@ impl CriticalErrorCode {
     }
 }
 ///
+/// Enum for modules excluded from a device's configuration.
+/// Each value represents a ModuleConfigType that can be toggled as excluded
+/// by setting its corresponding bit in the `excluded_modules` bitmask field.
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+    Hash,
+    PartialOrd,
+    Ord,
+    ::femtopb::Enumeration
+)]
+#[repr(i32)]
+#[derive(Default)]
+pub enum ExcludedModules {
+    ///
+    /// Default value of 0 indicates no modules are excluded.
+    #[default]
+    ExcludedNone = 0,
+    ///
+    /// MQTT module
+    MqttConfig = 1,
+    ///
+    /// Serial module
+    SerialConfig = 2,
+    ///
+    /// External Notification module
+    ExtnotifConfig = 4,
+    ///
+    /// Store and Forward module
+    StoreforwardConfig = 8,
+    ///
+    /// Range Test module
+    RangetestConfig = 16,
+    ///
+    /// Telemetry module
+    TelemetryConfig = 32,
+    ///
+    /// Canned Message module
+    CannedmsgConfig = 64,
+    ///
+    /// Audio module
+    AudioConfig = 128,
+    ///
+    /// Remote Hardware module
+    RemotehardwareConfig = 256,
+    ///
+    /// Neighbor Info module
+    NeighborinfoConfig = 512,
+    ///
+    /// Ambient Lighting module
+    AmbientlightingConfig = 1024,
+    ///
+    /// Detection Sensor module
+    DetectionsensorConfig = 2048,
+    ///
+    /// Paxcounter module
+    PaxcounterConfig = 4096,
+}
+impl ExcludedModules {
+    /// String value of the enum field names used in the ProtoBuf definition.
+    ///
+    /// The values are not transformed in any way and thus are considered stable
+    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
+    pub fn as_str_name(&self) -> &'static str {
+        match self {
+            Self::ExcludedNone => "EXCLUDED_NONE",
+            Self::MqttConfig => "MQTT_CONFIG",
+            Self::SerialConfig => "SERIAL_CONFIG",
+            Self::ExtnotifConfig => "EXTNOTIF_CONFIG",
+            Self::StoreforwardConfig => "STOREFORWARD_CONFIG",
+            Self::RangetestConfig => "RANGETEST_CONFIG",
+            Self::TelemetryConfig => "TELEMETRY_CONFIG",
+            Self::CannedmsgConfig => "CANNEDMSG_CONFIG",
+            Self::AudioConfig => "AUDIO_CONFIG",
+            Self::RemotehardwareConfig => "REMOTEHARDWARE_CONFIG",
+            Self::NeighborinfoConfig => "NEIGHBORINFO_CONFIG",
+            Self::AmbientlightingConfig => "AMBIENTLIGHTING_CONFIG",
+            Self::DetectionsensorConfig => "DETECTIONSENSOR_CONFIG",
+            Self::PaxcounterConfig => "PAXCOUNTER_CONFIG",
+        }
+    }
+    /// Creates an enum from field names used in the ProtoBuf definition.
+    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
+        match value {
+            "EXCLUDED_NONE" => Some(Self::ExcludedNone),
+            "MQTT_CONFIG" => Some(Self::MqttConfig),
+            "SERIAL_CONFIG" => Some(Self::SerialConfig),
+            "EXTNOTIF_CONFIG" => Some(Self::ExtnotifConfig),
+            "STOREFORWARD_CONFIG" => Some(Self::StoreforwardConfig),
+            "RANGETEST_CONFIG" => Some(Self::RangetestConfig),
+            "TELEMETRY_CONFIG" => Some(Self::TelemetryConfig),
+            "CANNEDMSG_CONFIG" => Some(Self::CannedmsgConfig),
+            "AUDIO_CONFIG" => Some(Self::AudioConfig),
+            "REMOTEHARDWARE_CONFIG" => Some(Self::RemotehardwareConfig),
+            "NEIGHBORINFO_CONFIG" => Some(Self::NeighborinfoConfig),
+            "AMBIENTLIGHTING_CONFIG" => Some(Self::AmbientlightingConfig),
+            "DETECTIONSENSOR_CONFIG" => Some(Self::DetectionsensorConfig),
+            "PAXCOUNTER_CONFIG" => Some(Self::PaxcounterConfig),
+            _ => None,
+        }
+    }
+}
+///
 /// This message is handled by the Admin module and is responsible for all settings/channel read/write operations.
 /// This message is used to do settings operations to both remote AND local nodes.
 /// (Prior to 1.2 these operations were done via special ToRadio operations)
 #[derive(Clone, PartialEq, ::femtopb::Message)]
 pub struct AdminMessage<'a> {
+    ///
+    /// The node generates this key and sends it with any get_x_response packets.
+    /// The client MUST include the same key with any set_x commands. Key expires after 300 seconds.
+    /// Prevents replay attacks for admin messages.
+    #[femtopb(bytes, tag = 101)]
+    pub session_passkey: &'a [u8],
     ///
     /// TODO: REPLACE
     #[femtopb(
@@ -5378,6 +6483,12 @@ pub struct AdminMessage<'a> {
         40,
         41,
         42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
         64,
         65,
         94,
@@ -5432,6 +6543,15 @@ pub mod admin_message {
         ///
         /// TODO: REPLACE
         BluetoothConfig = 6,
+        ///
+        /// TODO: REPLACE
+        SecurityConfig = 7,
+        ///
+        ///
+        SessionkeyConfig = 8,
+        ///
+        /// device-ui config
+        DeviceuiConfig = 9,
     }
     impl ConfigType {
         /// String value of the enum field names used in the ProtoBuf definition.
@@ -5447,6 +6567,9 @@ pub mod admin_message {
                 Self::DisplayConfig => "DISPLAY_CONFIG",
                 Self::LoraConfig => "LORA_CONFIG",
                 Self::BluetoothConfig => "BLUETOOTH_CONFIG",
+                Self::SecurityConfig => "SECURITY_CONFIG",
+                Self::SessionkeyConfig => "SESSIONKEY_CONFIG",
+                Self::DeviceuiConfig => "DEVICEUI_CONFIG",
             }
         }
         /// Creates an enum from field names used in the ProtoBuf definition.
@@ -5459,6 +6582,9 @@ pub mod admin_message {
                 "DISPLAY_CONFIG" => Some(Self::DisplayConfig),
                 "LORA_CONFIG" => Some(Self::LoraConfig),
                 "BLUETOOTH_CONFIG" => Some(Self::BluetoothConfig),
+                "SECURITY_CONFIG" => Some(Self::SecurityConfig),
+                "SESSIONKEY_CONFIG" => Some(Self::SessionkeyConfig),
+                "DEVICEUI_CONFIG" => Some(Self::DeviceuiConfig),
                 _ => None,
             }
         }
@@ -5706,6 +6832,31 @@ pub mod admin_message {
         #[femtopb(bool, tag = 42)]
         RemoveFixedPosition(bool),
         ///
+        /// Set time only on the node
+        /// Convenience method to set the time on the node (as Net quality) without any other position data
+        #[femtopb(fixed32, tag = 43)]
+        SetTimeOnly(u32),
+        ///
+        /// Tell the node to send the stored ui data.
+        #[femtopb(bool, tag = 44)]
+        GetUiConfigRequest(bool),
+        ///
+        /// Reply stored device ui data.
+        #[femtopb(message, tag = 45)]
+        GetUiConfigResponse(super::DeviceUiConfig<'a>),
+        ///
+        /// Tell the node to store UI data persistently.
+        #[femtopb(message, tag = 46)]
+        StoreUiConfig(super::DeviceUiConfig<'a>),
+        ///
+        /// Set specified node-num to be ignored on the NodeDB on the device
+        #[femtopb(uint32, tag = 47)]
+        SetIgnoredNode(u32),
+        ///
+        /// Set specified node-num to be un-ignored on the NodeDB on the device
+        #[femtopb(uint32, tag = 48)]
+        RemoveIgnoredNode(u32),
+        ///
         /// Begins an edit transaction for config, module config, owner, and channel settings changes
         /// This will delay the standard *implicit* save to the file system and subsequent reboot behavior until committed (commit_edit_settings)
         #[femtopb(bool, tag = 64)]
@@ -5833,7 +6984,7 @@ pub struct TakPacket<'a> {
     pub status: ::core::option::Option<Status<'a>>,
     ///
     /// The payload of the packet
-    #[femtopb(oneof, tags = [5, 6])]
+    #[femtopb(oneof, tags = [5, 6, 7])]
     pub payload_variant: ::core::option::Option<tak_packet::PayloadVariant<'a>>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
@@ -5853,6 +7004,11 @@ pub mod tak_packet {
         /// ATAK GeoChat message
         #[femtopb(message, tag = 6)]
         Chat(super::GeoChat<'a>),
+        ///
+        /// Generic CoT detail XML
+        /// May be compressed / truncated by the sender (EUD)
+        #[femtopb(bytes, tag = 7)]
+        Detail(&'a [u8]),
         #[femtopb(phantom)]
         _Phantom(::core::marker::PhantomData<&'a ()>),
     }
@@ -6186,6 +7342,10 @@ pub struct LocalConfig<'a> {
     /// NodeDB.cpp in the device code.
     #[femtopb(uint32, tag = 8)]
     pub version: u32,
+    ///
+    /// The part of the config that is specific to Security settings
+    #[femtopb(message, optional, tag = 9)]
+    pub security: ::core::option::Option<config::SecurityConfig<'a>>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -6283,6 +7443,18 @@ pub struct DeviceProfile<'a> {
     /// The ModuleConfig of the node
     #[femtopb(message, optional, tag = 5)]
     pub module_config: ::core::option::Option<LocalModuleConfig<'a>>,
+    ///
+    /// Fixed position data
+    #[femtopb(message, optional, tag = 6)]
+    pub fixed_position: ::core::option::Option<Position<'a>>,
+    ///
+    /// Ringtone for ExternalNotification
+    #[femtopb(string, optional, tag = 7)]
+    pub ringtone: ::core::option::Option<&'a str>,
+    ///
+    /// Predefined messages for CannedMessage
+    #[femtopb(string, optional, tag = 8)]
+    pub canned_messages: ::core::option::Option<&'a str>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -6319,6 +7491,47 @@ pub struct PositionLite<'a> {
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
 #[derive(Clone, PartialEq, ::femtopb::Message)]
+pub struct UserLite<'a> {
+    ///
+    /// This is the addr of the radio.
+    #[deprecated]
+    #[femtopb(bytes, tag = 1)]
+    pub macaddr: &'a [u8],
+    ///
+    /// A full name for this user, i.e. "Kevin Hester"
+    #[femtopb(string, tag = 2)]
+    pub long_name: &'a str,
+    ///
+    /// A VERY short name, ideally two characters.
+    /// Suitable for a tiny OLED screen
+    #[femtopb(string, tag = 3)]
+    pub short_name: &'a str,
+    ///
+    /// TBEAM, HELTEC, etc...
+    /// Starting in 1.2.11 moved to hw_model enum in the NodeInfo object.
+    /// Apps will still need the string here for older builds
+    /// (so OTA update can find the right image), but if the enum is available it will be used instead.
+    #[femtopb(enumeration, tag = 4)]
+    pub hw_model: ::femtopb::enumeration::EnumValue<HardwareModel>,
+    ///
+    /// In some regions Ham radio operators have different bandwidth limitations than others.
+    /// If this user is a licensed operator, set this flag.
+    /// Also, "long_name" should be their licence number.
+    #[femtopb(bool, tag = 5)]
+    pub is_licensed: bool,
+    ///
+    /// Indicates that the user's role in the mesh
+    #[femtopb(enumeration, tag = 6)]
+    pub role: ::femtopb::enumeration::EnumValue<config::device_config::Role>,
+    ///
+    /// The public key of the user's device.
+    /// This is sent out to other nodes on the mesh to allow them to compute a shared secret key.
+    #[femtopb(bytes, tag = 7)]
+    pub public_key: &'a [u8],
+    #[femtopb(unknown_fields)]
+    pub unknown_fields: femtopb::UnknownFields<'a>,
+}
+#[derive(Clone, PartialEq, ::femtopb::Message)]
 pub struct NodeInfoLite<'a> {
     ///
     /// The node number
@@ -6327,7 +7540,7 @@ pub struct NodeInfoLite<'a> {
     ///
     /// The user info for this node
     #[femtopb(message, optional, tag = 2)]
-    pub user: ::core::option::Option<User<'a>>,
+    pub user: ::core::option::Option<UserLite<'a>>,
     ///
     /// This position data. Note: before 1.2.14 we would also store the last time we've heard from this node in position.time, that is no longer true.
     /// Position.time now indicates the last time we received a POSITION from that node.
@@ -6355,14 +7568,27 @@ pub struct NodeInfoLite<'a> {
     #[femtopb(bool, tag = 8)]
     pub via_mqtt: bool,
     ///
-    /// Number of hops away from us this node is (0 if adjacent)
-    #[femtopb(uint32, tag = 9)]
-    pub hops_away: u32,
+    /// Number of hops away from us this node is (0 if direct neighbor)
+    #[femtopb(uint32, optional, tag = 9)]
+    pub hops_away: ::core::option::Option<u32>,
     ///
     /// True if node is in our favorites list
     /// Persists between NodeDB internal clean ups
     #[femtopb(bool, tag = 10)]
     pub is_favorite: bool,
+    ///
+    /// True if node is in our ignored list
+    /// Persists between NodeDB internal clean ups
+    #[femtopb(bool, tag = 11)]
+    pub is_ignored: bool,
+    ///
+    /// Last byte of the node number of the node that should be used as the next hop to reach this node.
+    #[femtopb(uint32, tag = 12)]
+    pub next_hop: u32,
+    ///
+    /// Last rx'd RSSI of this node
+    #[femtopb(int32, optional, tag = 13)]
+    pub rssi: ::core::option::Option<i32>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -6458,95 +7684,6 @@ pub struct ChannelFile<'a> {
     pub version: u32,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
-}
-///
-/// This can be used for customizing the firmware distribution. If populated,
-/// show a secondary bootup screen with custom logo and text for 2.5 seconds.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
-pub struct OemStore<'a> {
-    ///
-    /// The Logo width in Px
-    #[femtopb(uint32, tag = 1)]
-    pub oem_icon_width: u32,
-    ///
-    /// The Logo height in Px
-    #[femtopb(uint32, tag = 2)]
-    pub oem_icon_height: u32,
-    ///
-    /// The Logo in XBM bytechar format
-    #[femtopb(bytes, tag = 3)]
-    pub oem_icon_bits: &'a [u8],
-    ///
-    /// Use this font for the OEM text.
-    #[femtopb(enumeration, tag = 4)]
-    pub oem_font: ::femtopb::enumeration::EnumValue<ScreenFonts>,
-    ///
-    /// Use this font for the OEM text.
-    #[femtopb(string, tag = 5)]
-    pub oem_text: &'a str,
-    ///
-    /// The default device encryption key, 16 or 32 byte
-    #[femtopb(bytes, tag = 6)]
-    pub oem_aes_key: &'a [u8],
-    ///
-    /// A Preset LocalConfig to apply during factory reset
-    #[femtopb(message, optional, tag = 7)]
-    pub oem_local_config: ::core::option::Option<LocalConfig<'a>>,
-    ///
-    /// A Preset LocalModuleConfig to apply during factory reset
-    #[femtopb(message, optional, tag = 8)]
-    pub oem_local_module_config: ::core::option::Option<LocalModuleConfig<'a>>,
-    #[femtopb(unknown_fields)]
-    pub unknown_fields: femtopb::UnknownFields<'a>,
-}
-///
-/// Font sizes for the device screen
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
-#[repr(i32)]
-#[derive(Default)]
-pub enum ScreenFonts {
-    ///
-    /// TODO: REPLACE
-    #[default]
-    FontSmall = 0,
-    ///
-    /// TODO: REPLACE
-    FontMedium = 1,
-    ///
-    /// TODO: REPLACE
-    FontLarge = 2,
-}
-impl ScreenFonts {
-    /// String value of the enum field names used in the ProtoBuf definition.
-    ///
-    /// The values are not transformed in any way and thus are considered stable
-    /// (if the ProtoBuf definition does not change) and safe for programmatic use.
-    pub fn as_str_name(&self) -> &'static str {
-        match self {
-            Self::FontSmall => "FONT_SMALL",
-            Self::FontMedium => "FONT_MEDIUM",
-            Self::FontLarge => "FONT_LARGE",
-        }
-    }
-    /// Creates an enum from field names used in the ProtoBuf definition.
-    pub fn from_str_name(value: &str) -> ::core::option::Option<Self> {
-        match value {
-            "FONT_SMALL" => Some(Self::FontSmall),
-            "FONT_MEDIUM" => Some(Self::FontMedium),
-            "FONT_LARGE" => Some(Self::FontLarge),
-            _ => None,
-        }
-    }
 }
 ///
 /// This message wraps a MeshPacket with extra metadata about the sender and how it arrived.
