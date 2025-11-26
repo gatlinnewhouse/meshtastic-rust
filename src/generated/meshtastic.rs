@@ -5533,10 +5533,6 @@ pub struct Neighbor {
     /// Last RSSI from a given node
     #[prost(int32, tag = "6")]
     pub rssi: i32,
-    ///
-    /// 0-100 (>100 means powered)
-    #[prost(uint32, tag = "7")]
-    pub battery_level: u32,
 }
 ///
 /// Device metadata response
