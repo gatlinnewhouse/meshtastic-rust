@@ -19,8 +19,11 @@ pub enum Error {
     #[error(transparent)]
     EncodeError(#[from] prost::EncodeError),
     #[cfg(not(feature = "std"))]
-    #[error("Prost encoding error: {value:?}")]
-    EncodeError { value: prost::EncodeError },
+    #[error(transparent)]
+    EncodeError { value: std::io::Error },
+    #[cfg(feature = "femtopb")]
+    #[error(transparent)]
+    EncodeError { value: std::io::Error },
 
     /// An error indicating that the library failed to join a spawned worker task.
     #[error(transparent)]
@@ -76,19 +79,21 @@ pub enum Error {
     InternalChannelError(#[from] InternalChannelError),
 }
 
-#[cfg(all(not(feature = "femtopb"), feature = "std"))]
+#[cfg(feature = "femtopb")]
 impl From<femtopb::error::EncodeError> for Error {
-    fn from(value: femtopb::error::EncodeError) -> Self {
-        Self::InvalidaDataSize {
-            data_length: value.remaining,
+    fn from(error: femtopb::error::EncodeError) -> Self {
+        Self::EncodeError {
+            value: std::io::Error::new(std::io::ErrorKind::InvalidInput, format!("{error}")),
         }
     }
 }
 
 #[cfg(not(feature = "std"))]
 impl From<prost::EncodeError> for Error {
-    fn from(value: prost::EncodeError) -> Self {
-        Self::EncodeError { value }
+    fn from(error: prost::EncodeError) -> Self {
+        Self::EncodeError {
+            value: std::io::Error::new(std::io::ErrorKind::InvalidInput, format!("{error}")),
+        }
     }
 }
 
