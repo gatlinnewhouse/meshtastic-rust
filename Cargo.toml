@@ -16,10 +16,12 @@ edition = "2021"
 doctest = false
 
 [features]
-default = ["serde", "tokio", "no-std"]
+default = ["serde", "tokio"]
 gen = ["dep:prost-build", "dep:protoc-bin-vendored", "dep:walkdir"]
-no-std = ["dep:walkdir", "dep:femtopb-build", "dep:anyhow", "dep:femtopb"]
+femtopb = ["dep:walkdir", "dep:femtopb-build", "dep:anyhow", "dep:femtopb"]
+std = ["prost/std"]
 
+rkyv = ["dep:rkyv"]
 serde = ["dep:serde", "dep:serde_json"]
 ts-gen = ["serde", "dep:specta", "dep:specta-typescript"]
 bluetooth-le = ["dep:uuid", "dep:btleplug", "dep:futures", "dep:bluez-async"]
@@ -61,7 +63,7 @@ rand = "0.9.0"
 tokio = { version = "1.43.0", features = ["full"], optional = true }
 tokio-serial = { version = "5.4.5", optional = true }
 tokio-util = { version = "0.7.13", optional = true }
-prost = "0.14"
+prost = { version = "0.14", default-features = false, features = ["derive"] }
 log = "0.4.25"
 
 specta = { git = "https://github.com/specta-rs/specta.git", rev = "b596ef0", optional = true, features = [
@@ -71,6 +73,7 @@ specta = { git = "https://github.com/specta-rs/specta.git", rev = "b596ef0", opt
 ], version = "=2.0.0-rc.22" }
 specta-typescript = { git = "https://github.com/specta-rs/specta.git", rev = "b596ef0", optional = true, version = "=0.0.9" }
 femtopb = { version = "0.8.0", optional = true }
+rkyv = { version = "0.8.12", optional = true }
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0", optional = true }
 thiserror = "2.0.11"

@@ -130,7 +130,17 @@ pub mod channel {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum Role {
         ///
@@ -441,10 +451,7 @@ impl Language {
 pub struct Config {
     ///
     /// Payload Variant
-    #[prost(
-        oneof = "config::PayloadVariant",
-        tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
-    )]
+    #[prost(oneof = "config::PayloadVariant", tags = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10")]
     pub payload_variant: ::core::option::Option<config::PayloadVariant>,
 }
 /// Nested message and enum types in `Config`.
@@ -517,7 +524,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum Role {
@@ -631,7 +646,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum RebroadcastMode {
@@ -769,7 +792,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum PositionFlags {
@@ -853,7 +884,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum GpsMode {
@@ -1020,7 +1059,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum AddressMode {
@@ -1057,7 +1104,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum ProtocolFlags {
@@ -1152,7 +1207,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum GpsCoordinateFormat {
@@ -1216,7 +1279,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum DisplayUnits {
@@ -1253,7 +1324,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum OledType {
@@ -1298,7 +1377,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum DisplayMode {
@@ -1343,7 +1430,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum CompassOrientation {
@@ -1522,7 +1617,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum RegionCode {
@@ -1660,7 +1763,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum ModemPreset {
@@ -1754,7 +1865,15 @@ pub mod config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum PairingMode {
@@ -2181,7 +2300,15 @@ pub mod module_config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum TriggerType {
@@ -2273,7 +2400,15 @@ pub mod module_config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum AudioBaud {
@@ -2395,7 +2530,15 @@ pub mod module_config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum SerialBaud {
@@ -2470,7 +2613,15 @@ pub mod module_config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum SerialMode {
@@ -2789,7 +2940,15 @@ pub mod module_config {
         #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
         #[allow(clippy::doc_lazy_continuation)]
         #[derive(
-            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration,
+            Clone,
+            Copy,
+            Debug,
+            PartialEq,
+            Eq,
+            Hash,
+            PartialOrd,
+            Ord,
+            ::prost::Enumeration
         )]
         #[repr(i32)]
         pub enum InputEventChar {
@@ -3903,7 +4062,17 @@ pub mod x_modem {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum Control {
         Nul = 0,
@@ -4074,7 +4243,17 @@ pub mod position {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum LocSource {
         ///
@@ -4120,7 +4299,17 @@ pub mod position {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum AltSource {
         ///
@@ -4280,7 +4469,17 @@ pub mod routing {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum Error {
         ///
@@ -4517,7 +4716,9 @@ pub struct MqttClientProxyMessage {
     ///
     /// The actual service envelope payload or text for mqtt pub / sub
     #[prost(oneof = "mqtt_client_proxy_message::PayloadVariant", tags = "2, 3")]
-    pub payload_variant: ::core::option::Option<mqtt_client_proxy_message::PayloadVariant>,
+    pub payload_variant: ::core::option::Option<
+        mqtt_client_proxy_message::PayloadVariant,
+    >,
 }
 /// Nested message and enum types in `MqttClientProxyMessage`.
 pub mod mqtt_client_proxy_message {
@@ -4684,7 +4885,17 @@ pub mod mesh_packet {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum Priority {
         ///
@@ -4763,7 +4974,17 @@ pub mod mesh_packet {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum Delayed {
         ///
@@ -4952,7 +5173,17 @@ pub mod log_record {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum Level {
         ///
@@ -5428,7 +5659,9 @@ pub struct ChunkedPayloadResponse {
     #[prost(uint32, tag = "1")]
     pub payload_id: u32,
     #[prost(oneof = "chunked_payload_response::PayloadVariant", tags = "2, 3, 4")]
-    pub payload_variant: ::core::option::Option<chunked_payload_response::PayloadVariant>,
+    pub payload_variant: ::core::option::Option<
+        chunked_payload_response::PayloadVariant,
+    >,
 }
 /// Nested message and enum types in `ChunkedPayloadResponse`.
 pub mod chunked_payload_response {
@@ -6218,7 +6451,17 @@ pub mod admin_message {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum ConfigType {
         ///
@@ -6293,7 +6536,17 @@ pub mod admin_message {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum ModuleConfigType {
         ///
@@ -7040,7 +7293,9 @@ pub struct LocalModuleConfig {
     ///
     /// The part of the config that is specific to the ExternalNotification module
     #[prost(message, optional, tag = "3")]
-    pub external_notification: ::core::option::Option<module_config::ExternalNotificationConfig>,
+    pub external_notification: ::core::option::Option<
+        module_config::ExternalNotificationConfig,
+    >,
     ///
     /// The part of the config that is specific to the Store & Forward module
     #[prost(message, optional, tag = "4")]
@@ -7463,7 +7718,17 @@ pub mod power_mon {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum State {
         None = 0,
@@ -7558,7 +7823,17 @@ pub mod power_stress_message {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum Opcode {
         ///
@@ -7696,7 +7971,17 @@ pub mod hardware_message {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum Type {
         ///
@@ -7866,7 +8151,17 @@ pub mod store_and_forward {
     #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
     #[cfg_attr(feature = "serde", serde(rename_all = "camelCase"))]
     #[allow(clippy::doc_lazy_continuation)]
-    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::prost::Enumeration)]
+    #[derive(
+        Clone,
+        Copy,
+        Debug,
+        PartialEq,
+        Eq,
+        Hash,
+        PartialOrd,
+        Ord,
+        ::prost::Enumeration
+    )]
     #[repr(i32)]
     pub enum RequestResponse {
         ///

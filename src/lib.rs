@@ -66,7 +66,7 @@ pub mod errors {
 ///
 /// The `PacketReceiver` type defines the type of the tokio channel that is used to receive decoded packets from the radio.
 /// This is intended to simplify the complexity of the underlying channel type.
-#[cfg(all(feature = "tokio", not(feature = "no-std")))]
+#[cfg(all(feature = "tokio", not(feature = "femtopb")))]
 pub mod packet {
     pub use crate::connections::handlers::CLIENT_HEARTBEAT_INTERVAL;
     pub use crate::connections::PacketDestination;
@@ -76,7 +76,7 @@ pub mod packet {
     pub type PacketReceiver = tokio::sync::mpsc::UnboundedReceiver<crate::protobufs::FromRadio>;
 }
 
-#[cfg(all(feature = "tokio", feature = "no-std"))]
+#[cfg(all(feature = "tokio", feature = "femtopb"))]
 pub mod packet {
     pub use crate::connections::handlers::CLIENT_HEARTBEAT_INTERVAL;
     pub use crate::connections::PacketDestination;
@@ -86,13 +86,13 @@ pub mod packet {
     pub type PacketReceiver<'a> = tokio::sync::mpsc::UnboundedReceiver<Vec<u8>>;
 }
 
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 pub struct OwnedFromRadio<'a> {
     pub id: u32,
     pub payload_variant: protobufs::from_radio::PayloadVariant<'a>,
 }
 
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 impl<'a> From<crate::protobufs::FromRadio<'a>> for OwnedFromRadio<'a> {
     fn from(value: crate::protobufs::FromRadio<'a>) -> Self {
         Self {
@@ -108,7 +108,7 @@ impl<'a> From<crate::protobufs::FromRadio<'a>> for OwnedFromRadio<'a> {
 /// This module contains structs and enums that are generated from the protocol buffer (protobuf)
 /// definitions of the `meshtastic/protobufs` Git submodule. These structs and enums
 /// are not edited directly, but are instead generated at build time.
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 pub mod protobufs {
     #![allow(missing_docs)]
     #![allow(non_snake_case)]
@@ -122,7 +122,7 @@ pub mod protobufs {
 /// This module contains structs and enums that are generated from the protocol buffer (protobuf)
 /// definitions of the `meshtastic/protobufs` Git submodule. These structs and enums
 /// are not edited directly, but are instead generated at build time.
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 pub mod protobufs {
     #![allow(missing_docs)]
     #![allow(non_snake_case)]

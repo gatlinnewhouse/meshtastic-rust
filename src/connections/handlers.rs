@@ -2,10 +2,10 @@ use crate::errors_internal::{Error, InternalChannelError, InternalStreamError};
 use crate::protobufs;
 use crate::types::EncodedToRadioPacketWithHeader;
 use crate::utils::format_data_packet;
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 use femtopb::Message;
 use log::{debug, error, trace};
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 use prost::Message;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::spawn;
@@ -140,7 +140,7 @@ where
     Ok(())
 }
 
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 pub fn spawn_processing_handler(
     cancellation_token: CancellationToken,
     read_output_rx: UnboundedReceiver<IncomingStreamData>,
@@ -162,7 +162,7 @@ pub fn spawn_processing_handler(
     })
 }
 
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 pub fn spawn_processing_handler(
     cancellation_token: CancellationToken,
     read_output_rx: UnboundedReceiver<IncomingStreamData>,
@@ -184,7 +184,7 @@ pub fn spawn_processing_handler(
     })
 }
 
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 async fn start_processing_handler(
     mut read_output_rx: tokio::sync::mpsc::UnboundedReceiver<IncomingStreamData>,
     decoded_packet_tx: UnboundedSender<protobufs::FromRadio>,
@@ -200,7 +200,7 @@ async fn start_processing_handler(
     debug!("Processing read_output_rx channel closed");
 }
 
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 async fn start_processing_handler(
     mut read_output_rx: tokio::sync::mpsc::UnboundedReceiver<IncomingStreamData>,
     decoded_packet_tx: UnboundedSender<Vec<u8>>,
@@ -237,7 +237,7 @@ pub fn spawn_heartbeat_handler(
     })
 }
 
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 async fn start_heartbeat_handler(
     _cancellation_token: CancellationToken,
     write_input_tx: UnboundedSender<EncodedToRadioPacketWithHeader>,
@@ -284,7 +284,7 @@ async fn start_heartbeat_handler(
 
     // Return type should be never (!)
 }
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 async fn start_heartbeat_handler(
     _cancellation_token: CancellationToken,
     write_input_tx: UnboundedSender<EncodedToRadioPacketWithHeader>,

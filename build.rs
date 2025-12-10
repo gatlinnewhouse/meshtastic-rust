@@ -3,7 +3,7 @@
 #[cfg(not(feature = "gen"))]
 fn main() {}
 
-#[cfg(all(feature = "gen", feature = "no-std"))]
+#[cfg(all(feature = "gen", feature = "femtopb"))]
 fn main() -> anyhow::Result<()> {
     use std::fs;
     let protobufs_dir = "src/protobufs";
@@ -37,7 +37,7 @@ fn main() -> anyhow::Result<()> {
     config.compile()
 }
 
-#[cfg(all(feature = "gen", not(feature = "no-std")))]
+#[cfg(all(feature = "gen", not(feature = "femtopb")))]
 fn main() -> std::io::Result<()> {
     let src_dir = "src/protobufs/";
     let gen_dir = "src/generated/";
@@ -70,6 +70,11 @@ fn main() -> std::io::Result<()> {
 
     let mut config = prost_build::Config::new();
 
+    #[cfg(not(feature = "std"))]
+    {
+        config.btree_map(&["."]);
+    }
+
     #[cfg(feature = "ts-gen")]
     {
         print!("ts-gen enabled");
@@ -91,6 +96,19 @@ fn main() -> std::io::Result<()> {
             "#[cfg_attr(feature = \"serde\", serde(rename_all = \"camelCase\"))]",
         );
         config.type_attribute(".", "#[allow(clippy::doc_lazy_continuation)]");
+    }
+
+    #[cfg(feature = "rkyv")]
+    {
+        print!("rkyv enabled");
+        config.type_attribute(
+            ".",
+            "#[cfg_attr(feature = \"rkyv\", derive(rkyv::Serialize, rkyv::Deserialize, rkyv::Archive))]",
+        );
+        config.type_attribute(
+            ".",
+            "#[cfg_attr(feature = \"rkyv\", rkyv(compare(PartialEq),derive(Debug)))]",
+        );
     }
 
     config.out_dir(gen_dir);

@@ -15,8 +15,12 @@ pub enum Error {
     },
 
     /// An error indicating that the library failed to encode a protocol buffer message.
+    #[cfg(all(not(feature = "femtopb"), feature = "std"))]
     #[error(transparent)]
     EncodeError(#[from] prost::EncodeError),
+    #[cfg(not(feature = "std"))]
+    #[error("Prost encoding error: {value:?}")]
+    EncodeError { value: prost::EncodeError },
 
     /// An error indicating that the library failed to join a spawned worker task.
     #[error(transparent)]
@@ -72,12 +76,19 @@ pub enum Error {
     InternalChannelError(#[from] InternalChannelError),
 }
 
-#[cfg(feature = "no-std")]
+#[cfg(all(not(feature = "femtopb"), feature = "std"))]
 impl From<femtopb::error::EncodeError> for Error {
     fn from(value: femtopb::error::EncodeError) -> Self {
         Self::InvalidaDataSize {
             data_length: value.remaining,
         }
+    }
+}
+
+#[cfg(not(feature = "std"))]
+impl From<prost::EncodeError> for Error {
+    fn from(value: prost::EncodeError) -> Self {
+        Self::EncodeError { value }
     }
 }
 

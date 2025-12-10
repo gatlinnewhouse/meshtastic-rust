@@ -1,8 +1,8 @@
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 use femtopb::Message;
 use futures_util::future::join3;
 use log::trace;
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 use prost::Message;
 use std::{fmt::Display, marker::PhantomData};
 use tokio::{
@@ -169,7 +169,7 @@ impl<State> ConnectedStreamApi<State> {
     /// None
     ///
     #[allow(clippy::too_many_arguments)]
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn send_mesh_packet<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -230,7 +230,7 @@ impl<State> ConnectedStreamApi<State> {
     }
 
     #[allow(clippy::too_many_arguments)]
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn send_mesh_packet<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -319,7 +319,7 @@ impl<State> ConnectedStreamApi<State> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn send_to_radio_packet(
         &mut self,
         payload_variant: Option<protobufs::to_radio::PayloadVariant>,
@@ -331,7 +331,7 @@ impl<State> ConnectedStreamApi<State> {
         self.send_raw(packet_buf.into()).await
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn send_to_radio_packet(
         &mut self,
         payload_variant: Option<protobufs::to_radio::PayloadVariant<'_>>,
@@ -497,7 +497,7 @@ impl StreamApi {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn connect<S>(
         self,
         stream_handle: StreamHandle<S>,
@@ -556,7 +556,7 @@ impl StreamApi {
             },
         )
     }
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn connect<S>(
         self,
         stream_handle: StreamHandle<S>,
@@ -671,7 +671,7 @@ impl ConnectedStreamApi<state::Connected> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn configure(
         mut self,
         config_id: u32,
@@ -694,7 +694,7 @@ impl ConnectedStreamApi<state::Connected> {
         })
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn configure(
         mut self,
         config_id: u32,
@@ -893,7 +893,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn send_waypoint<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -932,7 +932,7 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn send_waypoint<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1016,7 +1016,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn send_position<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1048,7 +1048,7 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn send_position<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1124,7 +1124,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn update_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1158,7 +1158,7 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn update_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1237,7 +1237,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn update_module_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1273,7 +1273,7 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn update_module_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1352,7 +1352,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn update_channel_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1390,7 +1390,7 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn update_channel_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1466,7 +1466,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn update_user<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1500,7 +1500,7 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn update_user<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1548,7 +1548,7 @@ impl ConnectedStreamApi<state::Configured> {
     /// then trigger a radio restart, and the buffered configuration updates will be applied.
     ///
     /// **Note:** It is not supported to batch configuration, module configuration,
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     /// and channel configuration updates together. These must be done in separate transactions.
     /// This is a limitation of the current firmware.
     ///
@@ -1595,7 +1595,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn start_config_transaction(&mut self) -> Result<(), Error> {
         let to_radio = protobufs::AdminMessage {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::BeginEditSettings(
@@ -1609,7 +1609,7 @@ impl ConnectedStreamApi<state::Configured> {
         self.send_raw(packet_buf.into()).await
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn start_config_transaction(&mut self) -> Result<(), Error> {
         let to_radio = protobufs::AdminMessage {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::BeginEditSettings(
@@ -1669,7 +1669,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn commit_config_transaction(&mut self) -> Result<(), Error> {
         let to_radio = protobufs::AdminMessage {
             payload_variant: Some(
@@ -1683,7 +1683,7 @@ impl ConnectedStreamApi<state::Configured> {
         self.send_raw(packet_buf.into()).await
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn commit_config_transaction(&mut self) -> Result<(), Error> {
         let to_radio = protobufs::AdminMessage {
             payload_variant: Some(
@@ -1731,7 +1731,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn set_local_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1814,14 +1814,14 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn set_local_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
         R: PacketRouter<M, E>,
     >(
         &mut self,
-        #[cfg(feature = "no-std")] packet_router: &mut R,
+        #[cfg(feature = "femtopb")] packet_router: &mut R,
         local_config: protobufs::LocalConfig<'_>,
     ) -> Result<(), Error> {
         if let Some(c) = local_config.bluetooth {
@@ -1937,7 +1937,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn set_local_module_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -2048,7 +2048,7 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn set_local_module_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -2201,7 +2201,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(not(feature = "femtopb"))]
     pub async fn set_message_channel_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -2218,7 +2218,7 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     pub async fn set_message_channel_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,

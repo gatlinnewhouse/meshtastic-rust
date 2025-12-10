@@ -53,7 +53,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// The Meshtastic `PhoneAPI` will return decoded `FromRadio` packets, which
 /// can then be handled based on their payload variant. Note that the payload
 /// variant can be `None`, in which case the packet should be ignored.
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 fn handle_from_radio_packet(from_radio_packet: meshtastic::protobufs::FromRadio) {
     // Remove `None` variants to get the payload variant
     let payload_variant = match from_radio_packet.payload_variant {
@@ -87,7 +87,7 @@ fn handle_from_radio_packet(from_radio_packet: meshtastic::protobufs::FromRadio)
 /// The Meshtastic `PhoneAPI` will return decoded `FromRadio` packets, which
 /// can then be handled based on their payload variant. Note that the payload
 /// variant can be `None`, in which case the packet should be ignored.
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 fn handle_from_radio_packet(from_radio_buffer: Vec<u8>) {
     use femtopb::Message;
     use meshtastic::protobufs;
@@ -132,7 +132,7 @@ fn handle_from_radio_packet(from_radio_buffer: Vec<u8>) {
 ///
 /// Mesh packets are the most commonly used type of packet, and are usually
 /// what people are referring to when they talk about "packets."
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 fn handle_mesh_packet(mesh_packet: meshtastic::protobufs::MeshPacket) {
     // Remove `None` variants to get the payload variant
     let payload_variant = match mesh_packet.payload_variant {
@@ -195,7 +195,7 @@ fn handle_mesh_packet(mesh_packet: meshtastic::protobufs::MeshPacket) {
 ///
 /// Mesh packets are the most commonly used type of packet, and are usually
 /// what people are referring to when they talk about "packets."
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 fn handle_mesh_packet(mesh_packet: meshtastic::protobufs::MeshPacket) {
     use femtopb::Message;
 

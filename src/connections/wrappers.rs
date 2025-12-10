@@ -162,7 +162,7 @@ pub mod encoded_data {
         }
     }
 
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     impl From<&mut [u8]> for EncodedToRadioPacket {
         fn from(value: &mut [u8]) -> Self {
             EncodedToRadioPacket(value.to_vec())

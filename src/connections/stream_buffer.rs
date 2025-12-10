@@ -1,8 +1,8 @@
 use crate::protobufs;
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 use femtopb::Message;
 use log::{debug, error, trace};
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 use prost::Message;
 use thiserror::Error;
 use tokio::sync::mpsc::UnboundedSender;
@@ -13,14 +13,14 @@ use super::wrappers::encoded_data::IncomingStreamData;
 /// This struct is used to store bytes received from a radio stream, and is
 /// used to incrementally decode bytes from the received stream into valid
 /// FromRadio packets.
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 #[derive(Clone, Debug)]
-pub struct StreamBuffer<'a> {
+pub struct StreamBuffer {
     buffer: Vec<u8>,
     decoded_packet_tx: UnboundedSender<protobufs::FromRadio>,
 }
 
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 #[derive(Clone, Debug)]
 pub struct StreamBuffer {
     buffer: Vec<u8>,
@@ -47,24 +47,34 @@ pub enum StreamBufferError {
     MissingLSB { lsb_index: usize },
     #[error("Detected malformed packet, packet buffer contains a framing byte at index {next_packet_start_idx}")]
     MalformedPacket { next_packet_start_idx: usize },
-    #[cfg(not(feature = "no-std"))]
+    #[cfg(all(not(feature = "femtopb"), feature = "std"))]
     #[error(transparent)]
     DecodeFailure(#[from] prost::DecodeError),
-    #[cfg(feature = "no-std")]
+    #[cfg(feature = "femtopb")]
     #[error("femtopb Decoding error: {value:?}")]
     DecodeFailure { value: femtopb::error::DecodeError },
+    #[cfg(not(feature = "std"))]
+    #[error("Prost Decoding error: {value:?}")]
+    DecodeFailure { value: prost::DecodeError },
 }
 
-#[cfg(feature = "no-std")]
+#[cfg(all(not(feature = "femtopb"), feature = "std"))]
 impl From<femtopb::error::DecodeError> for StreamBufferError {
     fn from(value: femtopb::error::DecodeError) -> Self {
         Self::DecodeFailure { value }
     }
 }
 
+#[cfg(not(feature = "std"))]
+impl From<prost::DecodeError> for StreamBufferError {
+    fn from(value: prost::DecodeError) -> Self {
+        Self::DecodeFailure { value }
+    }
+}
+
 const PACKET_HEADER_SIZE: usize = 4;
 
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 impl StreamBuffer {
     /// Creates a new StreamBuffer instance that will send decoded FromRadio packets
     /// to the given broadcast channel.
@@ -366,7 +376,7 @@ impl StreamBuffer {
     }
 }
 
-#[cfg(feature = "no-std")]
+#[cfg(feature = "femtopb")]
 impl StreamBuffer {
     /// Creates a new StreamBuffer instance that will send decoded FromRadio packets
     /// to the given broadcast channel.
@@ -671,7 +681,7 @@ impl StreamBuffer {
     }
 }
 
-#[cfg(not(feature = "no-std"))]
+#[cfg(not(feature = "femtopb"))]
 #[cfg(test)]
 mod tests {
     use std::time::Duration;
