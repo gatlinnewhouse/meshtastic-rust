@@ -5518,7 +5518,6 @@ pub struct Neighbor {
     pub snr: f32,
     ///
     /// Reception time (in secs since 1970) of last message that was last sent by this ID.
-    /// Note: this is for local storage only and will not be sent out over the mesh.
     #[prost(fixed32, tag = "3")]
     pub last_rx_time: u32,
     ///
@@ -5526,6 +5525,14 @@ pub struct Neighbor {
     /// Note: this is for local storage only and will not be sent out over the mesh.
     #[prost(uint32, tag = "4")]
     pub node_broadcast_interval_secs: u32,
+    ///
+    /// Number of packets heard from this node
+    #[prost(uint32, tag = "5")]
+    pub num_packets_rx: u32,
+    ///
+    /// Last RSSI from a given node
+    #[prost(int32, tag = "6")]
+    pub rssi: i32,
 }
 ///
 /// Device metadata response
@@ -7509,6 +7516,10 @@ pub struct NodeInfoLite {
     /// Last byte of the node number of the node that should be used as the next hop to reach this node.
     #[prost(uint32, tag = "12")]
     pub next_hop: u32,
+    ///
+    /// Last rx'd RSSI of this node
+    #[prost(int32, optional, tag = "13")]
+    pub rssi: ::core::option::Option<i32>,
 }
 ///
 /// This message is never sent over the wire, but it is used for serializing DB
