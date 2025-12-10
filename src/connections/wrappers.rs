@@ -162,6 +162,13 @@ pub mod encoded_data {
         }
     }
 
+    #[cfg(feature = "no-std")]
+    impl From<&mut [u8]> for EncodedToRadioPacket {
+        fn from(value: &mut [u8]) -> Self {
+            EncodedToRadioPacket(value.to_vec())
+        }
+    }
+
     /// A struct that represents the binary encoding of an outgoing `protobufs::ToRadio` packet.
     /// This encoding can be sent to a radio, as it includes the required 4-byte packet header.
     #[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]

@@ -2,7 +2,10 @@ use crate::errors_internal::{Error, InternalChannelError, InternalStreamError};
 use crate::protobufs;
 use crate::types::EncodedToRadioPacketWithHeader;
 use crate::utils::format_data_packet;
+#[cfg(feature = "no-std")]
+use femtopb::Message;
 use log::{debug, error, trace};
+#[cfg(not(feature = "no-std"))]
 use prost::Message;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::spawn;
@@ -137,6 +140,7 @@ where
     Ok(())
 }
 
+#[cfg(not(feature = "no-std"))]
 pub fn spawn_processing_handler(
     cancellation_token: CancellationToken,
     read_output_rx: UnboundedReceiver<IncomingStreamData>,
@@ -158,9 +162,48 @@ pub fn spawn_processing_handler(
     })
 }
 
+#[cfg(feature = "no-std")]
+pub fn spawn_processing_handler(
+    cancellation_token: CancellationToken,
+    read_output_rx: UnboundedReceiver<IncomingStreamData>,
+    decoded_packet_tx: UnboundedSender<Vec<u8>>,
+) -> JoinHandle<Result<(), Error>> {
+    let handle = start_processing_handler(read_output_rx, decoded_packet_tx);
+
+    spawn(async move {
+        tokio::select! {
+            _ = cancellation_token.cancelled() => {
+                debug!("Message processing handler cancelled");
+                Ok(())
+            }
+            _ = handle => {
+                error!("Message processing handler unexpectedly terminated");
+                Err(Error::InternalChannelError(InternalChannelError::ChannelClosedEarly {}))
+            }
+        }
+    })
+}
+
+#[cfg(not(feature = "no-std"))]
 async fn start_processing_handler(
     mut read_output_rx: tokio::sync::mpsc::UnboundedReceiver<IncomingStreamData>,
     decoded_packet_tx: UnboundedSender<protobufs::FromRadio>,
+) {
+    debug!("Started message processing handler");
+
+    let mut buffer = StreamBuffer::new(decoded_packet_tx);
+
+    while let Some(message) = read_output_rx.recv().await {
+        buffer.process_incoming_bytes(message);
+    }
+
+    debug!("Processing read_output_rx channel closed");
+}
+
+#[cfg(feature = "no-std")]
+async fn start_processing_handler(
+    mut read_output_rx: tokio::sync::mpsc::UnboundedReceiver<IncomingStreamData>,
+    decoded_packet_tx: UnboundedSender<Vec<u8>>,
 ) {
     debug!("Started message processing handler");
 
@@ -194,6 +237,7 @@ pub fn spawn_heartbeat_handler(
     })
 }
 
+#[cfg(not(feature = "no-std"))]
 async fn start_heartbeat_handler(
     _cancellation_token: CancellationToken,
     write_input_tx: UnboundedSender<EncodedToRadioPacketWithHeader>,
@@ -211,6 +255,54 @@ async fn start_heartbeat_handler(
 
         let mut buffer = Vec::new();
         match heartbeat_packet.encode(&mut buffer) {
+            Ok(_) => (),
+            Err(e) => {
+                error!("Error encoding heartbeat packet: {e:?}");
+                continue;
+            }
+        };
+
+        let packet_with_header = match format_data_packet(buffer.into()) {
+            Ok(p) => p,
+            Err(e) => {
+                error!("Error formatting heartbeat packet: {e:?}");
+                continue;
+            }
+        };
+
+        trace!("Sending heartbeat packet");
+
+        write_input_tx
+            .send(packet_with_header)
+            .inspect_err(|e| error!("Error writing heartbeat packet to stream: {e:?}"))
+            .map_err(InternalStreamError::write_error)?;
+
+        log::info!("Sent heartbeat packet");
+    }
+
+    // debug!("Heartbeat handler finished");
+
+    // Return type should be never (!)
+}
+#[cfg(feature = "no-std")]
+async fn start_heartbeat_handler(
+    _cancellation_token: CancellationToken,
+    write_input_tx: UnboundedSender<EncodedToRadioPacketWithHeader>,
+) -> Result<(), Error> {
+    debug!("Started heartbeat handler");
+
+    loop {
+        tokio::time::sleep(std::time::Duration::from_secs(CLIENT_HEARTBEAT_INTERVAL)).await;
+
+        let heartbeat_packet = protobufs::ToRadio {
+            payload_variant: Some(protobufs::to_radio::PayloadVariant::Heartbeat(
+                protobufs::Heartbeat::default(),
+            )),
+            unknown_fields: femtopb::UnknownFields::empty(),
+        };
+
+        let mut buffer = Vec::new();
+        match heartbeat_packet.encode(&mut buffer.as_mut_slice()) {
             Ok(_) => (),
             Err(e) => {
                 error!("Error encoding heartbeat packet: {e:?}");

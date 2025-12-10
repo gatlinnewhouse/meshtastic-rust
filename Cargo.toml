@@ -16,7 +16,7 @@ edition = "2021"
 doctest = false
 
 [features]
-default = ["serde", "tokio"]
+default = ["serde", "tokio", "no-std"]
 gen = ["dep:prost-build", "dep:protoc-bin-vendored", "dep:walkdir"]
 no-std = ["dep:walkdir", "dep:femtopb-build", "dep:anyhow", "dep:femtopb"]
 

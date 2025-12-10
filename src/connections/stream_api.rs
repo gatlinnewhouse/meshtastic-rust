@@ -1,5 +1,8 @@
+#[cfg(feature = "no-std")]
+use femtopb::Message;
 use futures_util::future::join3;
 use log::trace;
+#[cfg(not(feature = "no-std"))]
 use prost::Message;
 use std::{fmt::Display, marker::PhantomData};
 use tokio::{
@@ -166,6 +169,7 @@ impl<State> ConnectedStreamApi<State> {
     /// None
     ///
     #[allow(clippy::too_many_arguments)]
+    #[cfg(not(feature = "no-std"))]
     pub async fn send_mesh_packet<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -225,6 +229,67 @@ impl<State> ConnectedStreamApi<State> {
         Ok(())
     }
 
+    #[allow(clippy::too_many_arguments)]
+    #[cfg(feature = "no-std")]
+    pub async fn send_mesh_packet<
+        M,
+        E: Display + std::error::Error + Send + Sync + 'static,
+        R: PacketRouter<M, E>,
+    >(
+        &mut self,
+        packet_router: &mut R,
+        packet_data: EncodedMeshPacketData,
+        port_num: protobufs::PortNum,
+        destination: PacketDestination,
+        channel: MeshChannel,
+        want_ack: bool,
+        want_response: bool,
+        echo_response: bool,
+        reply_id: Option<u32>,
+        emoji: Option<u32>,
+    ) -> Result<(), Error> {
+        let own_node_id = packet_router.source_node_id();
+
+        let packet_destination: NodeId = match destination {
+            PacketDestination::Local => own_node_id,
+            PacketDestination::Broadcast => u32::MAX.into(),
+            PacketDestination::Node(id) => id,
+        };
+
+        let mut mesh_packet = protobufs::MeshPacket {
+            payload_variant: Some(protobufs::mesh_packet::PayloadVariant::Decoded(
+                protobufs::Data {
+                    portnum: femtopb::EnumValue::Known(port_num),
+                    payload: packet_data.data(),
+                    want_response,
+                    reply_id: reply_id.unwrap_or(0),
+                    emoji: emoji.unwrap_or(0),
+                    ..Default::default()
+                },
+            )),
+            from: own_node_id.id(),
+            to: packet_destination.id(),
+            id: generate_rand_id(),
+            want_ack,
+            channel: channel.channel(),
+            ..Default::default()
+        };
+
+        if echo_response {
+            mesh_packet.rx_time = current_epoch_secs_u32();
+            packet_router
+                .handle_mesh_packet(mesh_packet.clone())
+                .map_err(|e| Error::PacketHandlerFailure {
+                    source: Box::new(e),
+                })?;
+        }
+
+        let payload_variant = Some(protobufs::to_radio::PayloadVariant::Packet(mesh_packet));
+        self.send_to_radio_packet(payload_variant).await?;
+
+        Ok(())
+    }
+
     /// A helper method to send a raw `ToRadio` packet to the radio based on a provided `protobufs::to_radio::PayloadVariant`.
     /// This method is generally intended for advanced users and should only be used when the
     /// more specific "send" methods are not sufficient.
@@ -254,6 +319,7 @@ impl<State> ConnectedStreamApi<State> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn send_to_radio_packet(
         &mut self,
         payload_variant: Option<protobufs::to_radio::PayloadVariant>,
@@ -262,6 +328,21 @@ impl<State> ConnectedStreamApi<State> {
 
         let mut packet_buf = vec![];
         packet.encode(&mut packet_buf)?;
+        self.send_raw(packet_buf.into()).await
+    }
+
+    #[cfg(feature = "no-std")]
+    pub async fn send_to_radio_packet(
+        &mut self,
+        payload_variant: Option<protobufs::to_radio::PayloadVariant<'_>>,
+    ) -> Result<(), Error> {
+        let packet = protobufs::ToRadio {
+            payload_variant,
+            unknown_fields: femtopb::UnknownFields::empty(),
+        };
+
+        let mut packet_buf = vec![];
+        packet.encode(&mut packet_buf.as_mut_slice())?;
         self.send_raw(packet_buf.into()).await
     }
 
@@ -416,6 +497,7 @@ impl StreamApi {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn connect<S>(
         self,
         stream_handle: StreamHandle<S>,
@@ -433,6 +515,67 @@ impl StreamApi {
 
         let (decoded_packet_tx, decoded_packet_rx) =
             tokio::sync::mpsc::unbounded_channel::<protobufs::FromRadio>();
+
+        // Spawn worker threads with kill switch
+
+        let (read_stream, write_stream) = tokio::io::split(stream_handle.stream);
+        let cancellation_token = CancellationToken::new();
+
+        let read_handle =
+            handlers::spawn_read_handler(cancellation_token.clone(), read_stream, read_output_tx);
+
+        let write_handle =
+            handlers::spawn_write_handler(cancellation_token.clone(), write_stream, write_input_rx);
+
+        let processing_handle = handlers::spawn_processing_handler(
+            cancellation_token.clone(),
+            read_output_rx,
+            decoded_packet_tx,
+        );
+
+        let heartbeat_handle =
+            handlers::spawn_heartbeat_handler(cancellation_token.clone(), write_input_tx.clone());
+
+        // Persist channels and kill switch to struct
+
+        let write_input_tx = write_input_tx;
+        let cancellation_token = cancellation_token;
+
+        // Return channel for receiving decoded packets
+
+        (
+            decoded_packet_rx,
+            ConnectedStreamApi::<state::Connected> {
+                write_input_tx,
+                read_handle,
+                write_handle,
+                processing_handle,
+                heartbeat_handle,
+                cancellation_token,
+                typestate: PhantomData,
+            },
+        )
+    }
+    #[cfg(feature = "no-std")]
+    pub async fn connect<S>(
+        self,
+        stream_handle: StreamHandle<S>,
+    ) -> (
+        PacketReceiver<'static>,
+        ConnectedStreamApi<state::Connected>,
+    )
+    where
+        S: AsyncReadExt + AsyncWriteExt + Send + 'static,
+    {
+        // Create message channels
+        let (write_input_tx, write_input_rx) =
+            tokio::sync::mpsc::unbounded_channel::<EncodedToRadioPacketWithHeader>();
+
+        let (read_output_tx, read_output_rx) =
+            tokio::sync::mpsc::unbounded_channel::<IncomingStreamData>();
+
+        let (decoded_packet_tx, decoded_packet_rx) =
+            tokio::sync::mpsc::unbounded_channel::<Vec<u8>>();
 
         // Spawn worker threads with kill switch
 
@@ -528,6 +671,7 @@ impl ConnectedStreamApi<state::Connected> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn configure(
         mut self,
         config_id: u32,
@@ -537,6 +681,32 @@ impl ConnectedStreamApi<state::Connected> {
         };
 
         let packet_buf: EncodedToRadioPacket = to_radio.encode_to_vec().into();
+        self.send_raw(packet_buf).await?;
+
+        Ok(ConnectedStreamApi::<state::Configured> {
+            write_input_tx: self.write_input_tx,
+            read_handle: self.read_handle,
+            write_handle: self.write_handle,
+            processing_handle: self.processing_handle,
+            heartbeat_handle: self.heartbeat_handle,
+            cancellation_token: self.cancellation_token,
+            typestate: PhantomData,
+        })
+    }
+
+    #[cfg(feature = "no-std")]
+    pub async fn configure(
+        mut self,
+        config_id: u32,
+    ) -> Result<ConnectedStreamApi<state::Configured>, Error> {
+        let to_radio = protobufs::ToRadio {
+            payload_variant: Some(protobufs::to_radio::PayloadVariant::WantConfigId(config_id)),
+            unknown_fields: femtopb::UnknownFields::empty(),
+        };
+
+        let mut buffer = Vec::new();
+        to_radio.encode(&mut buffer.as_mut_slice())?;
+        let packet_buf: EncodedToRadioPacket = buffer.into();
         self.send_raw(packet_buf).await?;
 
         Ok(ConnectedStreamApi::<state::Configured> {
@@ -723,6 +893,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn send_waypoint<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -743,6 +914,47 @@ impl ConnectedStreamApi<state::Configured> {
         }
 
         let byte_data: EncodedMeshPacketData = waypoint.encode_to_vec().into();
+
+        self.send_mesh_packet(
+            packet_router,
+            byte_data,
+            protobufs::PortNum::WaypointApp,
+            destination,
+            channel,
+            want_ack,
+            false,
+            true,
+            None,
+            None,
+        )
+        .await?;
+
+        Ok(())
+    }
+
+    #[cfg(feature = "no-std")]
+    pub async fn send_waypoint<
+        M,
+        E: Display + std::error::Error + Send + Sync + 'static,
+        R: PacketRouter<M, E>,
+    >(
+        &mut self,
+        packet_router: &mut R,
+        waypoint: crate::protobufs::Waypoint<'_>,
+        destination: PacketDestination,
+        want_ack: bool,
+        channel: MeshChannel,
+    ) -> Result<(), Error> {
+        let mut waypoint = waypoint;
+
+        // Waypoint with ID of zero denotes a new waypoint; check whether to generate its ID on backend
+        if waypoint.id == 0 {
+            waypoint.id = generate_rand_id();
+        }
+
+        let mut buffer = Vec::new();
+        waypoint.encode(&mut buffer.as_mut_slice())?;
+        let byte_data: EncodedMeshPacketData = buffer.into();
 
         self.send_mesh_packet(
             packet_router,
@@ -804,6 +1016,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn send_position<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -817,6 +1030,40 @@ impl ConnectedStreamApi<state::Configured> {
         channel: MeshChannel,
     ) -> Result<(), Error> {
         let byte_data: EncodedMeshPacketData = position.encode_to_vec().into();
+
+        self.send_mesh_packet(
+            packet_router,
+            byte_data,
+            protobufs::PortNum::PositionApp,
+            destination,
+            channel,
+            want_ack,
+            false,
+            true,
+            None,
+            None,
+        )
+        .await?;
+
+        Ok(())
+    }
+
+    #[cfg(feature = "no-std")]
+    pub async fn send_position<
+        M,
+        E: Display + std::error::Error + Send + Sync + 'static,
+        R: PacketRouter<M, E>,
+    >(
+        &mut self,
+        packet_router: &mut R,
+        position: crate::protobufs::Position<'_>,
+        destination: PacketDestination,
+        want_ack: bool,
+        channel: MeshChannel,
+    ) -> Result<(), Error> {
+        let mut buffer = Vec::new();
+        position.encode(&mut buffer.as_mut_slice())?;
+        let byte_data: EncodedMeshPacketData = buffer.into();
 
         self.send_mesh_packet(
             packet_router,
@@ -877,6 +1124,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn update_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -892,6 +1140,43 @@ impl ConnectedStreamApi<state::Configured> {
         };
 
         let byte_data: EncodedMeshPacketData = config_packet.encode_to_vec().into();
+
+        self.send_mesh_packet(
+            packet_router,
+            byte_data,
+            protobufs::PortNum::AdminApp,
+            PacketDestination::Local,
+            MeshChannel::new(0)?,
+            true,
+            true,
+            false,
+            None,
+            None,
+        )
+        .await?;
+
+        Ok(())
+    }
+
+    #[cfg(feature = "no-std")]
+    pub async fn update_config<
+        M,
+        E: Display + std::error::Error + Send + Sync + 'static,
+        R: PacketRouter<M, E>,
+    >(
+        &mut self,
+        packet_router: &mut R,
+        config: protobufs::Config<'_>,
+    ) -> Result<(), Error> {
+        let config_packet = protobufs::AdminMessage {
+            payload_variant: Some(protobufs::admin_message::PayloadVariant::SetConfig(config)),
+            session_passkey: &[0u8], //TODO: fix this to be more robust like std version
+            unknown_fields: femtopb::UnknownFields::empty(),
+        };
+
+        let mut buffer = Vec::new();
+        config_packet.encode(&mut buffer.as_mut_slice())?;
+        let byte_data: EncodedMeshPacketData = buffer.into();
 
         self.send_mesh_packet(
             packet_router,
@@ -952,6 +1237,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn update_module_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -969,6 +1255,45 @@ impl ConnectedStreamApi<state::Configured> {
         };
 
         let byte_data: EncodedMeshPacketData = module_config_packet.encode_to_vec().into();
+
+        self.send_mesh_packet(
+            packet_router,
+            byte_data,
+            protobufs::PortNum::AdminApp,
+            PacketDestination::Local,
+            MeshChannel::new(0)?,
+            true,
+            true,
+            false,
+            None,
+            None,
+        )
+        .await?;
+
+        Ok(())
+    }
+
+    #[cfg(feature = "no-std")]
+    pub async fn update_module_config<
+        M,
+        E: Display + std::error::Error + Send + Sync + 'static,
+        R: PacketRouter<M, E>,
+    >(
+        &mut self,
+        packet_router: &mut R,
+        module_config: protobufs::ModuleConfig<'_>,
+    ) -> Result<(), Error> {
+        let module_config_packet = protobufs::AdminMessage {
+            payload_variant: Some(protobufs::admin_message::PayloadVariant::SetModuleConfig(
+                module_config,
+            )),
+            session_passkey: &[0u8], //TODO: fix this to be more robust like std version
+            unknown_fields: femtopb::UnknownFields::empty(),
+        };
+
+        let mut buffer = Vec::new();
+        module_config_packet.encode(&mut buffer.as_mut_slice())?;
+        let byte_data: EncodedMeshPacketData = buffer.into();
 
         self.send_mesh_packet(
             packet_router,
@@ -1027,6 +1352,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn update_channel_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1046,6 +1372,47 @@ impl ConnectedStreamApi<state::Configured> {
         };
 
         let byte_data: EncodedMeshPacketData = channel_packet.encode_to_vec().into();
+
+        self.send_mesh_packet(
+            packet_router,
+            byte_data,
+            protobufs::PortNum::AdminApp,
+            PacketDestination::Local,
+            MeshChannel::new(0)?,
+            true,
+            true,
+            false,
+            None,
+            None,
+        )
+        .await?;
+
+        Ok(())
+    }
+
+    #[cfg(feature = "no-std")]
+    pub async fn update_channel_config<
+        M,
+        E: Display + std::error::Error + Send + Sync + 'static,
+        R: PacketRouter<M, E>,
+    >(
+        &mut self,
+        packet_router: &mut R,
+        channel_config: protobufs::Channel<'_>,
+    ) -> Result<(), Error> {
+        // Tell device to update channels
+
+        let channel_packet = protobufs::AdminMessage {
+            payload_variant: Some(protobufs::admin_message::PayloadVariant::SetChannel(
+                channel_config,
+            )),
+            session_passkey: &[0u8], //TODO: fix this to be more robust like std version
+            unknown_fields: femtopb::UnknownFields::empty(),
+        };
+
+        let mut buffer = Vec::new();
+        channel_packet.encode(&mut buffer.as_mut_slice())?;
+        let byte_data: EncodedMeshPacketData = buffer.into();
 
         self.send_mesh_packet(
             packet_router,
@@ -1099,6 +1466,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn update_user<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1132,6 +1500,43 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
+    #[cfg(feature = "no-std")]
+    pub async fn update_user<
+        M,
+        E: Display + std::error::Error + Send + Sync + 'static,
+        R: PacketRouter<M, E>,
+    >(
+        &mut self,
+        packet_router: &mut R,
+        user: protobufs::User<'_>,
+    ) -> Result<(), Error> {
+        let user_packet = protobufs::AdminMessage {
+            payload_variant: Some(protobufs::admin_message::PayloadVariant::SetOwner(user)),
+            session_passkey: &[0u8], //TODO: fix this to be more robust like std version
+            unknown_fields: femtopb::UnknownFields::empty(),
+        };
+
+        let mut buffer = Vec::new();
+        user_packet.encode(&mut buffer.as_mut_slice())?;
+        let byte_data: EncodedMeshPacketData = buffer.into();
+
+        self.send_mesh_packet(
+            packet_router,
+            byte_data,
+            protobufs::PortNum::AdminApp,
+            PacketDestination::Local,
+            MeshChannel::new(0)?,
+            true,
+            true,
+            false,
+            None,
+            None,
+        )
+        .await?;
+
+        Ok(())
+    }
+
     /// A method to tell the radio to begin a bulk configuration update.
     ///
     /// This method is intended to be used to batch multiple configuration updates into a single
@@ -1143,6 +1548,7 @@ impl ConnectedStreamApi<state::Configured> {
     /// then trigger a radio restart, and the buffered configuration updates will be applied.
     ///
     /// **Note:** It is not supported to batch configuration, module configuration,
+    #[cfg(feature = "no-std")]
     /// and channel configuration updates together. These must be done in separate transactions.
     /// This is a limitation of the current firmware.
     ///
@@ -1189,6 +1595,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn start_config_transaction(&mut self) -> Result<(), Error> {
         let to_radio = protobufs::AdminMessage {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::BeginEditSettings(
@@ -1199,6 +1606,21 @@ impl ConnectedStreamApi<state::Configured> {
 
         let mut packet_buf = vec![];
         to_radio.encode(&mut packet_buf)?;
+        self.send_raw(packet_buf.into()).await
+    }
+
+    #[cfg(feature = "no-std")]
+    pub async fn start_config_transaction(&mut self) -> Result<(), Error> {
+        let to_radio = protobufs::AdminMessage {
+            payload_variant: Some(protobufs::admin_message::PayloadVariant::BeginEditSettings(
+                true,
+            )),
+            session_passkey: &[0u8], //TODO: fix this to be more robust like std version
+            unknown_fields: femtopb::UnknownFields::empty(),
+        };
+
+        let mut packet_buf = vec![];
+        to_radio.encode(&mut packet_buf.as_mut_slice())?;
         self.send_raw(packet_buf.into()).await
     }
 
@@ -1247,6 +1669,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn commit_config_transaction(&mut self) -> Result<(), Error> {
         let to_radio = protobufs::AdminMessage {
             payload_variant: Some(
@@ -1257,6 +1680,21 @@ impl ConnectedStreamApi<state::Configured> {
 
         let mut packet_buf = vec![];
         to_radio.encode(&mut packet_buf)?;
+        self.send_raw(packet_buf.into()).await
+    }
+
+    #[cfg(feature = "no-std")]
+    pub async fn commit_config_transaction(&mut self) -> Result<(), Error> {
+        let to_radio = protobufs::AdminMessage {
+            payload_variant: Some(
+                protobufs::admin_message::PayloadVariant::CommitEditSettings(true),
+            ),
+            session_passkey: &[0u8], //TODO: fix this to be more robust like std version
+            unknown_fields: femtopb::UnknownFields::empty(),
+        };
+
+        let mut packet_buf = vec![];
+        to_radio.encode(&mut packet_buf.as_mut_slice())?;
         self.send_raw(packet_buf.into()).await
     }
 
@@ -1293,6 +1731,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn set_local_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1375,6 +1814,96 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
+    #[cfg(feature = "no-std")]
+    pub async fn set_local_config<
+        M,
+        E: Display + std::error::Error + Send + Sync + 'static,
+        R: PacketRouter<M, E>,
+    >(
+        &mut self,
+        #[cfg(feature = "no-std")] packet_router: &mut R,
+        local_config: protobufs::LocalConfig<'_>,
+    ) -> Result<(), Error> {
+        if let Some(c) = local_config.bluetooth {
+            self.update_config(
+                packet_router,
+                protobufs::Config {
+                    payload_variant: Some(protobufs::config::PayloadVariant::Bluetooth(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_config.device {
+            self.update_config(
+                packet_router,
+                protobufs::Config {
+                    payload_variant: Some(protobufs::config::PayloadVariant::Device(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_config.display {
+            self.update_config(
+                packet_router,
+                protobufs::Config {
+                    payload_variant: Some(protobufs::config::PayloadVariant::Display(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_config.lora {
+            self.update_config(
+                packet_router,
+                protobufs::Config {
+                    payload_variant: Some(protobufs::config::PayloadVariant::Lora(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_config.network {
+            self.update_config(
+                packet_router,
+                protobufs::Config {
+                    payload_variant: Some(protobufs::config::PayloadVariant::Network(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_config.position {
+            self.update_config(
+                packet_router,
+                protobufs::Config {
+                    payload_variant: Some(protobufs::config::PayloadVariant::Position(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_config.power {
+            self.update_config(
+                packet_router,
+                protobufs::Config {
+                    payload_variant: Some(protobufs::config::PayloadVariant::Power(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        Ok(())
+    }
+
     /// A helper method to update multiple module configuration fields at once.
     ///
     /// This method is intended to simplify the process of updating multiple module configuration
@@ -1408,6 +1937,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn set_local_module_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1518,6 +2048,126 @@ impl ConnectedStreamApi<state::Configured> {
         Ok(())
     }
 
+    #[cfg(feature = "no-std")]
+    pub async fn set_local_module_config<
+        M,
+        E: Display + std::error::Error + Send + Sync + 'static,
+        R: PacketRouter<M, E>,
+    >(
+        &mut self,
+        packet_router: &mut R,
+        local_module_config: protobufs::LocalModuleConfig<'_>,
+    ) -> Result<(), Error> {
+        if let Some(c) = local_module_config.audio {
+            self.update_module_config(
+                packet_router,
+                protobufs::ModuleConfig {
+                    payload_variant: Some(protobufs::module_config::PayloadVariant::Audio(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_module_config.canned_message {
+            self.update_module_config(
+                packet_router,
+                protobufs::ModuleConfig {
+                    payload_variant: Some(protobufs::module_config::PayloadVariant::CannedMessage(
+                        c,
+                    )),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_module_config.external_notification {
+            self.update_module_config(
+                packet_router,
+                protobufs::ModuleConfig {
+                    payload_variant: Some(
+                        protobufs::module_config::PayloadVariant::ExternalNotification(c),
+                    ),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_module_config.mqtt {
+            self.update_module_config(
+                packet_router,
+                protobufs::ModuleConfig {
+                    payload_variant: Some(protobufs::module_config::PayloadVariant::Mqtt(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_module_config.range_test {
+            self.update_module_config(
+                packet_router,
+                protobufs::ModuleConfig {
+                    payload_variant: Some(protobufs::module_config::PayloadVariant::RangeTest(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_module_config.remote_hardware {
+            self.update_module_config(
+                packet_router,
+                protobufs::ModuleConfig {
+                    payload_variant: Some(
+                        protobufs::module_config::PayloadVariant::RemoteHardware(c),
+                    ),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_module_config.serial {
+            self.update_module_config(
+                packet_router,
+                protobufs::ModuleConfig {
+                    payload_variant: Some(protobufs::module_config::PayloadVariant::Serial(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_module_config.store_forward {
+            self.update_module_config(
+                packet_router,
+                protobufs::ModuleConfig {
+                    payload_variant: Some(protobufs::module_config::PayloadVariant::StoreForward(
+                        c,
+                    )),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        if let Some(c) = local_module_config.telemetry {
+            self.update_module_config(
+                packet_router,
+                protobufs::ModuleConfig {
+                    payload_variant: Some(protobufs::module_config::PayloadVariant::Telemetry(c)),
+                    unknown_fields: femtopb::UnknownFields::empty(),
+                },
+            )
+            .await?;
+        }
+
+        Ok(())
+    }
+
     /// A helper method to update the configuration of multiple message channels at once.
     ///
     /// This method is intended to simplify the process of updating multiple channel configuration
@@ -1551,6 +2201,7 @@ impl ConnectedStreamApi<state::Configured> {
     ///
     /// None
     ///
+    #[cfg(not(feature = "no-std"))]
     pub async fn set_message_channel_config<
         M,
         E: Display + std::error::Error + Send + Sync + 'static,
@@ -1559,6 +2210,23 @@ impl ConnectedStreamApi<state::Configured> {
         &mut self,
         packet_router: &mut R,
         channel_config: Vec<protobufs::Channel>,
+    ) -> Result<(), Error> {
+        for channel in channel_config {
+            self.update_channel_config(packet_router, channel).await?;
+        }
+
+        Ok(())
+    }
+
+    #[cfg(feature = "no-std")]
+    pub async fn set_message_channel_config<
+        M,
+        E: Display + std::error::Error + Send + Sync + 'static,
+        R: PacketRouter<M, E>,
+    >(
+        &mut self,
+        packet_router: &mut R,
+        channel_config: Vec<protobufs::Channel<'_>>,
     ) -> Result<(), Error> {
         for channel in channel_config {
             self.update_channel_config(packet_router, channel).await?;

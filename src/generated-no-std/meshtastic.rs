@@ -14,7 +14,7 @@
 /// FIXME: Add description of multi-channel support and how primary vs secondary channels are used.
 /// FIXME: explain how apps use channels for security.
 /// explain how remote settings and remote gpio are managed as an example
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct ChannelSettings<'a> {
     ///
     /// Deprecated in favor of LoraConfig.channel_num
@@ -76,7 +76,7 @@ pub struct ChannelSettings<'a> {
 }
 ///
 /// This message is specifically for modules to store per-channel configuration data.
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct ModuleSettings<'a> {
     ///
     /// Bits of precision for the location sent in position packets.
@@ -92,7 +92,7 @@ pub struct ModuleSettings<'a> {
 }
 ///
 /// A pair of a channel number, mode and the (sharable) settings for that channel
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct Channel<'a> {
     ///
     /// The index of this channel in the channel table (from 0 to MAX_NUM_CHANNELS-1)
@@ -123,17 +123,7 @@ pub mod channel {
     /// cross band routing as needed.
     /// If a device has only a single radio (the common case) only one channel can be PRIMARY at a time
     /// (but any number of SECONDARY channels can't be sent received on that common frequency)
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum Role {
@@ -172,7 +162,7 @@ pub mod channel {
         }
     }
 }
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct DeviceUiConfig<'a> {
     ///
     /// A version integer used to invalidate saved files when we make incompatible changes.
@@ -225,7 +215,7 @@ pub struct DeviceUiConfig<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct NodeFilter<'a> {
     ///
     /// Filter unknown nodes
@@ -258,7 +248,7 @@ pub struct NodeFilter<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct NodeHighlight<'a> {
     ///
     /// Hightlight nodes w/ active chat
@@ -283,17 +273,7 @@ pub struct NodeHighlight<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
 #[repr(i32)]
 #[derive(Default)]
 pub enum Theme {
@@ -332,17 +312,7 @@ impl Theme {
 }
 ///
 /// Localization
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
 #[repr(i32)]
 #[derive(Default)]
 pub enum Language {
@@ -454,7 +424,7 @@ impl Language {
         }
     }
 }
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct Config<'a> {
     ///
     /// Payload Variant
@@ -467,7 +437,7 @@ pub struct Config<'a> {
 pub mod config {
     ///
     /// Configuration
-    #[derive(Clone, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
     pub struct DeviceConfig<'a> {
         ///
         /// Sets the role of node
@@ -492,9 +462,7 @@ pub mod config {
         ///
         /// Sets the role of node
         #[femtopb(enumeration, tag = 6)]
-        pub rebroadcast_mode: ::femtopb::enumeration::EnumValue<
-            device_config::RebroadcastMode,
-        >,
+        pub rebroadcast_mode: ::femtopb::enumeration::EnumValue<device_config::RebroadcastMode>,
         ///
         /// Send our nodeinfo this often
         /// Defaults to 900 Seconds (15 minutes)
@@ -531,15 +499,7 @@ pub mod config {
         ///
         /// Defines the device's role on the Mesh network
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -652,15 +612,7 @@ pub mod config {
         ///
         /// Defines the device's behavior for how messages are rebroadcast
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -721,7 +673,7 @@ pub mod config {
     }
     ///
     /// Position Config
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct PositionConfig<'a> {
         ///
         /// We should send our position this often (but only if it has changed significantly)
@@ -796,15 +748,7 @@ pub mod config {
         /// NOTE: the more fields are included, the larger the message will be -
         ///    leading to longer airtime and a higher risk of packet loss
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -887,15 +831,7 @@ pub mod config {
             }
         }
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -937,7 +873,7 @@ pub mod config {
     ///
     /// Power Config\
     /// See [Power Config](/docs/settings/config/power) for additional power config details.
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct PowerConfig<'a> {
         ///
         /// Description: Will sleep everything as much as possible, for the tracker and sensor role this will also include the lora radio.
@@ -992,7 +928,7 @@ pub mod config {
     }
     ///
     /// Network Config
-    #[derive(Clone, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
     pub struct NetworkConfig<'a> {
         ///
         /// Enable WiFi (disables Bluetooth)
@@ -1036,7 +972,7 @@ pub mod config {
     }
     /// Nested message and enum types in `NetworkConfig`.
     pub mod network_config {
-        #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+        #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
         pub struct IpV4Config<'a> {
             ///
             /// Static IP address
@@ -1058,15 +994,7 @@ pub mod config {
             pub unknown_fields: femtopb::UnknownFields<'a>,
         }
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -1102,15 +1030,7 @@ pub mod config {
         ///
         /// Available flags auxiliary network protocols
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -1146,7 +1066,7 @@ pub mod config {
     }
     ///
     /// Display Config
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct DisplayConfig<'a> {
         ///
         /// Number of seconds the screen stays on after pressing the user button or receiving a message
@@ -1156,9 +1076,7 @@ pub mod config {
         ///
         /// How the GPS coordinates are formatted on the OLED screen.
         #[femtopb(enumeration, tag = 2)]
-        pub gps_format: ::femtopb::enumeration::EnumValue<
-            display_config::GpsCoordinateFormat,
-        >,
+        pub gps_format: ::femtopb::enumeration::EnumValue<display_config::GpsCoordinateFormat>,
         ///
         /// Automatically toggles to the next page on the screen like a carousel, based the specified interval in seconds.
         /// Potentially useful for devices without user buttons.
@@ -1196,9 +1114,8 @@ pub mod config {
         ///
         /// Indicates how to rotate or invert the compass output to accurate display on the display.
         #[femtopb(enumeration, tag = 11)]
-        pub compass_orientation: ::femtopb::enumeration::EnumValue<
-            display_config::CompassOrientation,
-        >,
+        pub compass_orientation:
+            ::femtopb::enumeration::EnumValue<display_config::CompassOrientation>,
         #[femtopb(unknown_fields)]
         pub unknown_fields: femtopb::UnknownFields<'a>,
     }
@@ -1207,15 +1124,7 @@ pub mod config {
         ///
         /// How the GPS coordinates are displayed on the OLED screen.
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -1278,15 +1187,7 @@ pub mod config {
         ///
         /// Unit display preference
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -1322,15 +1223,7 @@ pub mod config {
         ///
         /// Override OLED outo detect with this if it fails.
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -1374,15 +1267,7 @@ pub mod config {
             }
         }
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -1426,15 +1311,7 @@ pub mod config {
             }
         }
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -1500,7 +1377,7 @@ pub mod config {
     }
     ///
     /// Lora Config
-    #[derive(Clone, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
     pub struct LoRaConfig<'a> {
         ///
         /// When enabled, the `modem_preset` fields will be adhered to, else the `bandwidth`/`spread_factor`/`coding_rate`
@@ -1596,11 +1473,7 @@ pub mod config {
         /// particular other nodes (simulating radio out of range). All nodenums listed
         /// in ignore_incoming will have packets they send dropped on receive (by router.cpp)
         #[femtopb(uint32, packed, tag = 103)]
-        pub ignore_incoming: ::femtopb::packed::Packed<
-            'a,
-            u32,
-            ::femtopb::item_encoding::UInt32,
-        >,
+        pub ignore_incoming: ::femtopb::packed::Packed<'a, u32, ::femtopb::item_encoding::UInt32>,
         ///
         /// If true, the device will not process any packets received via LoRa that passed via MQTT anywhere on the path towards it.
         #[femtopb(bool, tag = 104)]
@@ -1615,15 +1488,7 @@ pub mod config {
     /// Nested message and enum types in `LoRaConfig`.
     pub mod lo_ra_config {
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -1760,15 +1625,7 @@ pub mod config {
         /// Standard predefined channel settings
         /// Note: these mappings must match ModemPreset Choice in the device code.
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -1840,7 +1697,7 @@ pub mod config {
             }
         }
     }
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct BluetoothConfig<'a> {
         ///
         /// Enable Bluetooth on the device
@@ -1860,15 +1717,7 @@ pub mod config {
     /// Nested message and enum types in `BluetoothConfig`.
     pub mod bluetooth_config {
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -1907,7 +1756,7 @@ pub mod config {
             }
         }
     }
-    #[derive(Clone, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
     pub struct SecurityConfig<'a> {
         ///
         /// The public key of the user's device.
@@ -1922,11 +1771,7 @@ pub mod config {
         ///
         /// The public key authorized to send admin messages to this node.
         #[femtopb(bytes, repeated, tag = 3)]
-        pub admin_key: ::femtopb::repeated::Repeated<
-            'a,
-            &'a [u8],
-            ::femtopb::item_encoding::Bytes,
-        >,
+        pub admin_key: ::femtopb::repeated::Repeated<'a, &'a [u8], ::femtopb::item_encoding::Bytes>,
         ///
         /// If true, device is considered to be "managed" by a mesh administrator via admin messages
         /// Device is managed by a mesh administrator.
@@ -1950,14 +1795,14 @@ pub mod config {
     }
     ///
     /// Blank config request, strictly for getting the session key
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct SessionkeyConfig<'a> {
         #[femtopb(unknown_fields)]
         pub unknown_fields: femtopb::UnknownFields<'a>,
     }
     ///
     /// Payload Variant
-    #[derive(Clone, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum PayloadVariant<'a> {
         #[femtopb(message, tag = 1)]
@@ -1984,7 +1829,7 @@ pub mod config {
         _Phantom(::core::marker::PhantomData<&'a ()>),
     }
 }
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct DeviceConnectionStatus<'a> {
     ///
     /// WiFi Status
@@ -2007,7 +1852,7 @@ pub struct DeviceConnectionStatus<'a> {
 }
 ///
 /// WiFi connection status
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct WifiConnectionStatus<'a> {
     ///
     /// Connection status
@@ -2026,7 +1871,7 @@ pub struct WifiConnectionStatus<'a> {
 }
 ///
 /// Ethernet connection status
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct EthernetConnectionStatus<'a> {
     ///
     /// Connection status
@@ -2037,7 +1882,7 @@ pub struct EthernetConnectionStatus<'a> {
 }
 ///
 /// Ethernet or WiFi connection status
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct NetworkConnectionStatus<'a> {
     ///
     /// IP address of device
@@ -2060,7 +1905,7 @@ pub struct NetworkConnectionStatus<'a> {
 }
 ///
 /// Bluetooth connection status
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct BluetoothConnectionStatus<'a> {
     ///
     /// The pairing PIN for bluetooth
@@ -2079,7 +1924,7 @@ pub struct BluetoothConnectionStatus<'a> {
 }
 ///
 /// Serial connection status
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct SerialConnectionStatus<'a> {
     ///
     /// Serial baud rate
@@ -2094,7 +1939,7 @@ pub struct SerialConnectionStatus<'a> {
 }
 ///
 /// Module Config
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct ModuleConfig<'a> {
     ///
     /// TODO: REPLACE
@@ -2107,7 +1952,7 @@ pub struct ModuleConfig<'a> {
 pub mod module_config {
     ///
     /// MQTT Client Config
-    #[derive(Clone, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
     pub struct MqttConfig<'a> {
         ///
         /// If a meshtastic node is able to reach the internet it will normally
@@ -2176,7 +2021,7 @@ pub mod module_config {
     ///
     /// Settings for reporting unencrypted information about our node to a map via
     /// MQTT
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct MapReportSettings<'a> {
         ///
         /// How often we should report our info to the map (in seconds)
@@ -2192,7 +2037,7 @@ pub mod module_config {
     }
     ///
     /// RemoteHardwareModule Config
-    #[derive(Clone, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
     pub struct RemoteHardwareConfig<'a> {
         ///
         /// Whether the Module is enabled
@@ -2216,7 +2061,7 @@ pub mod module_config {
     }
     ///
     /// NeighborInfoModule Config
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct NeighborInfoConfig<'a> {
         ///
         /// Whether the Module is enabled
@@ -2238,7 +2083,7 @@ pub mod module_config {
     }
     ///
     /// Detection Sensor Module Config
-    #[derive(Clone, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
     pub struct DetectionSensorConfig<'a> {
         ///
         /// Whether the Module is enabled
@@ -2274,9 +2119,8 @@ pub mod module_config {
         ///
         /// The type of trigger event to be used
         #[femtopb(enumeration, tag = 7)]
-        pub detection_trigger_type: ::femtopb::enumeration::EnumValue<
-            detection_sensor_config::TriggerType,
-        >,
+        pub detection_trigger_type:
+            ::femtopb::enumeration::EnumValue<detection_sensor_config::TriggerType>,
         ///
         /// Whether or not use INPUT_PULLUP mode for GPIO pin
         /// Only applicable if the board uses pull-up resistors on the pin
@@ -2288,15 +2132,7 @@ pub mod module_config {
     /// Nested message and enum types in `DetectionSensorConfig`.
     pub mod detection_sensor_config {
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -2348,7 +2184,7 @@ pub mod module_config {
     }
     ///
     /// Audio Config for codec2 voice
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct AudioConfig<'a> {
         ///
         /// Whether Audio is enabled
@@ -2386,15 +2222,7 @@ pub mod module_config {
         ///
         /// Baudrate for codec2 voice
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -2447,7 +2275,7 @@ pub mod module_config {
     }
     ///
     /// Config for the Paxcounter Module
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct PaxcounterConfig<'a> {
         ///
         /// Enable the Paxcounter Module
@@ -2468,7 +2296,7 @@ pub mod module_config {
     }
     ///
     /// Serial Config
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct SerialConfig<'a> {
         ///
         /// Preferences for the SerialModule
@@ -2513,15 +2341,7 @@ pub mod module_config {
         ///
         /// TODO: REPLACE
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -2595,15 +2415,7 @@ pub mod module_config {
         ///
         /// TODO: REPLACE
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -2652,7 +2464,7 @@ pub mod module_config {
     }
     ///
     /// External Notifications Config
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct ExternalNotificationConfig<'a> {
         ///
         /// Enable the ExternalNotificationModule
@@ -2731,7 +2543,7 @@ pub mod module_config {
     }
     ///
     /// Store and Forward Module Config
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct StoreForwardConfig<'a> {
         ///
         /// Enable the Store and Forward Module
@@ -2763,7 +2575,7 @@ pub mod module_config {
     }
     ///
     /// Preferences for the RangeTestModule
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct RangeTestConfig<'a> {
         ///
         /// Enable the Range Test Module
@@ -2783,7 +2595,7 @@ pub mod module_config {
     }
     ///
     /// Configuration for both device and environment metrics
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct TelemetryConfig<'a> {
         ///
         /// Interval in seconds of how often we should try to send our
@@ -2857,7 +2669,7 @@ pub mod module_config {
     }
     ///
     /// TODO: REPLACE
-    #[derive(Clone, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
     pub struct CannedMessageConfig<'a> {
         ///
         /// Enable the rotary encoder #1. This is a 'dumb' encoder sending pulses on
@@ -2879,21 +2691,18 @@ pub mod module_config {
         ///
         /// Generate input event on CW of this kind.
         #[femtopb(enumeration, tag = 5)]
-        pub inputbroker_event_cw: ::femtopb::enumeration::EnumValue<
-            canned_message_config::InputEventChar,
-        >,
+        pub inputbroker_event_cw:
+            ::femtopb::enumeration::EnumValue<canned_message_config::InputEventChar>,
         ///
         /// Generate input event on CCW of this kind.
         #[femtopb(enumeration, tag = 6)]
-        pub inputbroker_event_ccw: ::femtopb::enumeration::EnumValue<
-            canned_message_config::InputEventChar,
-        >,
+        pub inputbroker_event_ccw:
+            ::femtopb::enumeration::EnumValue<canned_message_config::InputEventChar>,
         ///
         /// Generate input event on Press of this kind.
         #[femtopb(enumeration, tag = 7)]
-        pub inputbroker_event_press: ::femtopb::enumeration::EnumValue<
-            canned_message_config::InputEventChar,
-        >,
+        pub inputbroker_event_press:
+            ::femtopb::enumeration::EnumValue<canned_message_config::InputEventChar>,
         ///
         /// Enable the Up/Down/Select input device. Can be RAK rotary encoder or 3
         /// buttons. Uses the a/b/press definitions from inputbroker.
@@ -2922,15 +2731,7 @@ pub mod module_config {
         ///
         /// TODO: REPLACE
         #[derive(
-            Clone,
-            Copy,
-            Debug,
-            PartialEq,
-            Eq,
-            Hash,
-            PartialOrd,
-            Ord,
-            ::femtopb::Enumeration
+            Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration,
         )]
         #[repr(i32)]
         #[derive(Default)]
@@ -2998,7 +2799,7 @@ pub mod module_config {
     /// Ambient Lighting Module - Settings for control of onboard LEDs to allow
     /// users to adjust the brightness levels and respective color levels.
     /// Initially created for the RAK14001 RGB LED module.
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct AmbientLightingConfig<'a> {
         ///
         /// Sets LED to on or off.
@@ -3025,7 +2826,7 @@ pub mod module_config {
     }
     ///
     /// TODO: REPLACE
-    #[derive(Clone, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum PayloadVariant<'a> {
         ///
@@ -3086,7 +2887,7 @@ pub mod module_config {
 }
 ///
 /// A GPIO pin definition for remote hardware module
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct RemoteHardwarePin<'a> {
     ///
     /// GPIO Pin number (must match Arduino)
@@ -3103,17 +2904,7 @@ pub struct RemoteHardwarePin<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
 #[repr(i32)]
 #[derive(Default)]
 pub enum RemoteHardwarePinType {
@@ -3163,17 +2954,7 @@ impl RemoteHardwarePinType {
 /// Note: This was formerly a Type enum named 'typ' with the same id #
 /// We have change to this 'portnum' based scheme for specifying app handlers for particular payloads.
 /// This change is backwards compatible by treating the legacy OPAQUE/CLEAR_TEXT values identically.
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
 #[repr(i32)]
 #[derive(Default)]
 pub enum PortNum {
@@ -3398,7 +3179,7 @@ impl PortNum {
 }
 ///
 /// Key native device metrics such as battery level
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct DeviceMetrics<'a> {
     ///
     /// 0-100 (>100 means powered)
@@ -3426,7 +3207,7 @@ pub struct DeviceMetrics<'a> {
 }
 ///
 /// Weather station or other environmental metrics
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct EnvironmentMetrics<'a> {
     ///
     /// Temperature measured
@@ -3518,15 +3299,13 @@ pub struct EnvironmentMetrics<'a> {
     ///
     /// Sensor type
     #[femtopb(enumeration, optional, tag = 21)]
-    pub sensor: ::core::option::Option<
-        ::femtopb::enumeration::EnumValue<TelemetrySensorType>,
-    >,
+    pub sensor: ::core::option::Option<::femtopb::enumeration::EnumValue<TelemetrySensorType>>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
 ///
 /// Power Metrics (voltage / current / etc)
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct PowerMetrics<'a> {
     ///
     /// Voltage (Ch1)
@@ -3557,7 +3336,7 @@ pub struct PowerMetrics<'a> {
 }
 ///
 /// Air quality metrics
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct AirQualityMetrics<'a> {
     ///
     /// Concentration Units Standard PM1.0
@@ -3614,15 +3393,13 @@ pub struct AirQualityMetrics<'a> {
     ///
     /// Sensor type
     #[femtopb(enumeration, optional, tag = 14)]
-    pub sensor: ::core::option::Option<
-        ::femtopb::enumeration::EnumValue<TelemetrySensorType>,
-    >,
+    pub sensor: ::core::option::Option<::femtopb::enumeration::EnumValue<TelemetrySensorType>>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
 ///
 /// Local device mesh statistics
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct LocalStats<'a> {
     ///
     /// How long the device has been running since the last reboot (in seconds)
@@ -3679,7 +3456,7 @@ pub struct LocalStats<'a> {
 }
 ///
 /// Health telemetry metrics
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct HealthMetrics<'a> {
     ///
     /// Heart rate (beats per minute)
@@ -3698,7 +3475,7 @@ pub struct HealthMetrics<'a> {
 }
 ///
 /// Error rate reporting from a device over the mesh
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct ErrorMetrics<'a> {
     ///
     /// How often packets collided (percent) over the module's time period
@@ -3757,7 +3534,7 @@ pub struct ErrorMetrics<'a> {
 }
 ///
 /// Types of Measurements the telemetry module is equipped to handle
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct Telemetry<'a> {
     ///
     /// Seconds since 1970 - or 0 for unknown/unset
@@ -3770,7 +3547,7 @@ pub struct Telemetry<'a> {
 }
 /// Nested message and enum types in `Telemetry`.
 pub mod telemetry {
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum Variant<'a> {
         ///
@@ -3807,7 +3584,7 @@ pub mod telemetry {
 }
 ///
 /// NAU7802 Telemetry configuration, for saving to flash
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct Nau7802Config<'a> {
     ///
     /// The offset setting for the NAU7802
@@ -3822,17 +3599,7 @@ pub struct Nau7802Config<'a> {
 }
 ///
 /// Supported I2C Sensors for telemetry in Meshtastic
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
 #[repr(i32)]
 #[derive(Default)]
 pub enum TelemetrySensorType {
@@ -4047,7 +3814,7 @@ impl TelemetrySensorType {
         }
     }
 }
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct XModem<'a> {
     #[femtopb(enumeration, tag = 1)]
     pub control: ::femtopb::enumeration::EnumValue<x_modem::Control>,
@@ -4062,17 +3829,7 @@ pub struct XModem<'a> {
 }
 /// Nested message and enum types in `XModem`.
 pub mod x_modem {
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum Control {
@@ -4121,7 +3878,7 @@ pub mod x_modem {
 }
 ///
 /// A GPS Position
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct Position<'a> {
     ///
     /// The new preferred location encoding, multiply by 1e-7 to get degrees
@@ -4241,17 +3998,7 @@ pub struct Position<'a> {
 pub mod position {
     ///
     /// How the location was acquired: manual, onboard GPS, external (EUD) GPS
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum LocSource {
@@ -4296,17 +4043,7 @@ pub mod position {
     ///
     /// How the altitude was acquired: manual, GPS int/ext, etc
     /// Default: same as location_source if present
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum AltSource {
@@ -4375,7 +4112,7 @@ pub mod position {
 /// A few nodenums are reserved and will never be requested:
 /// 0xff - broadcast
 /// 0 through 3 - for future use
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct User<'a> {
     ///
     /// A globally unique ID string for this user.
@@ -4427,7 +4164,7 @@ pub struct User<'a> {
 }
 ///
 /// A message used in a traceroute
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct RouteDiscovery<'a> {
     ///
     /// The list of nodenums this packet has visited so far to the destination.
@@ -4440,11 +4177,7 @@ pub struct RouteDiscovery<'a> {
     ///
     /// The list of nodenums the packet has visited on the way back from the destination.
     #[femtopb(fixed32, packed, tag = 3)]
-    pub route_back: ::femtopb::packed::Packed<
-        'a,
-        u32,
-        ::femtopb::item_encoding::Fixed32,
-    >,
+    pub route_back: ::femtopb::packed::Packed<'a, u32, ::femtopb::item_encoding::Fixed32>,
     ///
     /// The list of SNRs (in dB, scaled by 4) in the route back from the destination.
     #[femtopb(int32, packed, tag = 4)]
@@ -4454,7 +4187,7 @@ pub struct RouteDiscovery<'a> {
 }
 ///
 /// A Routing control Data packet handled by the routing module
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct Routing<'a> {
     #[femtopb(oneof, tags = [1, 2, 3])]
     pub variant: ::core::option::Option<routing::Variant<'a>>,
@@ -4466,17 +4199,7 @@ pub mod routing {
     ///
     /// A failure in delivering a message (usually used for routing control messages, but might be provided in addition to ack.fail_id to provide
     /// details on the type of failure).
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum Error {
@@ -4580,7 +4303,7 @@ pub mod routing {
             }
         }
     }
-    #[derive(Clone, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum Variant<'a> {
         ///
@@ -4604,7 +4327,7 @@ pub mod routing {
 /// (Formerly called SubPacket)
 /// The payload portion fo a packet, this is the actual bytes that are sent
 /// inside a radio packet (because from/to are broken out by the comms library)
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct Data<'a> {
     ///
     /// Formerly named typ and of type Type
@@ -4657,7 +4380,7 @@ pub struct Data<'a> {
 }
 ///
 /// Waypoint message, used to share arbitrary locations across the mesh
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct Waypoint<'a> {
     ///
     /// Id of the waypoint
@@ -4697,7 +4420,7 @@ pub struct Waypoint<'a> {
 }
 ///
 /// This message will be proxied over the PhoneAPI for the client to deliver to the MQTT server
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct MqttClientProxyMessage<'a> {
     ///
     /// The MQTT topic this message will be sent /received on
@@ -4710,9 +4433,7 @@ pub struct MqttClientProxyMessage<'a> {
     ///
     /// The actual service envelope payload or text for mqtt pub / sub
     #[femtopb(oneof, tags = [2, 3])]
-    pub payload_variant: ::core::option::Option<
-        mqtt_client_proxy_message::PayloadVariant<'a>,
-    >,
+    pub payload_variant: ::core::option::Option<mqtt_client_proxy_message::PayloadVariant<'a>>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
@@ -4720,7 +4441,7 @@ pub struct MqttClientProxyMessage<'a> {
 pub mod mqtt_client_proxy_message {
     ///
     /// The actual service envelope payload or text for mqtt pub / sub
-    #[derive(Clone, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum PayloadVariant<'a> {
         ///
@@ -4739,7 +4460,7 @@ pub mod mqtt_client_proxy_message {
 /// A packet envelope sent/received over the mesh
 /// only payload_variant is sent in the payload portion of the LORA packet.
 /// The other fields are either not sent at all, or sent in the special 16 byte LORA header.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct MeshPacket<'a> {
     ///
     /// The sending node number.
@@ -4877,17 +4598,7 @@ pub mod mesh_packet {
     /// So I bit the bullet and implemented a new (internal - not sent over the air)
     /// field in MeshPacket called 'priority'.
     /// And the transmission queue in the router object is now a priority queue.
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum Priority {
@@ -4965,17 +4676,7 @@ pub mod mesh_packet {
     }
     ///
     /// Identify if this is a delayed packet
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum Delayed {
@@ -5012,7 +4713,7 @@ pub mod mesh_packet {
             }
         }
     }
-    #[derive(Clone, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum PayloadVariant<'a> {
         ///
@@ -5044,7 +4745,7 @@ pub mod mesh_packet {
 /// level etc) SET_CONFIG (switches device to a new set of radio params and
 /// preshared key, drops all existing nodes, force our node to rejoin this new group)
 /// Full information about a node on the mesh
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct NodeInfo<'a> {
     ///
     /// The node number
@@ -5101,7 +4802,7 @@ pub struct NodeInfo<'a> {
 /// Unique local debugging info for this node
 /// Note: we don't include position or the user info, because that will come in the
 /// Sent to the phone in response to WantNodes.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct MyNodeInfo<'a> {
     ///
     /// Tells the phone what our node number is, default starting value is
@@ -5135,7 +4836,7 @@ pub struct MyNodeInfo<'a> {
 /// on the message it is assumed to be a continuation of the previously sent message.
 /// This allows the device code to use fixed maxlen 64 byte strings for messages,
 /// and then extend as needed by emitting multiple records.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct LogRecord<'a> {
     ///
     /// Log levels, chosen to match python logging conventions.
@@ -5160,17 +4861,7 @@ pub struct LogRecord<'a> {
 pub mod log_record {
     ///
     /// Log levels, chosen to match python logging conventions.
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum Level {
@@ -5228,7 +4919,7 @@ pub mod log_record {
         }
     }
 }
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct QueueStatus<'a> {
     /// Last attempt to queue status, ErrorCode
     #[femtopb(int32, tag = 1)]
@@ -5250,7 +4941,7 @@ pub struct QueueStatus<'a> {
 /// It will support READ and NOTIFY. When a new packet arrives the device will BLE notify?
 /// It will sit in that descriptor until consumed by the phone,
 /// at which point the next item in the FIFO will be populated.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct FromRadio<'a> {
     ///
     /// The packet id, used to allow the phone to request missing read packets from the FIFO,
@@ -5268,7 +4959,7 @@ pub struct FromRadio<'a> {
 pub mod from_radio {
     ///
     /// Log levels, chosen to match python logging conventions.
-    #[derive(Clone, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum PayloadVariant<'a> {
         ///
@@ -5352,7 +5043,7 @@ pub mod from_radio {
 /// To be used for important messages that should to be displayed to the user
 /// in the form of push notifications or validation messages when saving
 /// invalid configuration.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct ClientNotification<'a> {
     ///
     /// The id of the packet we're notifying in response to
@@ -5375,7 +5066,7 @@ pub struct ClientNotification<'a> {
 }
 ///
 /// Individual File info for the device
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct FileInfo<'a> {
     ///
     /// The fully qualified path of the file
@@ -5391,7 +5082,7 @@ pub struct FileInfo<'a> {
 ///
 /// Packets/commands to the radio will be written (reliably) to the toRadio characteristic.
 /// Once the write completes the phone can assume it is handled.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct ToRadio<'a> {
     ///
     /// Log levels, chosen to match python logging conventions.
@@ -5404,7 +5095,7 @@ pub struct ToRadio<'a> {
 pub mod to_radio {
     ///
     /// Log levels, chosen to match python logging conventions.
-    #[derive(Clone, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum PayloadVariant<'a> {
         ///
@@ -5444,7 +5135,7 @@ pub mod to_radio {
 }
 ///
 /// Compressed message payload
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct Compressed<'a> {
     ///
     /// PortNum to determine the how to handle the compressed payload.
@@ -5459,7 +5150,7 @@ pub struct Compressed<'a> {
 }
 ///
 /// Full info on edges for a single node
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct NeighborInfo<'a> {
     ///
     /// The node ID of the node sending info on its neighbors
@@ -5486,7 +5177,7 @@ pub struct NeighborInfo<'a> {
 }
 ///
 /// A single edge in the mesh
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct Neighbor<'a> {
     ///
     /// Node ID of neighbor
@@ -5518,7 +5209,7 @@ pub struct Neighbor<'a> {
 }
 ///
 /// Device metadata response
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct DeviceMetadata<'a> {
     ///
     /// Device firmware version string
@@ -5575,14 +5266,14 @@ pub struct DeviceMetadata<'a> {
 ///
 /// A heartbeat message is sent to the node from the client to keep the connection alive.
 /// This is currently only needed to keep serial connections alive, but can be used by any PhoneAPI.
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct Heartbeat<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
 ///
 /// RemoteHardwarePins associated with a node
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct NodeRemoteHardwarePin<'a> {
     ///
     /// The node_num exposing the available gpio pin
@@ -5595,7 +5286,7 @@ pub struct NodeRemoteHardwarePin<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct ChunkedPayload<'a> {
     ///
     /// The ID of the entire payload
@@ -5618,7 +5309,7 @@ pub struct ChunkedPayload<'a> {
 }
 ///
 /// Wrapper message for broken repeated oneof support
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct ResendChunks<'a> {
     #[femtopb(uint32, packed, tag = 1)]
     pub chunks: ::femtopb::packed::Packed<'a, u32, ::femtopb::item_encoding::UInt32>,
@@ -5627,22 +5318,20 @@ pub struct ResendChunks<'a> {
 }
 ///
 /// Responses to a ChunkedPayload request
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct ChunkedPayloadResponse<'a> {
     ///
     /// The ID of the entire payload
     #[femtopb(uint32, tag = 1)]
     pub payload_id: u32,
     #[femtopb(oneof, tags = [2, 3, 4])]
-    pub payload_variant: ::core::option::Option<
-        chunked_payload_response::PayloadVariant<'a>,
-    >,
+    pub payload_variant: ::core::option::Option<chunked_payload_response::PayloadVariant<'a>>,
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
 /// Nested message and enum types in `ChunkedPayloadResponse`.
 pub mod chunked_payload_response {
-    #[derive(Clone, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum PayloadVariant<'a> {
         ///
@@ -5666,17 +5355,7 @@ pub mod chunked_payload_response {
 /// bin/build-all.sh script.
 /// Because they will be used to find firmware filenames in the android app for OTA updates.
 /// To match the old style filenames, _ is converted to -, p is converted to .
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
 #[repr(i32)]
 #[derive(Default)]
 pub enum HardwareModel {
@@ -6171,17 +5850,7 @@ impl HardwareModel {
 }
 ///
 /// Shared constants between device and phone
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
 #[repr(i32)]
 #[derive(Default)]
 pub enum Constants {
@@ -6221,17 +5890,7 @@ impl Constants {
 /// The device might report these fault codes on the screen.
 /// If you encounter a fault code, please post on the meshtastic.discourse.group
 /// and we'll try to help.
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
 #[repr(i32)]
 #[derive(Default)]
 pub enum CriticalErrorCode {
@@ -6332,17 +5991,7 @@ impl CriticalErrorCode {
 /// Enum for modules excluded from a device's configuration.
 /// Each value represents a ModuleConfigType that can be toggled as excluded
 /// by setting its corresponding bit in the `excluded_modules` bitmask field.
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
 #[repr(i32)]
 #[derive(Default)]
 pub enum ExcludedModules {
@@ -6438,7 +6087,7 @@ impl ExcludedModules {
 /// This message is handled by the Admin module and is responsible for all settings/channel read/write operations.
 /// This message is used to do settings operations to both remote AND local nodes.
 /// (Prior to 1.2 these operations were done via special ToRadio operations)
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct AdminMessage<'a> {
     ///
     /// The node generates this key and sends it with any get_x_response packets.
@@ -6507,17 +6156,7 @@ pub struct AdminMessage<'a> {
 pub mod admin_message {
     ///
     /// TODO: REPLACE
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum ConfigType {
@@ -6591,17 +6230,7 @@ pub mod admin_message {
     }
     ///
     /// TODO: REPLACE
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum ModuleConfigType {
@@ -6690,7 +6319,7 @@ pub mod admin_message {
     }
     ///
     /// TODO: REPLACE
-    #[derive(Clone, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum PayloadVariant<'a> {
         ///
@@ -6901,7 +6530,7 @@ pub mod admin_message {
 }
 ///
 /// Parameters for setting up Meshtastic for ameteur radio usage
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct HamParameters<'a> {
     ///
     /// Amateur radio call sign, eg. KD2ABC
@@ -6926,7 +6555,7 @@ pub struct HamParameters<'a> {
 }
 ///
 /// Response envelope for node_remote_hardware_pins
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct NodeRemoteHardwarePinsResponse<'a> {
     ///
     /// Nodes and their respective remote hardware GPIO pins
@@ -6945,7 +6574,7 @@ pub struct NodeRemoteHardwarePinsResponse<'a> {
 /// any SECONDARY channels.
 /// No DISABLED channels are included.
 /// This abstraction is used only on the the 'app side' of the world (ie python, javascript and android etc) to show a group of Channels as a (long) URL
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct ChannelSet<'a> {
     ///
     /// Channel list with settings
@@ -6964,7 +6593,7 @@ pub struct ChannelSet<'a> {
 }
 ///
 /// Packets for the official ATAK Plugin
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct TakPacket<'a> {
     ///
     /// Are the payloads strings compressed for LoRA transport?
@@ -6993,7 +6622,7 @@ pub struct TakPacket<'a> {
 pub mod tak_packet {
     ///
     /// The payload of the packet
-    #[derive(Clone, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum PayloadVariant<'a> {
         ///
@@ -7015,7 +6644,7 @@ pub mod tak_packet {
 }
 ///
 /// ATAK GeoChat message
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct GeoChat<'a> {
     ///
     /// The text message
@@ -7035,7 +6664,7 @@ pub struct GeoChat<'a> {
 ///
 /// ATAK Group
 /// <__group role='Team Member' name='Cyan'/>
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct Group<'a> {
     ///
     /// Role of the group member
@@ -7052,7 +6681,7 @@ pub struct Group<'a> {
 ///
 /// ATAK EUD Status
 /// <status battery='100' />
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct Status<'a> {
     ///
     /// Battery level
@@ -7064,7 +6693,7 @@ pub struct Status<'a> {
 ///
 /// ATAK Contact
 /// <contact endpoint='0.0.0.0:4242:tcp' phone='+12345678' callsign='FALKE'/>
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct Contact<'a> {
     ///
     /// Callsign
@@ -7082,7 +6711,7 @@ pub struct Contact<'a> {
 }
 ///
 /// Position Location Information from ATAK
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct Pli<'a> {
     ///
     /// The new preferred location encoding, multiply by 1e-7 to get degrees
@@ -7109,17 +6738,7 @@ pub struct Pli<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
 #[repr(i32)]
 #[derive(Default)]
 pub enum Team {
@@ -7218,17 +6837,7 @@ impl Team {
 }
 ///
 /// Role of the group member
-#[derive(
-    Clone,
-    Copy,
-    Debug,
-    PartialEq,
-    Eq,
-    Hash,
-    PartialOrd,
-    Ord,
-    ::femtopb::Enumeration
-)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
 #[repr(i32)]
 #[derive(Default)]
 pub enum MemberRole {
@@ -7297,7 +6906,7 @@ impl MemberRole {
 }
 ///
 /// Canned message module configuration.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct CannedMessageModuleConfig<'a> {
     ///
     /// Predefined messages for canned message module separated by '|' characters.
@@ -7306,7 +6915,7 @@ pub struct CannedMessageModuleConfig<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct LocalConfig<'a> {
     ///
     /// The part of the config that is specific to the Device
@@ -7349,7 +6958,7 @@ pub struct LocalConfig<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct LocalModuleConfig<'a> {
     ///
     /// The part of the config that is specific to the MQTT module
@@ -7362,9 +6971,8 @@ pub struct LocalModuleConfig<'a> {
     ///
     /// The part of the config that is specific to the ExternalNotification module
     #[femtopb(message, optional, tag = 3)]
-    pub external_notification: ::core::option::Option<
-        module_config::ExternalNotificationConfig<'a>,
-    >,
+    pub external_notification:
+        ::core::option::Option<module_config::ExternalNotificationConfig<'a>>,
     ///
     /// The part of the config that is specific to the Store & Forward module
     #[femtopb(message, optional, tag = 4)]
@@ -7396,15 +7004,11 @@ pub struct LocalModuleConfig<'a> {
     ///
     /// The part of the config that is specific to the Ambient Lighting module
     #[femtopb(message, optional, tag = 12)]
-    pub ambient_lighting: ::core::option::Option<
-        module_config::AmbientLightingConfig<'a>,
-    >,
+    pub ambient_lighting: ::core::option::Option<module_config::AmbientLightingConfig<'a>>,
     ///
     /// The part of the config that is specific to the Detection Sensor module
     #[femtopb(message, optional, tag = 13)]
-    pub detection_sensor: ::core::option::Option<
-        module_config::DetectionSensorConfig<'a>,
-    >,
+    pub detection_sensor: ::core::option::Option<module_config::DetectionSensorConfig<'a>>,
     ///
     /// Paxcounter Config
     #[femtopb(message, optional, tag = 14)]
@@ -7421,7 +7025,7 @@ pub struct LocalModuleConfig<'a> {
 ///
 /// This abstraction is used to contain any configuration for provisioning a node on any client.
 /// It is useful for importing and exporting configurations.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct DeviceProfile<'a> {
     ///
     /// Long name for the node
@@ -7460,7 +7064,7 @@ pub struct DeviceProfile<'a> {
 }
 ///
 /// Position with static location information only for NodeDBLite
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct PositionLite<'a> {
     ///
     /// The new preferred location encoding, multiply by 1e-7 to get degrees
@@ -7490,7 +7094,7 @@ pub struct PositionLite<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct UserLite<'a> {
     ///
     /// This is the addr of the radio.
@@ -7531,7 +7135,7 @@ pub struct UserLite<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
 }
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct NodeInfoLite<'a> {
     ///
     /// The node number
@@ -7598,7 +7202,7 @@ pub struct NodeInfoLite<'a> {
 /// FIXME, since we write this each time we enter deep sleep (and have infinite
 /// flash) it would be better to use some sort of append only data structure for
 /// the receive queue and use the preferences store for the other stuff
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct DeviceState<'a> {
     ///
     /// Read only settings/info about this node
@@ -7666,7 +7270,7 @@ pub struct DeviceState<'a> {
 }
 ///
 /// The on-disk saved channels
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct ChannelFile<'a> {
     ///
     /// The channels our node knows about
@@ -7687,7 +7291,7 @@ pub struct ChannelFile<'a> {
 }
 ///
 /// This message wraps a MeshPacket with extra metadata about the sender and how it arrived.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct ServiceEnvelope<'a> {
     ///
     /// The (probably encrypted) packet
@@ -7708,7 +7312,7 @@ pub struct ServiceEnvelope<'a> {
 }
 ///
 /// Information about a node intended to be reported unencrypted to a map using MQTT.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct MapReport<'a> {
     ///
     /// A full name for this user, i.e. "Kevin Hester"
@@ -7738,9 +7342,7 @@ pub struct MapReport<'a> {
     ///
     /// Modem preset used by the radio (LongFast, MediumSlow, etc...)
     #[femtopb(enumeration, tag = 7)]
-    pub modem_preset: ::femtopb::enumeration::EnumValue<
-        config::lo_ra_config::ModemPreset,
-    >,
+    pub modem_preset: ::femtopb::enumeration::EnumValue<config::lo_ra_config::ModemPreset>,
     ///
     /// Whether the node has a channel with default PSK and name (LongFast, MediumSlow, etc...)
     /// and it uses the default frequency slot given the region and modem preset.
@@ -7771,7 +7373,7 @@ pub struct MapReport<'a> {
 }
 ///
 /// TODO: REPLACE
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct Paxcount<'a> {
     ///
     /// seen Wifi devices
@@ -7790,7 +7392,7 @@ pub struct Paxcount<'a> {
 }
 /// Note: There are no 'PowerMon' messages normally in use (PowerMons are sent only as structured logs - slogs).
 /// But we wrap our State enum in this message to effectively nest a namespace (without our linter yelling at us)
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct PowerMon<'a> {
     #[femtopb(unknown_fields)]
     pub unknown_fields: femtopb::UnknownFields<'a>,
@@ -7799,17 +7401,7 @@ pub struct PowerMon<'a> {
 pub mod power_mon {
     /// Any significant power changing event in meshtastic should be tagged with a powermon state transition.
     /// If you are making new meshtastic features feel free to add new entries at the end of this definition.
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum State {
@@ -7884,7 +7476,7 @@ pub mod power_mon {
 }
 ///
 /// PowerStress testing support via the C++ PowerStress module
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct PowerStressMessage<'a> {
     ///
     /// What type of HardwareMessage is this?
@@ -7901,17 +7493,7 @@ pub mod power_stress_message {
     /// What operation would we like the UUT to perform.
     /// note: senders should probably set want_response in their request packets, so that they can know when the state
     /// machine has started processing their request
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum Opcode {
@@ -8025,7 +7607,7 @@ pub mod power_stress_message {
 /// because no security yet (beyond the channel mechanism).
 /// It should be off by default and then protected based on some TBD mechanism
 /// (a special channel once multichannel support is included?)
-#[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
 pub struct HardwareMessage<'a> {
     ///
     /// What type of HardwareMessage is this?
@@ -8047,17 +7629,7 @@ pub struct HardwareMessage<'a> {
 pub mod hardware_message {
     ///
     /// TODO: REPLACE
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum Type {
@@ -8114,7 +7686,7 @@ pub mod hardware_message {
 }
 ///
 /// Canned message module configuration.
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct RtttlConfig<'a> {
     ///
     /// Ringtone for PWM Buzzer in RTTTL Format.
@@ -8125,7 +7697,7 @@ pub struct RtttlConfig<'a> {
 }
 ///
 /// TODO: REPLACE
-#[derive(Clone, PartialEq, ::femtopb::Message)]
+#[derive(Debug, Clone, PartialEq, ::femtopb::Message)]
 pub struct StoreAndForward<'a> {
     ///
     /// TODO: REPLACE
@@ -8142,7 +7714,7 @@ pub struct StoreAndForward<'a> {
 pub mod store_and_forward {
     ///
     /// TODO: REPLACE
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct Statistics<'a> {
         ///
         /// Number of messages we have ever seen
@@ -8185,7 +7757,7 @@ pub mod store_and_forward {
     }
     ///
     /// TODO: REPLACE
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct History<'a> {
         ///
         /// Number of that will be sent to the client
@@ -8205,7 +7777,7 @@ pub mod store_and_forward {
     }
     ///
     /// TODO: REPLACE
-    #[derive(Clone, Copy, PartialEq, ::femtopb::Message)]
+    #[derive(Debug, Clone, Copy, PartialEq, ::femtopb::Message)]
     pub struct Heartbeat<'a> {
         ///
         /// Period in seconds that the heartbeat is sent out that will be sent to the client
@@ -8221,17 +7793,7 @@ pub mod store_and_forward {
     ///
     /// 001 - 063 = From Router
     /// 064 - 127 = From Client
-    #[derive(
-        Clone,
-        Copy,
-        Debug,
-        PartialEq,
-        Eq,
-        Hash,
-        PartialOrd,
-        Ord,
-        ::femtopb::Enumeration
-    )]
+    #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, ::femtopb::Enumeration)]
     #[repr(i32)]
     #[derive(Default)]
     pub enum RequestResponse {
@@ -8337,7 +7899,7 @@ pub mod store_and_forward {
     }
     ///
     /// TODO: REPLACE
-    #[derive(Clone, PartialEq, ::femtopb::Oneof)]
+    #[derive(Debug, Clone, PartialEq, ::femtopb::Oneof)]
     #[non_exhaustive]
     pub enum Variant<'a> {
         ///

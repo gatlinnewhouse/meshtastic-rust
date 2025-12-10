@@ -72,6 +72,15 @@ pub enum Error {
     InternalChannelError(#[from] InternalChannelError),
 }
 
+#[cfg(feature = "no-std")]
+impl From<femtopb::error::EncodeError> for Error {
+    fn from(value: femtopb::error::EncodeError) -> Self {
+        Self::InvalidaDataSize {
+            data_length: value.remaining,
+        }
+    }
+}
+
 /// An enum that defines the possible internal errors that can occur within the library when handling streams.
 #[warn(clippy::enum_variant_names)]
 #[derive(Error, Debug)]
