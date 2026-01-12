@@ -140,7 +140,7 @@ where
 pub fn spawn_processing_handler(
     cancellation_token: CancellationToken,
     read_output_rx: UnboundedReceiver<IncomingStreamData>,
-    decoded_packet_tx: UnboundedSender<protobufs::FromRadio>,
+    decoded_packet_tx: UnboundedSender<Box<protobufs::FromRadio>>,
 ) -> JoinHandle<Result<(), Error>> {
     let handle = start_processing_handler(read_output_rx, decoded_packet_tx);
 
@@ -160,7 +160,7 @@ pub fn spawn_processing_handler(
 
 async fn start_processing_handler(
     mut read_output_rx: tokio::sync::mpsc::UnboundedReceiver<IncomingStreamData>,
-    decoded_packet_tx: UnboundedSender<protobufs::FromRadio>,
+    decoded_packet_tx: UnboundedSender<Box<protobufs::FromRadio>>,
 ) {
     debug!("Started message processing handler");
 
