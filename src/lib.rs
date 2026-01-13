@@ -73,7 +73,7 @@ pub mod packet {
     pub use crate::connections::PacketRouter;
 
     /// A type alias for the tokio channel that is used to receive decoded `protobufs::FromRadio` packets from the radio.
-    pub type PacketReceiver = tokio::sync::mpsc::UnboundedReceiver<crate::protobufs::FromRadio>;
+    pub type PacketReceiver = tokio::sync::mpsc::Receiver<crate::protobufs::FromRadio>;
 }
 
 /// This module contains structs and enums that are generated from the protocol buffer (protobuf)

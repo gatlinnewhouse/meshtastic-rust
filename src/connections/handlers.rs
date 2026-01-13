@@ -6,7 +6,7 @@ use log::{debug, error, trace};
 use prost::Message;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::spawn;
-use tokio::sync::mpsc::{UnboundedReceiver, UnboundedSender};
+use tokio::sync::mpsc::{Receiver, Sender};
 use tokio::task::JoinHandle;
 use tokio_util::sync::CancellationToken;
 
@@ -21,7 +21,7 @@ pub const CLIENT_HEARTBEAT_INTERVAL: u64 = 5 * 60; // 5 minutes
 pub fn spawn_read_handler<R>(
     cancellation_token: CancellationToken,
     read_stream: R,
-    read_output_tx: UnboundedSender<IncomingStreamData>,
+    read_output_tx: Sender<IncomingStreamData>,
 ) -> JoinHandle<Result<(), Error>>
 where
     R: AsyncReadExt + Send + Unpin + 'static,
@@ -45,7 +45,7 @@ where
 
 async fn start_read_handler<R>(
     read_stream: R,
-    read_output_tx: UnboundedSender<IncomingStreamData>,
+    read_output_tx: Sender<IncomingStreamData>,
 ) -> Result<(), Error>
 where
     R: AsyncReadExt + Send + Unpin + 'static,
@@ -68,6 +68,7 @@ where
 
                 read_output_tx
                     .send(data)
+                    .await
                     .inspect_err(|_| error!("Failed to send data through channel"))
                     .map_err(InternalChannelError::from)?
             }
@@ -92,7 +93,7 @@ where
 pub fn spawn_write_handler<W>(
     cancellation_token: CancellationToken,
     write_stream: W,
-    write_input_rx: tokio::sync::mpsc::UnboundedReceiver<EncodedToRadioPacketWithHeader>,
+    write_input_rx: tokio::sync::mpsc::Receiver<EncodedToRadioPacketWithHeader>,
 ) -> JoinHandle<Result<(), Error>>
 where
     W: AsyncWriteExt + Send + Unpin + 'static,
@@ -115,7 +116,7 @@ where
 async fn start_write_handler<W>(
     _cancellation_token: CancellationToken,
     mut write_stream: W,
-    mut write_input_rx: tokio::sync::mpsc::UnboundedReceiver<EncodedToRadioPacketWithHeader>,
+    mut write_input_rx: tokio::sync::mpsc::Receiver<EncodedToRadioPacketWithHeader>,
 ) -> Result<(), Error>
 where
     W: AsyncWriteExt + Send + Unpin + 'static,
@@ -139,8 +140,8 @@ where
 
 pub fn spawn_processing_handler(
     cancellation_token: CancellationToken,
-    read_output_rx: UnboundedReceiver<IncomingStreamData>,
-    decoded_packet_tx: UnboundedSender<protobufs::FromRadio>,
+    read_output_rx: Receiver<IncomingStreamData>,
+    decoded_packet_tx: Sender<protobufs::FromRadio>,
 ) -> JoinHandle<Result<(), Error>> {
     let handle = start_processing_handler(read_output_rx, decoded_packet_tx);
 
@@ -159,15 +160,15 @@ pub fn spawn_processing_handler(
 }
 
 async fn start_processing_handler(
-    mut read_output_rx: tokio::sync::mpsc::UnboundedReceiver<IncomingStreamData>,
-    decoded_packet_tx: UnboundedSender<protobufs::FromRadio>,
+    mut read_output_rx: tokio::sync::mpsc::Receiver<IncomingStreamData>,
+    decoded_packet_tx: Sender<protobufs::FromRadio>,
 ) {
     debug!("Started message processing handler");
 
     let mut buffer = StreamBuffer::new(decoded_packet_tx);
 
     while let Some(message) = read_output_rx.recv().await {
-        buffer.process_incoming_bytes(message);
+        buffer.process_incoming_bytes(message).await;
     }
 
     debug!("Processing read_output_rx channel closed");
@@ -175,7 +176,7 @@ async fn start_processing_handler(
 
 pub fn spawn_heartbeat_handler(
     cancellation_token: CancellationToken,
-    write_input_tx: UnboundedSender<EncodedToRadioPacketWithHeader>,
+    write_input_tx: Sender<EncodedToRadioPacketWithHeader>,
 ) -> JoinHandle<Result<(), Error>> {
     let handle = start_heartbeat_handler(cancellation_token.clone(), write_input_tx);
 
@@ -196,7 +197,7 @@ pub fn spawn_heartbeat_handler(
 
 async fn start_heartbeat_handler(
     _cancellation_token: CancellationToken,
-    write_input_tx: UnboundedSender<EncodedToRadioPacketWithHeader>,
+    write_input_tx: Sender<EncodedToRadioPacketWithHeader>,
 ) -> Result<(), Error> {
     debug!("Started heartbeat handler");
 
@@ -230,6 +231,7 @@ async fn start_heartbeat_handler(
 
         write_input_tx
             .send(packet_with_header)
+            .await
             .inspect_err(|e| error!("Error writing heartbeat packet to stream: {e:?}"))
             .map_err(InternalStreamError::write_error)?;
 

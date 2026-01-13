@@ -4,12 +4,17 @@ use prost::Message;
 use std::{fmt::Display, marker::PhantomData};
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
-    sync::mpsc::UnboundedSender,
+    sync::mpsc::Sender,
     task::JoinHandle,
 };
 use tokio_util::sync::CancellationToken;
 
-use crate::{errors_internal::Error, protobufs, types::EncodedToRadioPacketWithHeader, utils};
+use crate::{
+    errors_internal::Error,
+    protobufs::{self, FromRadio},
+    types::EncodedToRadioPacketWithHeader,
+    utils,
+};
 use crate::{
     packet::PacketReceiver,
     utils_internal::{current_epoch_secs_u32, generate_rand_id},
@@ -69,7 +74,7 @@ pub struct StreamApi;
 /// and that the device will respond to "send" methods.
 #[derive(Debug)]
 pub struct ConnectedStreamApi<State = state::Configured> {
-    write_input_tx: UnboundedSender<EncodedToRadioPacketWithHeader>,
+    write_input_tx: Sender<EncodedToRadioPacketWithHeader>,
 
     read_handle: JoinHandle<Result<(), Error>>,
     write_handle: JoinHandle<Result<(), Error>>,
@@ -303,15 +308,16 @@ impl<State> ConnectedStreamApi<State> {
 
         channel
             .send(data_with_header)
+            .await
             .map_err(|e| Error::InternalChannelError(e.into()))?;
 
         Ok(())
     }
 
-    /// A helper method to allow advanced users access to the internal `UnboundedSender` channel
+    /// A helper method to allow advanced users access to the internal `Sender` channel
     /// used to send raw data to the radio. This method is generally intended for advanced users
     /// and should only be used when the more specific "send" methods are not sufficient. This
-    /// method returns a copy of the internal `tokio::sync::mpsc::UnboundedSender` sender channel.
+    /// method returns a copy of the internal `tokio::sync::mpsc::Sender` sender channel.
     ///
     /// This method is intended to be used when a user needs very low-level access to the radio
     /// interface, for example to send a packet that isn't supported by the current "send" methods.
@@ -325,7 +331,7 @@ impl<State> ConnectedStreamApi<State> {
     ///
     /// # Returns
     ///
-    /// Returns an `UnboundedSender` channel that can be used to send raw data to the radio.
+    /// Returns an `Sender` channel that can be used to send raw data to the radio.
     ///
     /// # Examples
     ///
@@ -341,7 +347,7 @@ impl<State> ConnectedStreamApi<State> {
     ///
     /// None
     ///
-    pub fn write_input_sender(&self) -> UnboundedSender<EncodedToRadioPacketWithHeader> {
+    pub fn write_input_sender(&self) -> Sender<EncodedToRadioPacketWithHeader> {
         self.write_input_tx.clone()
     }
 }
@@ -393,7 +399,7 @@ impl StreamApi {
     ///
     /// # Returns
     ///
-    /// Returns an `UnboundedReceiver` that is used to receive decoded `FromRadio` packets.
+    /// Returns an `Receiver` that is used to receive decoded `FromRadio` packets.
     ///
     /// # Examples
     ///
@@ -426,13 +432,15 @@ impl StreamApi {
         // Create message channels
 
         let (write_input_tx, write_input_rx) =
-            tokio::sync::mpsc::unbounded_channel::<EncodedToRadioPacketWithHeader>();
+            tokio::sync::mpsc::channel::<EncodedToRadioPacketWithHeader>(
+                size_of::<EncodedToRadioPacketWithHeader>() * 15,
+            );
 
         let (read_output_tx, read_output_rx) =
-            tokio::sync::mpsc::unbounded_channel::<IncomingStreamData>();
+            tokio::sync::mpsc::channel::<IncomingStreamData>(size_of::<IncomingStreamData>() * 15);
 
         let (decoded_packet_tx, decoded_packet_rx) =
-            tokio::sync::mpsc::unbounded_channel::<protobufs::FromRadio>();
+            tokio::sync::mpsc::channel::<protobufs::FromRadio>(size_of::<FromRadio>() * 15);
 
         // Spawn worker threads with kill switch
 
