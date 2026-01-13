@@ -53,7 +53,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// The Meshtastic `PhoneAPI` will return decoded `FromRadio` packets, which
 /// can then be handled based on their payload variant. Note that the payload
 /// variant can be `None`, in which case the packet should be ignored.
-fn handle_from_radio_packet(from_radio_packet: Box<meshtastic::protobufs::FromRadio>) {
+fn handle_from_radio_packet(from_radio_packet: meshtastic::protobufs::FromRadio) {
     // Remove `None` variants to get the payload variant
     let payload_variant = match from_radio_packet.payload_variant {
         Some(payload_variant) => payload_variant,

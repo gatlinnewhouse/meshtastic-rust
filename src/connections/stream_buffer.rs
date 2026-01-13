@@ -13,7 +13,7 @@ use super::wrappers::encoded_data::IncomingStreamData;
 #[derive(Clone, Debug)]
 pub struct StreamBuffer {
     buffer: Vec<u8>,
-    decoded_packet_tx: UnboundedSender<Box<protobufs::FromRadio>>,
+    decoded_packet_tx: UnboundedSender<protobufs::FromRadio>,
 }
 
 /// An enum that represents the possible errors that can occur when processing
@@ -45,7 +45,7 @@ const PACKET_HEADER_SIZE: usize = 4;
 impl StreamBuffer {
     /// Creates a new StreamBuffer instance that will send decoded FromRadio packets
     /// to the given broadcast channel.
-    pub fn new(decoded_packet_tx: UnboundedSender<Box<protobufs::FromRadio>>) -> Self {
+    pub fn new(decoded_packet_tx: UnboundedSender<protobufs::FromRadio>) -> Self {
         StreamBuffer {
             buffer: vec![],
             decoded_packet_tx,
@@ -62,7 +62,7 @@ impl StreamBuffer {
     /// # Example
     ///
     /// ```
-    /// let (rx, mut tx) = broadcast::channel::<Box<protobufs::FromRadio>>(32);
+    /// let (rx, mut tx) = broadcast::channel::<protobufs::FromRadio>(32);
     /// let buffer = StreamBuffer::new(tx);
     ///
     /// while let Some(message) = stream.try_next().await? {
@@ -154,7 +154,7 @@ impl StreamBuffer {
     /// enough data to decode a packet, and is able to successfully decode the packet.
     ///
     /// **Note:** This function should only be called when not all received data in the buffer has been processed.
-    fn process_packet_buffer(&mut self) -> Result<Box<protobufs::FromRadio>, StreamBufferError> {
+    fn process_packet_buffer(&mut self) -> Result<protobufs::FromRadio, StreamBufferError> {
         trace!(
             "Packet buffer with length {:?}: {:?}",
             self.buffer.len(),
@@ -180,7 +180,7 @@ impl StreamBuffer {
         let packet_data = self.extract_packet_from_buffer(incoming_packet_data_size)?;
 
         // Attempt to decode the current packet
-        let decoded_packet = Box::new(protobufs::FromRadio::decode(packet_data.as_slice())?);
+        let decoded_packet = protobufs::FromRadio::decode(packet_data.as_slice())?;
 
         Ok(decoded_packet)
     }
@@ -369,13 +369,13 @@ mod tests {
     fn mock_encoded_from_radio_packet(
         payload_variant: protobufs::from_radio::PayloadVariant,
         id: impl Into<Option<u32>>,
-    ) -> (Box<protobufs::FromRadio>, Vec<u8>) {
+    ) -> (protobufs::FromRadio, Vec<u8>) {
         let packet_id = id.into().unwrap_or(rand::random());
 
-        let packet = Box::new(protobufs::FromRadio {
+        let packet = protobufs::FromRadio {
             id: packet_id,
             payload_variant: Some(payload_variant),
-        });
+        };
 
         (packet.clone(), packet.encode_to_vec())
     }
@@ -393,7 +393,7 @@ mod tests {
         let (packet_1, packet_data_1) = mock_encoded_from_radio_packet(payload_variant_1, None);
         let encoded_packet_1 = format_data_packet(packet_data_1.into()).unwrap();
 
-        let (mock_tx, mut mock_rx) = unbounded_channel::<Box<protobufs::FromRadio>>();
+        let (mock_tx, mut mock_rx) = unbounded_channel::<protobufs::FromRadio>();
 
         // Act
 
@@ -430,7 +430,7 @@ mod tests {
             .take(6)
             .collect::<Vec<u8>>();
 
-        let (mock_tx, mut mock_rx) = unbounded_channel::<Box<protobufs::FromRadio>>();
+        let (mock_tx, mut mock_rx) = unbounded_channel::<protobufs::FromRadio>();
 
         // Act
 
@@ -463,7 +463,7 @@ mod tests {
         let encoded_packet_1 = format_data_packet(packet_data_1.into()).unwrap();
         let encoded_packet_2 = format_data_packet(packet_data_2.into()).unwrap();
 
-        let (mock_tx, mut mock_rx) = unbounded_channel::<Box<protobufs::FromRadio>>();
+        let (mock_tx, mut mock_rx) = unbounded_channel::<protobufs::FromRadio>();
 
         // Act
 
@@ -506,7 +506,7 @@ mod tests {
             .take(6)
             .collect::<Vec<u8>>();
 
-        let (mock_tx, mut mock_rx) = unbounded_channel::<Box<protobufs::FromRadio>>();
+        let (mock_tx, mut mock_rx) = unbounded_channel::<protobufs::FromRadio>();
 
         // Act
 
@@ -534,7 +534,7 @@ mod tests {
         let (packet_1, packet_data_1) = mock_encoded_from_radio_packet(payload_variant_1, None);
         let encoded_packet_1 = format_data_packet(packet_data_1.into()).unwrap();
 
-        let (mock_tx, mut mock_rx) = unbounded_channel::<Box<protobufs::FromRadio>>();
+        let (mock_tx, mut mock_rx) = unbounded_channel::<protobufs::FromRadio>();
 
         // Act
 
@@ -557,7 +557,7 @@ mod tests {
 
         let malformed_packet_1 = vec![0x94, 0x00, 0x94, 0x94, 0x00];
 
-        let (mock_tx, mut _mock_rx) = unbounded_channel::<Box<protobufs::FromRadio>>();
+        let (mock_tx, mut _mock_rx) = unbounded_channel::<protobufs::FromRadio>();
 
         // Act
 
@@ -584,7 +584,7 @@ mod tests {
 
         let malformed_packet_1 = vec![0x94, 0x00, 0x94, 0x94, 0x00];
 
-        let (mock_tx, mut mock_rx) = unbounded_channel::<Box<protobufs::FromRadio>>();
+        let (mock_tx, mut mock_rx) = unbounded_channel::<protobufs::FromRadio>();
 
         // Act
 
@@ -623,7 +623,7 @@ mod tests {
             .skip(6)
             .collect::<Vec<u8>>();
 
-        let (mock_tx, mut mock_rx) = unbounded_channel::<Box<protobufs::FromRadio>>();
+        let (mock_tx, mut mock_rx) = unbounded_channel::<protobufs::FromRadio>();
 
         // Act
 
@@ -657,7 +657,7 @@ mod tests {
 
         let encoded_zero_length_packet = vec![0x94, 0xc3, 0x00, 0x00];
 
-        let (mock_tx, mut mock_rx) = unbounded_channel::<Box<protobufs::FromRadio>>();
+        let (mock_tx, mut mock_rx) = unbounded_channel::<protobufs::FromRadio>();
 
         // Act
 
@@ -667,10 +667,10 @@ mod tests {
 
         // Assert
 
-        let empty_packet = Box::new(protobufs::FromRadio {
+        let empty_packet = protobufs::FromRadio {
             id: 0,
             payload_variant: None,
-        });
+        };
 
         assert_eq!(timeout_test(mock_rx.recv(), None).await, Some(empty_packet));
         assert_eq!(timeout_test(mock_rx.recv(), None).await, Some(packet_2));

@@ -432,7 +432,7 @@ impl StreamApi {
             tokio::sync::mpsc::unbounded_channel::<IncomingStreamData>();
 
         let (decoded_packet_tx, decoded_packet_rx) =
-            tokio::sync::mpsc::unbounded_channel::<Box<protobufs::FromRadio>>();
+            tokio::sync::mpsc::unbounded_channel::<protobufs::FromRadio>();
 
         // Spawn worker threads with kill switch
 
