@@ -393,8 +393,7 @@ mod tests {
         let (packet_1, packet_data_1) = mock_encoded_from_radio_packet(payload_variant_1, None);
         let encoded_packet_1 = format_data_packet(packet_data_1.into()).unwrap();
 
-        let (mock_tx, mut mock_rx) =
-            channel::<protobufs::FromRadio>(size_of::<protobufs::FromRadio>() * 15);
+        let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
         // Act
 
@@ -433,8 +432,7 @@ mod tests {
             .take(6)
             .collect::<Vec<u8>>();
 
-        let (mock_tx, mut mock_rx) =
-            channel::<protobufs::FromRadio>(size_of::<protobufs::FromRadio>() * 15);
+        let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
         // Act
 
@@ -471,8 +469,7 @@ mod tests {
         let encoded_packet_1 = format_data_packet(packet_data_1.into()).unwrap();
         let encoded_packet_2 = format_data_packet(packet_data_2.into()).unwrap();
 
-        let (mock_tx, mut mock_rx) =
-            channel::<protobufs::FromRadio>(size_of::<protobufs::FromRadio>() * 15);
+        let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
         // Act
 
@@ -519,8 +516,7 @@ mod tests {
             .take(6)
             .collect::<Vec<u8>>();
 
-        let (mock_tx, mut mock_rx) =
-            channel::<protobufs::FromRadio>(size_of::<protobufs::FromRadio>() * 15);
+        let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
         // Act
 
@@ -554,8 +550,7 @@ mod tests {
         let (packet_1, packet_data_1) = mock_encoded_from_radio_packet(payload_variant_1, None);
         let encoded_packet_1 = format_data_packet(packet_data_1.into()).unwrap();
 
-        let (mock_tx, mut mock_rx) =
-            channel::<protobufs::FromRadio>(size_of::<protobufs::FromRadio>() * 15);
+        let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
         // Act
 
@@ -580,8 +575,7 @@ mod tests {
 
         let malformed_packet_1 = vec![0x94, 0x00, 0x94, 0x94, 0x00];
 
-        let (mock_tx, mut _mock_rx) =
-            channel::<protobufs::FromRadio>(size_of::<protobufs::FromRadio>() * 15);
+        let (mock_tx, mut _mock_rx) = channel::<protobufs::FromRadio>(32);
 
         // Act
 
@@ -610,8 +604,7 @@ mod tests {
 
         let malformed_packet_1 = vec![0x94, 0x00, 0x94, 0x94, 0x00];
 
-        let (mock_tx, mut mock_rx) =
-            channel::<protobufs::FromRadio>(size_of::<protobufs::FromRadio>() * 15);
+        let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
         // Act
 
@@ -654,8 +647,7 @@ mod tests {
             .skip(6)
             .collect::<Vec<u8>>();
 
-        let (mock_tx, mut mock_rx) =
-            channel::<protobufs::FromRadio>(size_of::<protobufs::FromRadio>() * 15);
+        let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
         // Act
 
@@ -693,8 +685,7 @@ mod tests {
 
         let encoded_zero_length_packet = vec![0x94, 0xc3, 0x00, 0x00];
 
-        let (mock_tx, mut mock_rx) =
-            channel::<protobufs::FromRadio>(size_of::<protobufs::FromRadio>() * 15);
+        let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
         // Act
 

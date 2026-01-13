@@ -432,15 +432,12 @@ impl StreamApi {
         // Create message channels
 
         let (write_input_tx, write_input_rx) =
-            tokio::sync::mpsc::channel::<EncodedToRadioPacketWithHeader>(
-                size_of::<EncodedToRadioPacketWithHeader>() * 15,
-            );
+            tokio::sync::mpsc::channel::<EncodedToRadioPacketWithHeader>(32);
 
-        let (read_output_tx, read_output_rx) =
-            tokio::sync::mpsc::channel::<IncomingStreamData>(size_of::<IncomingStreamData>() * 15);
+        let (read_output_tx, read_output_rx) = tokio::sync::mpsc::channel::<IncomingStreamData>(32);
 
         let (decoded_packet_tx, decoded_packet_rx) =
-            tokio::sync::mpsc::channel::<protobufs::FromRadio>(size_of::<FromRadio>() * 15);
+            tokio::sync::mpsc::channel::<protobufs::FromRadio>(32);
 
         // Spawn worker threads with kill switch
 
