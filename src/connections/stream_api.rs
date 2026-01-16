@@ -540,7 +540,7 @@ impl ConnectedStreamApi<state::Connected> {
 
         // Actual packet data is a Max of 237 bytes excluding protobuf overhead
         // https://meshtastic.org/docs/overview/mesh-algo/
-        let mut buf = BytesMut::with_capacity(4096);
+        let mut buf = BytesMut::with_capacity(256);
         to_radio.encode(&mut buf)?;
         let packet_buf: EncodedToRadioPacket = buf.into();
         self.send_raw(packet_buf).await?;
