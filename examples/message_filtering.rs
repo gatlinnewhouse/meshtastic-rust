@@ -126,7 +126,7 @@ fn handle_mesh_packet(mesh_packet: &meshtastic::protobufs::MeshPacket) {
             println!("Received position packet: {:?}", decoded_position);
         }
         meshtastic::protobufs::PortNum::TextMessageApp => {
-            let decoded_text_message = String::from_utf8(packet_data.payload.to_vec()).unwrap();
+            let decoded_text_message = str::from_utf8(&packet_data.payload).unwrap();
 
             println!("Received text message packet: {:?}", decoded_text_message);
         }

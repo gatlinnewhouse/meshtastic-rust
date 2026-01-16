@@ -52,17 +52,18 @@ where
     debug!("Started read handler");
 
     let mut read_stream = read_stream;
+    let mut read_buf = BytesMut::with_capacity(4096);
 
     loop {
-        let mut buffer = [0u8; 1024];
-        match read_stream.read(&mut buffer).await {
+        read_buf.reserve(1024);
+        match read_stream.read(&mut read_buf).await {
             Ok(0) => {
                 trace!("read_stream has reached EOF");
                 return Err(Error::InternalStreamError(InternalStreamError::Eof));
             }
             Ok(n) => {
                 trace!("Read {n} bytes from stream");
-                let data: IncomingStreamData = buffer[..n].into();
+                let data: IncomingStreamData = read_buf.split().freeze().into();
                 trace!("Read data: {data:?}");
 
                 read_output_tx

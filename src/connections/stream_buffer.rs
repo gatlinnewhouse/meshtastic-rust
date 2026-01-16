@@ -289,7 +289,7 @@ impl StreamBuffer {
         //     packet_data_start_index + packet_data_size
         // );
 
-        let packet_buffer = &self.buffer[packet_data_start_index..packet_data_end_index];
+        let packet_buffer = self.buffer[packet_data_start_index..packet_data_end_index].as_ref();
 
         let next_packet_start_index = StreamBuffer::find_framing_index(packet_buffer)
             // We need to re-normalize to the original buffer since we're working with a sub-slice
@@ -407,7 +407,7 @@ mod tests {
 
         let mut buffer = StreamBuffer::new(mock_tx);
         buffer
-            .process_incoming_bytes(encoded_packet_1.data().into())
+            .process_incoming_bytes(encoded_packet_1.data_bytes().into())
             .await;
 
         // Assert
@@ -434,8 +434,11 @@ mod tests {
         let encoded_packet_1 = format_data_packet(packet_data_1.into()).unwrap();
         let encoded_packet_2 = format_data_packet(packet_data_2.into()).unwrap();
 
-        let incomplete_encoded_packet_2 =
-            encoded_packet_2.data().iter().take(6).collect::<BytesMut>();
+        let incomplete_encoded_packet_2 = encoded_packet_2
+            .data_bytes()
+            .iter()
+            .take(6)
+            .collect::<BytesMut>();
 
         let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
@@ -443,7 +446,7 @@ mod tests {
 
         let mut buffer = StreamBuffer::new(mock_tx);
         buffer
-            .process_incoming_bytes(encoded_packet_1.data().into())
+            .process_incoming_bytes(encoded_packet_1.data_bytes().into())
             .await;
         buffer
             .process_incoming_bytes(incomplete_encoded_packet_2.clone().freeze().into())
@@ -480,10 +483,10 @@ mod tests {
 
         let mut buffer = StreamBuffer::new(mock_tx);
         buffer
-            .process_incoming_bytes(encoded_packet_1.data().into())
+            .process_incoming_bytes(encoded_packet_1.data_bytes().into())
             .await;
         buffer
-            .process_incoming_bytes(encoded_packet_2.data().into())
+            .process_incoming_bytes(encoded_packet_2.data_bytes().into())
             .await;
 
         // Assert
@@ -524,13 +527,13 @@ mod tests {
 
         let mut buffer = StreamBuffer::new(mock_tx);
         buffer
-            .process_incoming_bytes(encoded_packet_1.data().into())
+            .process_incoming_bytes(encoded_packet_1.data_bytes().into())
             .await;
         buffer
             .process_incoming_bytes(malformed_encoded_packet_2.freeze().into())
             .await;
         buffer
-            .process_incoming_bytes(encoded_packet_3.data().into())
+            .process_incoming_bytes(encoded_packet_3.data_bytes().into())
             .await;
 
         // Assert
@@ -558,7 +561,7 @@ mod tests {
 
         let mut buffer = StreamBuffer::new(mock_tx);
         buffer
-            .process_incoming_bytes(encoded_packet_1.data().into())
+            .process_incoming_bytes(encoded_packet_1.data_bytes().into())
             .await;
         buffer
             .process_incoming_bytes(Bytes::from([0x94].as_slice()).into())
@@ -617,7 +620,7 @@ mod tests {
             .process_incoming_bytes(malformed_packet_1.into())
             .await;
         buffer
-            .process_incoming_bytes(encoded_packet_2.data().into())
+            .process_incoming_bytes(encoded_packet_2.data_bytes().into())
             .await;
 
         // Assert
@@ -689,7 +692,7 @@ mod tests {
             .process_incoming_bytes(encoded_zero_length_packet.into())
             .await;
         buffer
-            .process_incoming_bytes(encoded_packet_2.data().into())
+            .process_incoming_bytes(encoded_packet_2.data_bytes().into())
             .await;
 
         // Assert

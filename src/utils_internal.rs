@@ -390,7 +390,7 @@ where
 pub fn format_data_packet(
     packet: EncodedToRadioPacket,
 ) -> Result<EncodedToRadioPacketWithHeader, Error> {
-    let data = packet.data();
+    let data = packet.as_slice();
     if data.len() >= 1 << 16 {
         return Err(Error::InvalidaDataSize {
             data_length: data.len(),
@@ -453,11 +453,12 @@ pub fn format_data_packet(
 pub fn strip_data_packet_header(
     packet: EncodedToRadioPacketWithHeader,
 ) -> Result<EncodedToRadioPacket, Error> {
-    let data = packet.data();
+    let pkt = packet.clone();
+    let data = packet.data_bytes();
 
-    let stripped_data = match data.get(4..) {
-        Some(data) => data,
-        None => return Err(Error::InsufficientPacketBufferLength { packet }),
+    let stripped_data = match data.slice(4..).try_into_mut() {
+        Ok(data) => data,
+        Err(_e) => return Err(Error::InsufficientPacketBufferLength { packet: pkt }),
     };
 
     Ok(stripped_data.into())
