@@ -203,7 +203,7 @@ async fn start_heartbeat_handler(
             )),
         };
 
-        let mut buffer = BytesMut::new();
+        let mut buffer = BytesMut::with_capacity(256);
         match heartbeat_packet.encode(&mut buffer) {
             Ok(_) => (),
             Err(e) => {

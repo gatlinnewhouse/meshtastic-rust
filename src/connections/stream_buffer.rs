@@ -181,7 +181,11 @@ impl StreamBuffer {
         let packet_data = self.extract_packet_from_buffer(incoming_packet_data_size)?;
 
         // Attempt to decode the current packet
-        let decoded_packet = protobufs::FromRadio::decode(&packet_data[..])?;
+        let decoded_packet = protobufs::FromRadio::decode(packet_data)?;
+
+        // Drop header and payload
+        self.buffer
+            .advance(PACKET_HEADER_SIZE + incoming_packet_data_size);
 
         Ok(decoded_packet)
     }
@@ -194,7 +198,7 @@ impl StreamBuffer {
 
         if framing_index != 0 {
             debug!("Found framing byte at index {framing_index}, shifting buffer");
-            let _ = self.buffer.split_to(framing_index);
+            self.buffer.advance(framing_index);
             trace!("Buffer after shifting: {:?}", self.buffer);
         }
         Ok(())
@@ -293,7 +297,7 @@ impl StreamBuffer {
 
         if let Some(next_packet_start_idx) = next_packet_start_index {
             // Remove malformed packet from buffer
-            let _ = self.buffer.split_to(next_packet_start_idx);
+            self.buffer.advance(next_packet_start_idx);
 
             return Err(StreamBufferError::MalformedPacket {
                 next_packet_start_idx,
@@ -306,7 +310,7 @@ impl StreamBuffer {
     fn extract_packet_from_buffer(
         &mut self,
         packet_data_size: usize,
-    ) -> Result<BytesMut, StreamBufferError> {
+    ) -> Result<&[u8], StreamBufferError> {
         if self.buffer.len() < packet_data_size {
             return Err(StreamBufferError::IncompletePacket {
                 buffer_size: self.buffer.len(),
@@ -317,7 +321,7 @@ impl StreamBuffer {
         let packet_end_index = PACKET_HEADER_SIZE + packet_data_size;
 
         // Extract packet with header before removing header
-        let mut frame = self.buffer.split_to(packet_end_index);
+        let mut frame = &self.buffer[0..packet_end_index];
 
         // trace!(
         //     "Extracted packet data with header of length {:?} from buffer: {:?}",
@@ -343,6 +347,7 @@ mod tests {
     use std::time::Duration;
 
     use crate::{protobufs, utils_internal::format_data_packet};
+    use bytes::Bytes;
     use futures_util::FutureExt;
     use prost::Message;
     use tokio::sync::mpsc::channel;
@@ -380,7 +385,7 @@ mod tests {
             Err(e) => error!("Failed to encode packet to BytesMut: {e}"),
         }
 
-        (packet.clone(), buf)
+        (packet, buf)
     }
 
     /// Test for processing a single complete packet.
@@ -429,11 +434,8 @@ mod tests {
         let encoded_packet_1 = format_data_packet(packet_data_1.into()).unwrap();
         let encoded_packet_2 = format_data_packet(packet_data_2.into()).unwrap();
 
-        let incomplete_encoded_packet_2 = encoded_packet_2
-            .data_bytes()
-            .into_iter()
-            .take(6)
-            .collect::<BytesMut>();
+        let incomplete_encoded_packet_2 =
+            encoded_packet_2.data().iter().take(6).collect::<BytesMut>();
 
         let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
@@ -444,7 +446,7 @@ mod tests {
             .process_incoming_bytes(encoded_packet_1.data().into())
             .await;
         buffer
-            .process_incoming_bytes(incomplete_encoded_packet_2.clone().into())
+            .process_incoming_bytes(incomplete_encoded_packet_2.clone().freeze().into())
             .await;
 
         // Assert
@@ -513,11 +515,8 @@ mod tests {
         let encoded_packet_2 = format_data_packet(packet_data_2.into()).unwrap();
         let encoded_packet_3 = format_data_packet(packet_data_3.into()).unwrap();
 
-        let malformed_encoded_packet_2 = encoded_packet_2
-            .data_bytes()
-            .into_iter()
-            .take(6)
-            .collect::<BytesMut>();
+        let malformed_encoded_packet_2 =
+            encoded_packet_2.data().iter().take(6).collect::<BytesMut>();
 
         let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
@@ -528,7 +527,7 @@ mod tests {
             .process_incoming_bytes(encoded_packet_1.data().into())
             .await;
         buffer
-            .process_incoming_bytes(malformed_encoded_packet_2.clone().into())
+            .process_incoming_bytes(malformed_encoded_packet_2.freeze().into())
             .await;
         buffer
             .process_incoming_bytes(encoded_packet_3.data().into())
@@ -562,7 +561,7 @@ mod tests {
             .process_incoming_bytes(encoded_packet_1.data().into())
             .await;
         buffer
-            .process_incoming_bytes(BytesMut::from([0x94].as_slice()).into())
+            .process_incoming_bytes(Bytes::from([0x94].as_slice()).into())
             .await;
 
         // Assert
@@ -578,7 +577,7 @@ mod tests {
     async fn clear_buffer_on_invalid_packet_start() {
         // Arrange
 
-        let malformed_packet_1 = BytesMut::from([0x94, 0x00, 0x94, 0x94, 0x00].as_slice());
+        let malformed_packet_1 = Bytes::from([0x94, 0x00, 0x94, 0x94, 0x00].as_slice());
 
         let (mock_tx, mut _mock_rx) = channel::<protobufs::FromRadio>(32);
 
@@ -607,7 +606,7 @@ mod tests {
         let (packet_2, packet_data_2) = mock_encoded_from_radio_packet(payload_variant_2, None);
         let encoded_packet_2 = format_data_packet(packet_data_2.into()).unwrap();
 
-        let malformed_packet_1 = BytesMut::from([0x94, 0x00, 0x94, 0x94, 0x00].as_slice());
+        let malformed_packet_1 = Bytes::from([0x94, 0x00, 0x94, 0x94, 0x00].as_slice());
 
         let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
@@ -639,18 +638,9 @@ mod tests {
         let (packet_1, packet_data_1) = mock_encoded_from_radio_packet(payload_variant_1, None);
         let encoded_packet_1 = format_data_packet(packet_data_1.into()).unwrap();
 
-        let encoded_packet_1_chunk_1 = encoded_packet_1
-            .clone()
-            .data_bytes()
-            .into_iter()
-            .take(6)
-            .collect::<BytesMut>();
+        let encoded_packet_1_chunk_1 = encoded_packet_1.data().iter().take(6).collect::<BytesMut>();
 
-        let encoded_packet_1_chunk_2 = encoded_packet_1
-            .data_bytes()
-            .into_iter()
-            .skip(6)
-            .collect::<BytesMut>();
+        let encoded_packet_1_chunk_2 = encoded_packet_1.data().iter().skip(6).collect::<BytesMut>();
 
         let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 
@@ -658,10 +648,10 @@ mod tests {
 
         let mut buffer = StreamBuffer::new(mock_tx);
         buffer
-            .process_incoming_bytes(encoded_packet_1_chunk_1.into())
+            .process_incoming_bytes(encoded_packet_1_chunk_1.freeze().into())
             .await;
         buffer
-            .process_incoming_bytes(encoded_packet_1_chunk_2.into())
+            .process_incoming_bytes(encoded_packet_1_chunk_2.freeze().into())
             .await;
 
         // Assert
@@ -688,7 +678,7 @@ mod tests {
         let (packet_2, packet_data_2) = mock_encoded_from_radio_packet(payload_variant_2, None);
         let encoded_packet_2 = format_data_packet(packet_data_2.into()).unwrap();
 
-        let encoded_zero_length_packet = BytesMut::from([0x94, 0xc3, 0x00, 0x00].as_slice());
+        let encoded_zero_length_packet = Bytes::from([0x94, 0xc3, 0x00, 0x00].as_slice());
 
         let (mock_tx, mut mock_rx) = channel::<protobufs::FromRadio>(32);
 

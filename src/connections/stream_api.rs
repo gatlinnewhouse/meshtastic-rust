@@ -1,5 +1,5 @@
 use bytes::{Bytes, BytesMut};
-use futures_util::future::join3;
+use futures_util::future::join4;
 use log::trace;
 use prost::Message;
 use std::{fmt::Display, marker::PhantomData};
@@ -266,7 +266,9 @@ impl<State> ConnectedStreamApi<State> {
     ) -> Result<(), Error> {
         let packet = protobufs::ToRadio { payload_variant };
 
-        let mut packet_buf = BytesMut::new();
+        // Actual packet data is a Max of 237 bytes excluding protobuf overhead
+        // https://meshtastic.org/docs/overview/mesh-algo/
+        let mut packet_buf = BytesMut::with_capacity(256);
         packet.encode(&mut packet_buf)?;
         self.send_raw(packet_buf.into()).await
     }
@@ -432,12 +434,13 @@ impl StreamApi {
         // Create message channels
 
         let (write_input_tx, write_input_rx) =
-            tokio::sync::mpsc::channel::<EncodedToRadioPacketWithHeader>(32);
+            tokio::sync::mpsc::channel::<EncodedToRadioPacketWithHeader>(256);
 
-        let (read_output_tx, read_output_rx) = tokio::sync::mpsc::channel::<IncomingStreamData>(32);
+        let (read_output_tx, read_output_rx) =
+            tokio::sync::mpsc::channel::<IncomingStreamData>(256);
 
         let (decoded_packet_tx, decoded_packet_rx) =
-            tokio::sync::mpsc::channel::<protobufs::FromRadio>(32);
+            tokio::sync::mpsc::channel::<protobufs::FromRadio>(256);
 
         // Spawn worker threads with kill switch
 
@@ -459,13 +462,7 @@ impl StreamApi {
         let heartbeat_handle =
             handlers::spawn_heartbeat_handler(cancellation_token.clone(), write_input_tx.clone());
 
-        // Persist channels and kill switch to struct
-
-        let write_input_tx = write_input_tx;
-        let cancellation_token = cancellation_token;
-
         // Return channel for receiving decoded packets
-
         (
             decoded_packet_rx,
             ConnectedStreamApi::<state::Connected> {
@@ -541,6 +538,8 @@ impl ConnectedStreamApi<state::Connected> {
             payload_variant: Some(protobufs::to_radio::PayloadVariant::WantConfigId(config_id)),
         };
 
+        // Actual packet data is a Max of 237 bytes excluding protobuf overhead
+        // https://meshtastic.org/docs/overview/mesh-algo/
         let mut buf = BytesMut::with_capacity(4096);
         to_radio.encode(&mut buf)?;
         let packet_buf: EncodedToRadioPacket = buf.into();
@@ -603,13 +602,19 @@ impl ConnectedStreamApi<state::Configured> {
 
         // Close worker threads
 
-        let (read_result, write_result, processing_result) =
-            join3(self.read_handle, self.write_handle, self.processing_handle).await;
+        let (read_result, write_result, processing_result, heartbeat_result) = join4(
+            self.read_handle,
+            self.write_handle,
+            self.processing_handle,
+            self.heartbeat_handle,
+        )
+        .await;
 
         // Note: we only return the first error.
         read_result??;
         write_result??;
         processing_result??;
+        heartbeat_result??;
 
         trace!("Handlers fully disconnected");
 
@@ -669,7 +674,7 @@ impl ConnectedStreamApi<state::Configured> {
         want_ack: bool,
         channel: MeshChannel,
     ) -> Result<(), Error> {
-        let byte_data: EncodedMeshPacketData = BytesMut::from(text.into_bytes().as_slice()).into();
+        let byte_data: EncodedMeshPacketData = Bytes::from(text).into();
 
         self.send_mesh_packet(
             packet_router,
@@ -753,7 +758,7 @@ impl ConnectedStreamApi<state::Configured> {
         // https://meshtastic.org/docs/overview/mesh-algo/
         let mut buf = BytesMut::with_capacity(256);
         waypoint.encode(&mut buf)?;
-        let byte_data: EncodedMeshPacketData = buf.into();
+        let byte_data: EncodedMeshPacketData = buf.freeze().into();
 
         self.send_mesh_packet(
             packet_router,
@@ -831,7 +836,7 @@ impl ConnectedStreamApi<state::Configured> {
         // https://meshtastic.org/docs/overview/mesh-algo/
         let mut buf = BytesMut::with_capacity(256);
         position.encode(&mut buf)?;
-        let byte_data: EncodedMeshPacketData = buf.into();
+        let byte_data: EncodedMeshPacketData = buf.freeze().into();
 
         self.send_mesh_packet(
             packet_router,
@@ -910,7 +915,7 @@ impl ConnectedStreamApi<state::Configured> {
         // https://meshtastic.org/docs/overview/mesh-algo/
         let mut buf = BytesMut::with_capacity(256);
         config_packet.encode(&mut buf)?;
-        let byte_data: EncodedMeshPacketData = buf.into();
+        let byte_data: EncodedMeshPacketData = buf.freeze().into();
 
         self.send_mesh_packet(
             packet_router,
@@ -991,7 +996,7 @@ impl ConnectedStreamApi<state::Configured> {
         // https://meshtastic.org/docs/overview/mesh-algo/
         let mut buf = BytesMut::with_capacity(256);
         module_config_packet.encode(&mut buf)?;
-        let byte_data: EncodedMeshPacketData = buf.into();
+        let byte_data: EncodedMeshPacketData = buf.freeze().into();
 
         self.send_mesh_packet(
             packet_router,
@@ -1072,7 +1077,7 @@ impl ConnectedStreamApi<state::Configured> {
         // https://meshtastic.org/docs/overview/mesh-algo/
         let mut buf = BytesMut::with_capacity(256);
         channel_packet.encode(&mut buf)?;
-        let byte_data: EncodedMeshPacketData = buf.into();
+        let byte_data: EncodedMeshPacketData = buf.freeze().into();
 
         self.send_mesh_packet(
             packet_router,
@@ -1144,7 +1149,7 @@ impl ConnectedStreamApi<state::Configured> {
         // https://meshtastic.org/docs/overview/mesh-algo/
         let mut buf = BytesMut::with_capacity(256);
         user_packet.encode(&mut buf)?;
-        let byte_data: EncodedMeshPacketData = buf.into();
+        let byte_data: EncodedMeshPacketData = buf.freeze().into();
 
         self.send_mesh_packet(
             packet_router,
@@ -1228,7 +1233,9 @@ impl ConnectedStreamApi<state::Configured> {
             session_passkey: Bytes::new(),
         };
 
-        let mut packet_buf = BytesMut::new();
+        // Actual packet data is a Max of 237 bytes excluding protobuf overhead
+        // https://meshtastic.org/docs/overview/mesh-algo/
+        let mut packet_buf = BytesMut::with_capacity(256);
         to_radio.encode(&mut packet_buf)?;
         self.send_raw(packet_buf.into()).await
     }
@@ -1286,7 +1293,9 @@ impl ConnectedStreamApi<state::Configured> {
             session_passkey: Bytes::new(),
         };
 
-        let mut packet_buf = BytesMut::new();
+        // Actual packet data is a Max of 237 bytes excluding protobuf overhead
+        // https://meshtastic.org/docs/overview/mesh-algo/
+        let mut packet_buf = BytesMut::with_capacity(256);
         to_radio.encode(&mut packet_buf)?;
         self.send_raw(packet_buf.into()).await
     }

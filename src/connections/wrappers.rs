@@ -45,8 +45,8 @@ pub mod encoded_data {
 
     /// A struct that represents incoming encoded data from a radio connection.
     /// The wrapped data may contain a whole packet, a partial packet, or multiple packets.
-    #[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct IncomingStreamData(BytesMut);
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
+    pub struct IncomingStreamData(Bytes);
 
     impl std::fmt::Display for IncomingStreamData {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -56,25 +56,25 @@ pub mod encoded_data {
 
     impl IncomingStreamData {
         /// Creates a new `IncomingStreamData` struct from a `BytesMut`.
-        pub fn new(data: BytesMut) -> IncomingStreamData {
+        pub fn new(data: Bytes) -> IncomingStreamData {
             IncomingStreamData(data)
         }
 
         /// Returns a copy of the `BytesMut` data contained within the `IncomingStreamData` struct.
         pub fn data_bytes(&self) -> Bytes {
-            self.0.clone().into()
+            self.0.clone()
         }
     }
 
-    impl From<BytesMut> for IncomingStreamData {
-        fn from(value: BytesMut) -> Self {
+    impl From<Bytes> for IncomingStreamData {
+        fn from(value: Bytes) -> Self {
             IncomingStreamData(value)
         }
     }
 
     impl From<&[u8]> for IncomingStreamData {
         fn from(value: &[u8]) -> Self {
-            IncomingStreamData(BytesMut::from(value))
+            IncomingStreamData(Bytes::copy_from_slice(value))
         }
     }
 
@@ -86,8 +86,8 @@ pub mod encoded_data {
 
     /// A struct that represents encoded binary data that will be used within the `protobufs::Data`
     /// field of an outgoing `protobufs::MeshPacket`.
-    #[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct EncodedMeshPacketData(BytesMut);
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
+    pub struct EncodedMeshPacketData(Bytes);
 
     impl std::fmt::Display for EncodedMeshPacketData {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -97,7 +97,7 @@ pub mod encoded_data {
 
     impl EncodedMeshPacketData {
         /// Creates a new `EncodedMeshPacketData` struct from a `Vec<u8>`.
-        pub fn new(data: BytesMut) -> EncodedMeshPacketData {
+        pub fn new(data: Bytes) -> EncodedMeshPacketData {
             EncodedMeshPacketData(data)
         }
 
@@ -108,25 +108,25 @@ pub mod encoded_data {
 
         /// Returns a copy of the `Bytes` data contained within the `EncodedMeshPacketData` struct.
         pub fn data_bytes(&self) -> Bytes {
-            self.0.clone().into()
+            self.0.clone()
         }
     }
 
-    impl From<BytesMut> for EncodedMeshPacketData {
-        fn from(value: BytesMut) -> Self {
+    impl From<Bytes> for EncodedMeshPacketData {
+        fn from(value: Bytes) -> Self {
             EncodedMeshPacketData(value)
         }
     }
 
     impl From<&[u8]> for EncodedMeshPacketData {
         fn from(value: &[u8]) -> Self {
-            EncodedMeshPacketData(BytesMut::from(value))
+            EncodedMeshPacketData(Bytes::copy_from_slice(value))
         }
     }
 
     /// A struct that represents the binary encoding of an outgoing `protobufs::ToRadio` packet.
     /// This data **does not** include a packet header.
-    #[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
     pub struct EncodedToRadioPacket(BytesMut);
 
     impl std::fmt::Display for EncodedToRadioPacket {
@@ -166,7 +166,7 @@ pub mod encoded_data {
 
     /// A struct that represents the binary encoding of an outgoing `protobufs::ToRadio` packet.
     /// This encoding can be sent to a radio, as it includes the required 4-byte packet header.
-    #[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    #[derive(Clone, Debug, Default, PartialEq, Eq)]
     pub struct EncodedToRadioPacketWithHeader(BytesMut);
 
     impl std::fmt::Display for EncodedToRadioPacketWithHeader {

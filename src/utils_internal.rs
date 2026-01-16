@@ -399,7 +399,11 @@ pub fn format_data_packet(
     let [lsb, msb, ..] = data.len().to_le_bytes();
     let magic_buffer = [0x94, 0xc3, msb, lsb];
 
-    Ok(BytesMut::from([&magic_buffer, data].concat().as_slice()).into())
+    let mut buf = BytesMut::with_capacity(4 + data.len());
+    buf.extend_from_slice(&magic_buffer);
+    buf.extend_from_slice(data);
+
+    Ok(buf.into())
 }
 
 /// A helper function that takes a vector of bytes (u8) representing an encoded packet with a 4-byte header,
@@ -449,7 +453,7 @@ pub fn format_data_packet(
 pub fn strip_data_packet_header(
     packet: EncodedToRadioPacketWithHeader,
 ) -> Result<EncodedToRadioPacket, Error> {
-    let data = packet.data_bytes();
+    let data = packet.data();
 
     let stripped_data = match data.get(4..) {
         Some(data) => data,
@@ -503,7 +507,7 @@ mod tests {
 
     #[test]
     fn valid_empty_packet() {
-        let data = BytesMut::new();
+        let data = BytesMut::with_capacity(256);
         let serial_data = format_data_packet(data.into());
 
         assert_eq!(serial_data.unwrap().data(), vec![0x94, 0xc3, 0x00, 0x00]);
