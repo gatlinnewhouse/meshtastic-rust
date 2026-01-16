@@ -41,10 +41,12 @@ impl From<u32> for NodeId {
 }
 
 pub mod encoded_data {
+    use bytes::{Bytes, BytesMut};
+
     /// A struct that represents incoming encoded data from a radio connection.
     /// The wrapped data may contain a whole packet, a partial packet, or multiple packets.
     #[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct IncomingStreamData(Vec<u8>);
+    pub struct IncomingStreamData(BytesMut);
 
     impl std::fmt::Display for IncomingStreamData {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -53,26 +55,26 @@ pub mod encoded_data {
     }
 
     impl IncomingStreamData {
-        /// Creates a new `IncomingStreamData` struct from a `Vec<u8>`.
-        pub fn new(data: Vec<u8>) -> IncomingStreamData {
+        /// Creates a new `IncomingStreamData` struct from a `BytesMut`.
+        pub fn new(data: BytesMut) -> IncomingStreamData {
             IncomingStreamData(data)
         }
 
-        /// Returns a copy of the `Vec<u8>` data contained within the `IncomingStreamData` struct.
-        pub fn data_vec(&self) -> Vec<u8> {
-            self.0.clone()
+        /// Returns a copy of the `BytesMut` data contained within the `IncomingStreamData` struct.
+        pub fn data_bytes(&self) -> Bytes {
+            self.0.clone().into()
         }
     }
 
-    impl From<Vec<u8>> for IncomingStreamData {
-        fn from(value: Vec<u8>) -> Self {
+    impl From<BytesMut> for IncomingStreamData {
+        fn from(value: BytesMut) -> Self {
             IncomingStreamData(value)
         }
     }
 
     impl From<&[u8]> for IncomingStreamData {
         fn from(value: &[u8]) -> Self {
-            IncomingStreamData(value.to_vec())
+            IncomingStreamData(BytesMut::from(value))
         }
     }
 
@@ -85,7 +87,7 @@ pub mod encoded_data {
     /// A struct that represents encoded binary data that will be used within the `protobufs::Data`
     /// field of an outgoing `protobufs::MeshPacket`.
     #[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct EncodedMeshPacketData(Vec<u8>);
+    pub struct EncodedMeshPacketData(BytesMut);
 
     impl std::fmt::Display for EncodedMeshPacketData {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -95,37 +97,37 @@ pub mod encoded_data {
 
     impl EncodedMeshPacketData {
         /// Creates a new `EncodedMeshPacketData` struct from a `Vec<u8>`.
-        pub fn new(data: Vec<u8>) -> EncodedMeshPacketData {
+        pub fn new(data: BytesMut) -> EncodedMeshPacketData {
             EncodedMeshPacketData(data)
         }
 
-        /// Returns a reference to the `Vec<u8>` data contained within the `EncodedMeshPacketData` struct.
+        /// Returns a reference to the `BytesMut` data contained within the `EncodedMeshPacketData` struct.
         pub fn data(&self) -> &[u8] {
             &self.0
         }
 
-        /// Returns a copy of the `Vec<u8>` data contained within the `EncodedMeshPacketData` struct.
-        pub fn data_vec(&self) -> Vec<u8> {
-            self.0.clone()
+        /// Returns a copy of the `Bytes` data contained within the `EncodedMeshPacketData` struct.
+        pub fn data_bytes(&self) -> Bytes {
+            self.0.clone().into()
         }
     }
 
-    impl From<Vec<u8>> for EncodedMeshPacketData {
-        fn from(value: Vec<u8>) -> Self {
+    impl From<BytesMut> for EncodedMeshPacketData {
+        fn from(value: BytesMut) -> Self {
             EncodedMeshPacketData(value)
         }
     }
 
     impl From<&[u8]> for EncodedMeshPacketData {
         fn from(value: &[u8]) -> Self {
-            EncodedMeshPacketData(value.to_vec())
+            EncodedMeshPacketData(BytesMut::from(value))
         }
     }
 
     /// A struct that represents the binary encoding of an outgoing `protobufs::ToRadio` packet.
     /// This data **does not** include a packet header.
     #[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct EncodedToRadioPacket(Vec<u8>);
+    pub struct EncodedToRadioPacket(BytesMut);
 
     impl std::fmt::Display for EncodedToRadioPacket {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -134,38 +136,38 @@ pub mod encoded_data {
     }
 
     impl EncodedToRadioPacket {
-        /// Creates a new `EncodedToRadioPacket` struct from a `Vec<u8>`.
-        pub fn new(data: Vec<u8>) -> EncodedToRadioPacket {
+        /// Creates a new `EncodedToRadioPacket` struct from a `BytesMut`.
+        pub fn new(data: BytesMut) -> EncodedToRadioPacket {
             EncodedToRadioPacket(data)
         }
 
-        /// Returns a reference to the `Vec<u8>` data contained within the `EncodedToRadioPacket` struct.
+        /// Returns a reference to the `BytesMut` data contained within the `EncodedToRadioPacket` struct.
         pub fn data(&self) -> &[u8] {
             &self.0
         }
 
-        /// Returns a copy of the `Vec<u8>` data contained within the `EncodedToRadioPacket` struct.
-        pub fn data_vec(&self) -> Vec<u8> {
-            self.0.clone()
+        /// Returns a copy of the `BytesMut` data contained within the `EncodedToRadioPacket` struct.
+        pub fn data_bytes(&self) -> Bytes {
+            self.0.clone().into()
         }
     }
 
-    impl From<Vec<u8>> for EncodedToRadioPacket {
-        fn from(value: Vec<u8>) -> Self {
+    impl From<BytesMut> for EncodedToRadioPacket {
+        fn from(value: BytesMut) -> Self {
             EncodedToRadioPacket(value)
         }
     }
 
     impl From<&[u8]> for EncodedToRadioPacket {
         fn from(value: &[u8]) -> Self {
-            EncodedToRadioPacket(value.to_vec())
+            EncodedToRadioPacket(BytesMut::from(value))
         }
     }
 
     /// A struct that represents the binary encoding of an outgoing `protobufs::ToRadio` packet.
     /// This encoding can be sent to a radio, as it includes the required 4-byte packet header.
     #[derive(Clone, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct EncodedToRadioPacketWithHeader(Vec<u8>);
+    pub struct EncodedToRadioPacketWithHeader(BytesMut);
 
     impl std::fmt::Display for EncodedToRadioPacketWithHeader {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -174,31 +176,31 @@ pub mod encoded_data {
     }
 
     impl EncodedToRadioPacketWithHeader {
-        /// Creates a new `EncodedToRadioPacketWithHeader` struct from a `Vec<u8>`.
-        pub fn new(data: Vec<u8>) -> EncodedToRadioPacketWithHeader {
+        /// Creates a new `EncodedToRadioPacketWithHeader` struct from a `BytesMut`.
+        pub fn new(data: BytesMut) -> EncodedToRadioPacketWithHeader {
             EncodedToRadioPacketWithHeader(data)
         }
 
-        /// Returns a reference to the `Vec<u8>` data contained within the `EncodedToRadioPacketWithHeader` struct.
+        /// Returns a reference to the `BytesMut` data contained within the `EncodedToRadioPacketWithHeader` struct.
         pub fn data(&self) -> &[u8] {
             &self.0
         }
 
-        /// Returns a copy of the `Vec<u8>` data contained within the `EncodedToRadioPacketWithHeader` struct.
-        pub fn data_vec(&self) -> Vec<u8> {
-            self.0.clone()
+        /// Returns a copy of the `BytesMut` data contained within the `EncodedToRadioPacketWithHeader` struct.
+        pub fn data_bytes(&self) -> Bytes {
+            self.0.clone().into()
         }
     }
 
-    impl From<Vec<u8>> for EncodedToRadioPacketWithHeader {
-        fn from(value: Vec<u8>) -> Self {
+    impl From<BytesMut> for EncodedToRadioPacketWithHeader {
+        fn from(value: BytesMut) -> Self {
             EncodedToRadioPacketWithHeader(value)
         }
     }
 
     impl From<&[u8]> for EncodedToRadioPacketWithHeader {
         fn from(value: &[u8]) -> Self {
-            EncodedToRadioPacketWithHeader(value.to_vec())
+            EncodedToRadioPacketWithHeader(BytesMut::from(value))
         }
     }
 }

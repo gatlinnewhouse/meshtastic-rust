@@ -1,6 +1,7 @@
 #[cfg(feature = "bluetooth-le")]
 use crate::connections::ble_handler::BleHandler;
 use crate::errors_internal::Error;
+use bytes::BytesMut;
 #[cfg(feature = "bluetooth-le")]
 use futures::stream::StreamExt;
 use std::time::Duration;
@@ -398,7 +399,7 @@ pub fn format_data_packet(
     let [lsb, msb, ..] = data.len().to_le_bytes();
     let magic_buffer = [0x94, 0xc3, msb, lsb];
 
-    Ok([&magic_buffer, data].concat().into())
+    Ok(BytesMut::from([&magic_buffer, data].concat().as_slice()).into())
 }
 
 /// A helper function that takes a vector of bytes (u8) representing an encoded packet with a 4-byte header,
@@ -448,7 +449,7 @@ pub fn format_data_packet(
 pub fn strip_data_packet_header(
     packet: EncodedToRadioPacketWithHeader,
 ) -> Result<EncodedToRadioPacket, Error> {
-    let data = packet.data_vec();
+    let data = packet.data_bytes();
 
     let stripped_data = match data.get(4..) {
         Some(data) => data,
@@ -502,7 +503,7 @@ mod tests {
 
     #[test]
     fn valid_empty_packet() {
-        let data = vec![];
+        let data = BytesMut::new();
         let serial_data = format_data_packet(data.into());
 
         assert_eq!(serial_data.unwrap().data(), vec![0x94, 0xc3, 0x00, 0x00]);
@@ -510,7 +511,7 @@ mod tests {
 
     #[test]
     fn valid_non_empty_packet() {
-        let data = vec![0x00, 0xff, 0x88];
+        let data = BytesMut::from([0x00, 0xff, 0x88].as_slice());
         let serial_data = format_data_packet(data.into());
 
         assert_eq!(
@@ -521,7 +522,7 @@ mod tests {
 
     #[test]
     fn valid_large_packet() {
-        let data = vec![0x00; 0x100];
+        let data = BytesMut::from([0x00; 0x100].as_slice());
         let serial_data = format_data_packet(data.into());
 
         assert_eq!(
@@ -532,7 +533,7 @@ mod tests {
 
     #[test]
     fn invalid_too_large_packet() {
-        let data = vec![0x00; 0x10000];
+        let data = BytesMut::from([0x00; 0x10000].as_slice());
         let serial_data = format_data_packet(data.into());
 
         assert!(serial_data.is_err());

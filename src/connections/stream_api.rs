@@ -1,3 +1,4 @@
+use bytes::{Bytes, BytesMut};
 use futures_util::future::join3;
 use log::trace;
 use prost::Message;
@@ -11,7 +12,7 @@ use tokio_util::sync::CancellationToken;
 
 use crate::{
     errors_internal::Error,
-    protobufs::{self, FromRadio},
+    protobufs::{self},
     types::EncodedToRadioPacketWithHeader,
     utils,
 };
@@ -92,7 +93,7 @@ pub struct StreamHandle<T: AsyncReadExt + AsyncWriteExt + Send> {
     /// The underlying stream.
     pub stream: T,
     /// An optional join handle that processes data on the other side of the stream.
-    pub join_handle: Option<JoinHandle<Result<(), Error>>>,
+    pub join_handle: Option<Box<JoinHandle<Result<(), Error>>>>,
 }
 
 impl<T: AsyncReadExt + AsyncWriteExt + Send> StreamHandle<T> {
@@ -200,7 +201,7 @@ impl<State> ConnectedStreamApi<State> {
             payload_variant: Some(protobufs::mesh_packet::PayloadVariant::Decoded(
                 protobufs::Data {
                     portnum: port_num as i32,
-                    payload: packet_data.data_vec(),
+                    payload: packet_data.data_bytes(),
                     want_response,
                     reply_id: reply_id.unwrap_or(0),
                     emoji: emoji.unwrap_or(0),
@@ -218,7 +219,7 @@ impl<State> ConnectedStreamApi<State> {
         if echo_response {
             mesh_packet.rx_time = current_epoch_secs_u32();
             packet_router
-                .handle_mesh_packet(mesh_packet.clone())
+                .handle_mesh_packet(&mesh_packet)
                 .map_err(|e| Error::PacketHandlerFailure {
                     source: Box::new(e),
                 })?;
@@ -265,7 +266,7 @@ impl<State> ConnectedStreamApi<State> {
     ) -> Result<(), Error> {
         let packet = protobufs::ToRadio { payload_variant };
 
-        let mut packet_buf = vec![];
+        let mut packet_buf = BytesMut::new();
         packet.encode(&mut packet_buf)?;
         self.send_raw(packet_buf.into()).await
     }
@@ -303,10 +304,9 @@ impl<State> ConnectedStreamApi<State> {
     /// None
     ///
     pub async fn send_raw(&mut self, data: EncodedToRadioPacket) -> Result<(), Error> {
-        let channel = self.write_input_tx.clone();
         let data_with_header = utils::format_data_packet(data)?;
 
-        channel
+        self.write_input_tx
             .send(data_with_header)
             .await
             .map_err(|e| Error::InternalChannelError(e.into()))?;
@@ -541,7 +541,9 @@ impl ConnectedStreamApi<state::Connected> {
             payload_variant: Some(protobufs::to_radio::PayloadVariant::WantConfigId(config_id)),
         };
 
-        let packet_buf: EncodedToRadioPacket = to_radio.encode_to_vec().into();
+        let mut buf = BytesMut::with_capacity(4096);
+        to_radio.encode(&mut buf)?;
+        let packet_buf: EncodedToRadioPacket = buf.into();
         self.send_raw(packet_buf).await?;
 
         Ok(ConnectedStreamApi::<state::Configured> {
@@ -667,7 +669,7 @@ impl ConnectedStreamApi<state::Configured> {
         want_ack: bool,
         channel: MeshChannel,
     ) -> Result<(), Error> {
-        let byte_data: EncodedMeshPacketData = text.into_bytes().into();
+        let byte_data: EncodedMeshPacketData = BytesMut::from(text.into_bytes().as_slice()).into();
 
         self.send_mesh_packet(
             packet_router,
@@ -747,7 +749,11 @@ impl ConnectedStreamApi<state::Configured> {
             waypoint.id = generate_rand_id();
         }
 
-        let byte_data: EncodedMeshPacketData = waypoint.encode_to_vec().into();
+        // Actual packet data is a Max of 237 bytes excluding protobuf overhead
+        // https://meshtastic.org/docs/overview/mesh-algo/
+        let mut buf = BytesMut::with_capacity(256);
+        waypoint.encode(&mut buf)?;
+        let byte_data: EncodedMeshPacketData = buf.into();
 
         self.send_mesh_packet(
             packet_router,
@@ -821,7 +827,11 @@ impl ConnectedStreamApi<state::Configured> {
         want_ack: bool,
         channel: MeshChannel,
     ) -> Result<(), Error> {
-        let byte_data: EncodedMeshPacketData = position.encode_to_vec().into();
+        // Actual packet data is a Max of 237 bytes excluding protobuf overhead
+        // https://meshtastic.org/docs/overview/mesh-algo/
+        let mut buf = BytesMut::with_capacity(256);
+        position.encode(&mut buf)?;
+        let byte_data: EncodedMeshPacketData = buf.into();
 
         self.send_mesh_packet(
             packet_router,
@@ -893,10 +903,14 @@ impl ConnectedStreamApi<state::Configured> {
     ) -> Result<(), Error> {
         let config_packet = protobufs::AdminMessage {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetConfig(config)),
-            session_passkey: Vec::new(),
+            session_passkey: Bytes::new(),
         };
 
-        let byte_data: EncodedMeshPacketData = config_packet.encode_to_vec().into();
+        // Actual packet data is a Max of 237 bytes excluding protobuf overhead
+        // https://meshtastic.org/docs/overview/mesh-algo/
+        let mut buf = BytesMut::with_capacity(256);
+        config_packet.encode(&mut buf)?;
+        let byte_data: EncodedMeshPacketData = buf.into();
 
         self.send_mesh_packet(
             packet_router,
@@ -970,10 +984,14 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetModuleConfig(
                 module_config,
             )),
-            session_passkey: Vec::new(),
+            session_passkey: Bytes::new(),
         };
 
-        let byte_data: EncodedMeshPacketData = module_config_packet.encode_to_vec().into();
+        // Actual packet data is a Max of 237 bytes excluding protobuf overhead
+        // https://meshtastic.org/docs/overview/mesh-algo/
+        let mut buf = BytesMut::with_capacity(256);
+        module_config_packet.encode(&mut buf)?;
+        let byte_data: EncodedMeshPacketData = buf.into();
 
         self.send_mesh_packet(
             packet_router,
@@ -1047,10 +1065,14 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetChannel(
                 channel_config,
             )),
-            session_passkey: Vec::new(),
+            session_passkey: Bytes::new(),
         };
 
-        let byte_data: EncodedMeshPacketData = channel_packet.encode_to_vec().into();
+        // Actual packet data is a Max of 237 bytes excluding protobuf overhead
+        // https://meshtastic.org/docs/overview/mesh-algo/
+        let mut buf = BytesMut::with_capacity(256);
+        channel_packet.encode(&mut buf)?;
+        let byte_data: EncodedMeshPacketData = buf.into();
 
         self.send_mesh_packet(
             packet_router,
@@ -1115,10 +1137,14 @@ impl ConnectedStreamApi<state::Configured> {
     ) -> Result<(), Error> {
         let user_packet = protobufs::AdminMessage {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::SetOwner(user)),
-            session_passkey: Vec::new(),
+            session_passkey: Bytes::new(),
         };
 
-        let byte_data: EncodedMeshPacketData = user_packet.encode_to_vec().into();
+        // Actual packet data is a Max of 237 bytes excluding protobuf overhead
+        // https://meshtastic.org/docs/overview/mesh-algo/
+        let mut buf = BytesMut::with_capacity(256);
+        user_packet.encode(&mut buf)?;
+        let byte_data: EncodedMeshPacketData = buf.into();
 
         self.send_mesh_packet(
             packet_router,
@@ -1199,10 +1225,10 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(protobufs::admin_message::PayloadVariant::BeginEditSettings(
                 true,
             )),
-            session_passkey: Vec::new(),
+            session_passkey: Bytes::new(),
         };
 
-        let mut packet_buf = vec![];
+        let mut packet_buf = BytesMut::new();
         to_radio.encode(&mut packet_buf)?;
         self.send_raw(packet_buf.into()).await
     }
@@ -1257,10 +1283,10 @@ impl ConnectedStreamApi<state::Configured> {
             payload_variant: Some(
                 protobufs::admin_message::PayloadVariant::CommitEditSettings(true),
             ),
-            session_passkey: Vec::new(),
+            session_passkey: Bytes::new(),
         };
 
-        let mut packet_buf = vec![];
+        let mut packet_buf = BytesMut::new();
         to_radio.encode(&mut packet_buf)?;
         self.send_raw(packet_buf.into()).await
     }

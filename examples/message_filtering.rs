@@ -74,7 +74,7 @@ fn handle_from_radio_packet(from_radio_packet: meshtastic::protobufs::FromRadio)
             println!("Received node info packet: {:?}", node_info);
         }
         meshtastic::protobufs::from_radio::PayloadVariant::Packet(mesh_packet) => {
-            handle_mesh_packet(mesh_packet);
+            handle_mesh_packet(&mesh_packet);
         }
         _ => {
             println!("Received other FromRadio packet, not handling...");
@@ -89,9 +89,9 @@ fn handle_from_radio_packet(from_radio_packet: meshtastic::protobufs::FromRadio)
 ///
 /// Mesh packets are the most commonly used type of packet, and are usually
 /// what people are referring to when they talk about "packets."
-fn handle_mesh_packet(mesh_packet: meshtastic::protobufs::MeshPacket) {
+fn handle_mesh_packet(mesh_packet: &meshtastic::protobufs::MeshPacket) {
     // Remove `None` variants to get the payload variant
-    let payload_variant = match mesh_packet.payload_variant {
+    let payload_variant = match &mesh_packet.payload_variant {
         Some(payload_variant) => payload_variant,
         None => {
             println!("Received mesh packet with no payload variant, not handling...");
@@ -120,18 +120,20 @@ fn handle_mesh_packet(mesh_packet: meshtastic::protobufs::MeshPacket) {
             // The `decode` function is provided by the `prost` crate, which is re-exported
             // by the `meshtastic` crate.
             let decoded_position =
-                meshtastic::protobufs::Position::decode(packet_data.payload.as_slice()).unwrap();
+                meshtastic::protobufs::Position::decode(packet_data.payload.iter().as_slice())
+                    .unwrap();
 
             println!("Received position packet: {:?}", decoded_position);
         }
         meshtastic::protobufs::PortNum::TextMessageApp => {
-            let decoded_text_message = String::from_utf8(packet_data.payload).unwrap();
+            let decoded_text_message = String::from_utf8(packet_data.payload.to_vec()).unwrap();
 
             println!("Received text message packet: {:?}", decoded_text_message);
         }
         meshtastic::protobufs::PortNum::WaypointApp => {
             let decoded_waypoint =
-                meshtastic::protobufs::Waypoint::decode(packet_data.payload.as_slice()).unwrap();
+                meshtastic::protobufs::Waypoint::decode(packet_data.payload.iter().as_slice())
+                    .unwrap();
 
             println!("Received waypoint packet: {:?}", decoded_waypoint);
         }

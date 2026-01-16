@@ -59,6 +59,7 @@ fn main() -> std::io::Result<()> {
         config.type_attribute(".", "#[allow(clippy::doc_lazy_continuation)]");
     }
 
+    config.bytes(&["."]);
     config.out_dir(gen_dir);
     config.compile_protos(&protos, &[src_dir])
 }

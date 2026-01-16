@@ -2,6 +2,7 @@ use crate::errors_internal::{Error, InternalChannelError, InternalStreamError};
 use crate::protobufs;
 use crate::types::EncodedToRadioPacketWithHeader;
 use crate::utils::format_data_packet;
+use bytes::BytesMut;
 use log::{debug, error, trace};
 use prost::Message;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
@@ -26,8 +27,6 @@ pub fn spawn_read_handler<R>(
 where
     R: AsyncReadExt + Send + Unpin + 'static,
 {
-    let handle = start_read_handler(read_stream, read_output_tx.clone());
-
     spawn(async move {
         // Check for cancellation signal or handle termination
         tokio::select! {
@@ -35,7 +34,7 @@ where
                 debug!("Read handler cancelled");
                 Ok(())
             }
-            e = handle => {
+            e = start_read_handler(read_stream, read_output_tx.clone()) => {
                 debug!("Read handler unexpectedly terminated: {e:#?}");
                 e
             }
@@ -63,7 +62,7 @@ where
             }
             Ok(n) => {
                 trace!("Read {n} bytes from stream");
-                let data: IncomingStreamData = buffer[..n].to_vec().into();
+                let data: IncomingStreamData = buffer[..n].into();
                 trace!("Read data: {data:?}");
 
                 read_output_tx
@@ -98,15 +97,13 @@ pub fn spawn_write_handler<W>(
 where
     W: AsyncWriteExt + Send + Unpin + 'static,
 {
-    let handle = start_write_handler(cancellation_token.clone(), write_stream, write_input_rx);
-
     spawn(async move {
         tokio::select! {
             _ = cancellation_token.cancelled() => {
                 debug!("Write handler cancelled");
                 Ok(())
             }
-            write_result = handle => {
+            write_result = start_write_handler(cancellation_token.clone(), write_stream, write_input_rx) => {
                 write_result.inspect_err(|e| error!("Write handler unexpectedly terminated {e:?}"))
             }
         }
@@ -143,15 +140,13 @@ pub fn spawn_processing_handler(
     read_output_rx: Receiver<IncomingStreamData>,
     decoded_packet_tx: Sender<protobufs::FromRadio>,
 ) -> JoinHandle<Result<(), Error>> {
-    let handle = start_processing_handler(read_output_rx, decoded_packet_tx);
-
     spawn(async move {
         tokio::select! {
             _ = cancellation_token.cancelled() => {
                 debug!("Message processing handler cancelled");
                 Ok(())
             }
-            _ = handle => {
+            _ = start_processing_handler(read_output_rx, decoded_packet_tx) => {
                 error!("Message processing handler unexpectedly terminated");
                 Err(Error::InternalChannelError(InternalChannelError::ChannelClosedEarly {}))
             }
@@ -178,15 +173,13 @@ pub fn spawn_heartbeat_handler(
     cancellation_token: CancellationToken,
     write_input_tx: Sender<EncodedToRadioPacketWithHeader>,
 ) -> JoinHandle<Result<(), Error>> {
-    let handle = start_heartbeat_handler(cancellation_token.clone(), write_input_tx);
-
     spawn(async move {
         tokio::select! {
             _ = cancellation_token.cancelled() => {
                 debug!("Heartbeat handler cancelled");
                 Ok(())
             }
-            write_result = handle => {
+            write_result = start_heartbeat_handler(cancellation_token.clone(), write_input_tx) => {
                 write_result.inspect_err(|e|
                     error!("Heartbeat handler unexpectedly terminated {e:?}")
                 )
@@ -210,7 +203,7 @@ async fn start_heartbeat_handler(
             )),
         };
 
-        let mut buffer = Vec::new();
+        let mut buffer = BytesMut::new();
         match heartbeat_packet.encode(&mut buffer) {
             Ok(_) => (),
             Err(e) => {

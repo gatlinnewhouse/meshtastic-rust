@@ -128,7 +128,7 @@ pub trait PacketRouter<M: Sized, E: Display + std::error::Error + 'static> {
     ///
     /// None
     ///
-    fn handle_mesh_packet(&mut self, packet: protobufs::MeshPacket) -> Result<M, E>;
+    fn handle_mesh_packet(&mut self, packet: &protobufs::MeshPacket) -> Result<M, E>;
 
     /// A method that allows the `send_packet` method to query the router for the current node id.
     ///
