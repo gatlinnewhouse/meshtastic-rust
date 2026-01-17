@@ -56,7 +56,7 @@ where
 
     loop {
         read_buf.reserve(1024);
-        match read_stream.read(&mut read_buf).await {
+        match read_stream.read_buf(&mut read_buf).await {
             Ok(0) => {
                 trace!("read_stream has reached EOF");
                 return Err(Error::InternalStreamError(InternalStreamError::Eof));
